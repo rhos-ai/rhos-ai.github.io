@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Template - 仿 Meta Research</title>
+    <style>
+        /* --- 基础重置与字体 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1c1e21;
+            line-height: 1.5;
+            background-color: #ffffff;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- 通用布局类 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: #0064e0; /* Meta 蓝 */
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #0052b5;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        /* --- 顶部导航 (Header) --- */
+        header {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #0064e0;
+        }
+
+        /* --- Hero 区域 --- */
+        .hero {
+            padding: 80px 0;
+            background-color: #f0f2f5;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #606770;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- 特色出版物 (Publications) --- */
+        .publications {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .pub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .pub-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            transition: box-shadow 0.2s;
+        }
+
+        .pub-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pub-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0064e0;
+        }
+
+        .pub-authors {
+            font-size: 0.9rem;
+            color: #606770;
+            margin-bottom: 15px;
+        }
+
+        .pub-desc {
+            font-size: 0.95rem;
+            color: #1c1e21;
+        }
+
+        /* --- 特色板块 (Feature / Meta AI) --- */
+        .feature-section {
+            background-color: #1c1e21;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .feature-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .feature-section p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: #b0b3b8;
+        }
+
+        .feature-section .btn {
+            background-color: white;
+            color: #1c1e21;
+        }
+
+        /* --- 新闻列表 (News) --- */
+        .news-section {
+            padding: 60px 0;
+        }
+
+        .news-item {
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            display: flex;
+            gap: 20px;
+            align-items: baseline;
+        }
+
+        .news-date {
+            color: #606770;
+            font-size: 0.9rem;
+            min-width: 120px;
+        }
+
+        .news-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* --- 底部 (Footer) --- */
+        footer {
+            background-color: #f7f7f7;
+            padding: 60px 0 30px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1c1e21;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col a {
+            color: #606770;
+        }
+
+        .footer-col a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            color: #606770;
+        }
+
+        /* --- 响应式设计 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { display: none; } /* 移动端可改为汉堡菜单 */
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#0064e0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.39z"/></svg>
+                Meta Research
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Publications</a></li>
+                    <li><a href="#">Programs</a></li>
+                    <li><a href="#">Datasets</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Giving people the power to build community through research and innovation</h1>
+                <p>Our diverse team of scientists and engineers are tackling the world's most complex technology challenges.</p>
+            </div>
+        </section>
+
+        <section class="publications container">
+            <div class="section-header">
+                <h2>Featured Publications</h2>
+                <a href="#" style="color: #0064e0; font-weight: 600;">View All Publications &rarr;</a>
+            </div>
+            
+            <div class="pub-grid">
+                <article class="pub-card">
+                    <div class="pub-title">LLaMA: Open and Efficient Foundation Language Models</div>
+                    <div class="pub-authors">Hugo Touvron, Thibaut Lavril, et al.</div>
+                    <div class="pub-desc">We introduce LLaMA, a collection of foundation language models ranging from 7B to 65B parameters.</div>
+                </article>
+
+                <article class="pub-card">
+                    <div class="pub-title">Segment Anything</div>
+                    <div class="pub-authors">Alexander Kirillov, Eric Mintun, et al.</div>
+                    <div class="pub-desc">A new task, model, and dataset for image segmentation.</div>
+                </article>
+
+                <article class="pub-card">
+                    <div class="pub-title">PyTorch 2.0: Our next generation release</div>
+                    <div class="pub-authors">PyTorch Team</div>
+                    <div class="pub-desc">PyTorch 2.0 offers the same eager-mode development and user experience, while fundamentally changing how the compiler operates.</div>
+                </article>
+            </div>
+        </section>
+
+        <section class="feature-section">
+            <div class="container">
+                <h2>Meta AI</h2>
+                <p>We're advancing the state-of-the-art in Generative AI, Computer Vision, NLP, Infrastructure and other areas of AI.</p>
+                <a href="#" class="btn">Explore Meta AI</a>
+            </div>
+        </section>
+
+        <section class="news-section container">
+            <h2>Featured News</h2>
+            <div class="news-list">
+                <div class="news-item">
+                    <span class="news-date">April 17, 2023</span>
+                    <a href="#" class="news-title">Every tree counts: Large-scale mapping with AI</a>
+                </div>
+                <div class="news-item">
+                    <span class="news-date">Dec 15, 2022</span>
+                    <a href="#" class="news-title">I'm a researcher — here's why I work at Meta</a>
+                </div>
+                <div class="news-item">
+                    <span class="news-date">Feb 23, 2017</span>
+                    <a href="#" class="news-title">Prophet: forecasting at scale</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Research Areas</h4>
+                    <ul>
+                        <li><a href="#">Artificial Intelligence</a></li>
+                        <li><a href="#">Virtual Reality</a></li>
+                        <li><a href="#">Data Science</a></li>
+                        <li><a href="#">Human Computer Interaction</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Programs</h4>
+                    <ul>
+                        <li><a href="#">Academic Relations</a></li>
+                        <li><a href="#">Fellowships</a></li>
+                        <li><a href="#">Grants</a></li>
+                        <li><a href="#">Internships</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Open Source</a></li>
+                        <li><a href="#">PyTorch</a></li>
+                        <li><a href="#">Datasets</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Facebook Page</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <span>&copy; 2025 Meta</span>
+                <div>
+                    <a href="#" style="margin-left: 20px">Privacy</a>
+                    <a href="#" style="margin-left: 20px">Terms</a>
+                    <a href="#" style="margin-left: 20px">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

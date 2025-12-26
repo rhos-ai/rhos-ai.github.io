@@ -1,71 +1,161 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHOS AI</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            overflow: hidden;
-        }
-
-        .container {
-            position: relative;
-            text-align: center;
-        }
-
-        .background-image {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            opacity: 0.5;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        .content {
-            position: relative;
-            z-index: 2;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: #333;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    <title>RHOS - General-Purpose Robots</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <!-- <img src="robotics.jpg" alt="Background" class="background-image"> -->
-     <video autoplay muted loop playsinline class="background-image">
-        <source src="robotics.mp4" type="video/mp4">
-        <!-- 如果视频无法播放,显示回退图片 -->
-        <img src="robotics.jpg" alt="Background">
-    </video>
-    <div class="content">
-        <h1>Coming soon...</h1>
-    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container header-inner">
+            <div class="logo">RHOS</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="research.html">Research</a></li>
+                    <li><a href="#">Company</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </nav>
+            <!-- <div class="header-actions">
+                <a href="#" class="btn btn-primary sm">Request Demo</a>
+            </div> -->
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-bg-media">
+                <img src="assets/hero-bg.png" alt="Futuristic Robotic Arm">
+            </div>
+            <div class="container hero-content">
+                <div class="hero-logo-large">RHOS <img src="assets/logo1.png" alt="RHOS Logo" class="hero-logo-img">
+                </div>
+                <div class="hero-subtitle">Robot · Human · Object · Scene</div>
+
+                <div class="hero-desc-group">
+                    <div class="hero-desc-cn brackets">【Next Generation · Large Physical Model】</div>
+                    <div class="hero-desc-cn">Embodied Data Ecological + Embodied Physical Causal Model + Flywheel Robot
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section container">
+            <h2 class="h2">Building the Large Physical Model</h2>
+            <div class="mission-module-single">
+                <p>Driven by the first-principle conviction that <strong>Embodied Intelligence is the essential path to
+                        AGI</strong>,
+                    we are redefining the intersection of the digital and physical worlds. Our proprietary
+                    <strong>RoboNet</strong>
+                    framework transforms robots from simple machines into intelligent data interfaces, shifting the
+                    paradigm from static offline training to dynamic Physical AI powered by automated, online
+                    intervention learning.
+                </p>
+                <p>
+                    We are building the <strong>"Next-Generation" Physical Large Model</strong>—a critical bridge connecting
+                        human-centric Generative AI (World Models)
+                        with the rigorous demands of the physical environment. By fusing vast data streams from virtual
+                        simulations with high-fidelity
+                        spatiotemporal data from real-world interactions, we enable zero-shot generalization for unseen
+                        robots. Our vision is to create a
+                        complementary ecosystem where virtual intelligence and physical reality merge, unlocking the
+                        true
+                        potential of General Purpose Robotics.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- Industries Section -->
+        <!-- <section class="industries-section">
+            <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
+                <h2 class="h2" style="padding-left: 20px;">Applications</h2>
+                <div class="industries-scroll">
+                    <div class="industry-card">
+                        <img src="assets/factory.png" alt="Automated Factory">
+                        <div class="card-overlay">
+                            <div class="card-title">Manufacturing</div>
+                            <div class="card-desc">Precision assembly and material handling.</div>
+                        </div>
+                    </div>
+                    <div class="industry-card">
+                        <img src="assets/factory.png" alt="Commercial Kitchen"
+                            style="filter: sepia(0.5) hue-rotate(-50deg);">
+                        <div class="card-overlay">
+                            <div class="card-title">Commercial Kitchens</div>
+                            <div class="card-desc">Automated preparation and cooking workflows.</div>
+                        </div>
+                    </div>
+                    <div class="industry-card">
+                        <img src="assets/factory.png" alt="Logistics" style="filter: hue-rotate(90deg);">
+                        <div class="card-overlay">
+                            <div class="card-title">Logistics</div>
+                            <div class="card-desc">Efficient warehousing and sorting solutions.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Deployment Form Section -->
+        <!-- <section class="deploy-section container">
+            <h2 class="h2">Start deploying with RHOS</h2>
+            <form class="deploy-form">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" placeholder="Jane">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Doe">
+                </div>
+                <div class="form-group">
+                    <label>Work Email</label>
+                    <input type="email" placeholder="jane@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" placeholder="Acme Inc.">
+                </div>
+                <div class="form-group full-width">
+                    <label>Upload Task Workflow</label>
+                    <div class="file-drop-zone">
+                        <span>Drag and drop here, or click to upload</span>
+                    </div>
+                </div>
+                <div class="form-actions full-width">
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </div>
+            </form>
+        </section> -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="logo">RHOS</div>
+                <div class="socials">
+                    <a href="https://github.com/rhos-ai">Github</a>
+                    <a href="https://huggingface.co/rhos-ai">Huggingface</a>
+                </div>
+                <div class="legal">
+                    &copy; 2025 RHOS Inc.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
