@@ -482,3 +482,103 @@ ul {
 .socials a:hover {
     color: white;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Typography Adjustments */
+    .h1 {
+        font-size: 2.5rem;
+    }
+
+    .h2 {
+        font-size: 2rem;
+    }
+
+    .h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Header Adjustments */
+    .main-header {
+        height: auto;
+        padding: 15px 0;
+    }
+
+    .header-inner {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .main-nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .logo {
+        margin-bottom: 5px;
+    }
+
+    /* Hero Section Adjustments */
+    .hero-section {
+        margin-top: 0;
+        padding-top: 20px;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .hero-content {
+        padding: 0 15px;
+    }
+
+    .hero-logo-large {
+        font-size: 3.5rem; /* Reduced from 8rem */
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem; /* Reduced from 2.5rem */
+        margin-bottom: 60px;
+    }
+
+    .hero-desc-cn {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    /* Mission Section Adjustments */
+    .mission-section {
+        padding: 60px 20px;
+    }
+
+    .mission-section h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .mission-module-single {
+        padding: 20px;
+        gap: 20px;
+    }
+
+    /* Deploy Section Adjustments */
+    .deploy-section {
+        padding: 60px 20px;
+    }
+
+    .deploy-form {
+        grid-template-columns: 1fr; /* Stack form inputs */
+    }
+
+    /* Footer Adjustments */
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .socials {
+        justify-content: center;
+    }
+}
