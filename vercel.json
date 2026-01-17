@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/research/gm-100",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100"
+      "destination": "https://gm-100-page.vercel.app"
     },
     {
       "source": "/research/gm-100/:path*",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/:path*"
+      "destination": "https://gm-100-page.vercel.app/:path*"
     }
   ]
 }
