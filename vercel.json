@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-        source: '/research/gm-100/_vercel/:path*',
-        destination: 'https://gm-100-page.vercel.app/_vercel/:path*',
+        "source": "/research/gm-100/_vercel/:path*",
+        "destination": "https://gm-100-page.vercel.app/_vercel/:path*",
     },
     {
       "source": "/research/gm-100",
