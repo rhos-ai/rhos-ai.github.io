@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/research/ipr-1/_vercel/:path*",
+      "destination": "https://ipr-1-blog.vercel.app/_vercel/:path*"
+    },
+    {
+      "source": "/research/ipr-1",
+      "destination": "https://ipr-1-blog.vercel.app/research/ipr-1/"
+    },
+    {
+      "source": "/research/ipr-1/",
+      "destination": "https://ipr-1-blog.vercel.app/research/ipr-1/"
+    },
+    {
+      "source": "/research/ipr-1/:path*",
+      "destination": "https://ipr-1-blog.vercel.app/research/ipr-1/:path*"
+    },
+    {
       "source": "/research/gm-100/_vercel/:path*",
       "destination": "https://gm-100-page.vercel.app/_vercel/:path*"
     },
