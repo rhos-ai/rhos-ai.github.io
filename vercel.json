@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/research/AetheRock",
+      "destination": "/research/aetherock/"
+    },
+    {
+      "source": "/research/AetheRock/:path*",
+      "destination": "/research/aetherock/:path*"
+    },
+    {
       "source": "/research/ipr-1/_vercel/:path*",
       "destination": "https://ipr-1-blog.vercel.app/_vercel/:path*"
     },
