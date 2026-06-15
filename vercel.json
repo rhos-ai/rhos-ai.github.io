@@ -17,6 +17,14 @@
       "destination": "/research.html"
     },
     {
+      "source": "/careers",
+      "destination": "/careers.html"
+    },
+    {
+      "source": "/careers/",
+      "destination": "/careers.html"
+    },
+    {
       "source": "/research/ipr-1/_vercel/:path*",
       "destination": "https://ipr-1-blog.vercel.app/_vercel/:path*"
     },
