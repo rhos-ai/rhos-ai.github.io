@@ -127,6 +127,7 @@ async function sendHrEmail({ resendKey, fromEmail, toEmail, application }) {
         body: JSON.stringify({
             from: fromEmail,
             to: [toEmail],
+            reply_to: application.email,
             subject: `New application: ${application.job_title} - ${application.name}`,
             html: `
                 <h2>New career application</h2>
