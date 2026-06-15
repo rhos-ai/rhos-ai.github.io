@@ -9,6 +9,14 @@
       "destination": "/research/aetherock/:path*"
     },
     {
+      "source": "/research",
+      "destination": "/research.html"
+    },
+    {
+      "source": "/research/",
+      "destination": "/research.html"
+    },
+    {
       "source": "/research/ipr-1/_vercel/:path*",
       "destination": "https://ipr-1-blog.vercel.app/_vercel/:path*"
     },
