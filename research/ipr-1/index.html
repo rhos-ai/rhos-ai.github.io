@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPR-1: Interactive Physical Reasoner - RHOS</title>
-    <meta name="description" content="IPR-1 is an implicit physical-causal world model that studies how interactive experience can scale physical reasoning.">
+    <title>CVPR'26 | IPR-1: Interactive Physical Reasoner - RHOS</title>
+    <meta name="description" content="IPR-1 is an interactive physical reasoner for scaling physical-causal lookahead in embodied AI systems.">
     <meta name="author" content="RHOS">
     <meta name="robots" content="index, follow">
     <meta name="application-name" content="RHOS">
@@ -14,8 +15,8 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://rhos.ai/research/ipr-1">
-    <meta property="og:title" content="IPR-1: Interactive Physical Reasoner - RHOS">
-    <meta property="og:description" content="An implicit physical-causal world model for scaling interactive physical reasoning.">
+    <meta property="og:title" content="CVPR'26 | IPR-1: Interactive Physical Reasoner - RHOS">
+    <meta property="og:description" content="IPR-1 is an interactive physical reasoner for scaling physical-causal lookahead in embodied AI systems.">
     <meta property="article:section" content="Research">
     <meta property="article:author" content="RHOS">
     <meta property="og:image" content="https://rhos.ai/assets/social/ipr-1-share.jpg">
@@ -27,51 +28,1801 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:domain" content="rhos.ai">
     <meta name="twitter:url" content="https://rhos.ai/research/ipr-1">
-    <meta name="twitter:title" content="IPR-1: Interactive Physical Reasoner - RHOS">
-    <meta name="twitter:description" content="An implicit physical-causal world model for scaling interactive physical reasoning.">
+    <meta name="twitter:title" content="CVPR'26 | IPR-1: Interactive Physical Reasoner - RHOS">
+    <meta name="twitter:description" content="IPR-1 is an interactive physical reasoner for scaling physical-causal lookahead in embodied AI systems.">
     <meta name="twitter:image" content="https://rhos.ai/assets/social/ipr-1-share.jpg">
     <meta name="twitter:image:alt" content="IPR-1 Interactive Physical Reasoner preview">
-    <meta itemprop="name" content="IPR-1: Interactive Physical Reasoner - RHOS">
-    <meta itemprop="description" content="An implicit physical-causal world model for scaling interactive physical reasoning.">
+    <meta itemprop="name" content="CVPR'26 | IPR-1: Interactive Physical Reasoner - RHOS">
+    <meta itemprop="description" content="IPR-1 is an interactive physical reasoner for scaling physical-causal lookahead in embodied AI systems.">
     <meta itemprop="image" content="https://rhos.ai/assets/social/ipr-1-share.jpg">
-    <link rel="stylesheet" href="/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/research/ipr-1/assets/site/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/research/ipr-1/assets/ipr.png">
     <style>
+        :root {
+            --article-width: 880px;
+            --page-bg: #f7f7f4;
+            --surface-bg: #ffffff;
+            --soft-bg: #f0f0ec;
+            --ink: #111111;
+            --muted-text: #4f4f46;
+            --subtle-text: #73736b;
+            --panel-bg: #ffffff;
+            --panel-border: #deded8;
+        }
+
+        html,
         body {
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .main-nav a.active {
+            color: #ffffff;
+        }
+
+        .research-hero {
+            position: relative;
+            min-height: 78vh;
             display: flex;
-            flex-direction: column;
+            align-items: flex-end;
+            overflow: hidden;
+            margin-top: calc(var(--nav-height) * -1);
+            padding: calc(var(--nav-height) + 120px) 0 88px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .research-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .research-hero-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.46) 0%, rgba(0, 0, 0, 0.82) 72%, #000000 100%),
+                radial-gradient(circle at 70% 35%, rgba(37, 99, 235, 0.22), transparent 38%);
+        }
+
+        .research-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.72;
+        }
+
+        .research-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 980px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
+            gap: 10px;
+            color: #d4d4d8;
+            font-size: 0.84rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
         }
-        h1 {
-            text-align: center;
+
+        .eyebrow::before {
+            content: "";
+            width: 30px;
+            height: 1px;
+            background: #ffffff;
+            opacity: 0.8;
+        }
+
+        .research-title {
+            max-width: 940px;
+            font-size: clamp(3.2rem, 9vw, 7.8rem);
+            font-weight: 800;
+            line-height: 0.94;
+            letter-spacing: -0.055em;
             margin-bottom: 28px;
-            font-size: 3.25rem;
-            max-width: 1100px;
+            text-wrap: balance;
         }
-        p {
-            color: #aaa;
-            font-size: 1.15rem;
-            margin: 0 0 54px;
-            max-width: 820px;
+
+        .mobile-title-break {
+            display: none;
+        }
+
+        .research-subtitle {
+            max-width: 780px;
+            color: #d4d4d8;
+            font-size: clamp(1.1rem, 2vw, 1.45rem);
+            line-height: 1.55;
+            margin-bottom: 36px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 34px;
+        }
+
+        .research-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--muted-text);
+            font-size: 0.92rem;
+        }
+
+        .research-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 32px;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #f4f4f5;
+            font-weight: 500;
+        }
+
+        .article-shell {
+            max-width: var(--article-width);
+            padding-top: 96px;
+            padding-bottom: 12px;
+        }
+
+        .lead {
+            color: #e4e4e7;
+            font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+            line-height: 1.55;
+            margin-bottom: 34px;
+        }
+
+        .article-shell p {
+            color: var(--muted-text);
+            font-size: 1.08rem;
+            line-height: 1.78;
+            margin-bottom: 24px;
+        }
+
+        .article-shell strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .article-shell em {
+            color: #e4e4e7;
+        }
+
+        .article-shell pre {
+            overflow-x: auto;
+            padding: 24px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: var(--panel-bg);
+            color: var(--ink);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .article-shell code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        }
+
+        .article-section {
+            padding: 76px 0 0;
+        }
+
+        .article-section h2 {
+            color: #ffffff;
+            font-size: clamp(2rem, 4vw, 3.1rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+            margin-bottom: 26px;
+        }
+
+        .article-list {
+            display: grid;
+            gap: 16px;
+            margin: 34px 0;
+            list-style: none;
+        }
+
+        .article-list li {
+            position: relative;
+            padding: 22px 24px 22px 54px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: var(--panel-bg);
+            color: var(--muted-text);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .article-list li::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: 30px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 24px rgba(255, 255, 255, 0.35);
+        }
+
+        .media-panel {
+            overflow: hidden;
+            margin: 42px 0 18px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: #0b0b0b;
+        }
+
+        .media-frame {
+            min-height: 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 38px;
+            color: #e4e4e7;
             text-align: center;
+            background:
+                linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(255, 255, 255, 0.04)),
+                #111111;
+        }
+
+        .media-frame.wide {
+            min-height: 280px;
+        }
+
+        .media-frame img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .media-frame iframe {
+            width: min(100%, 720px);
+            aspect-ratio: 16 / 9;
+            height: auto;
+            border: 0;
+            border-radius: 10px;
+        }
+
+        .media-frame:has(> iframe),
+        .media-frame:has(> img) {
+            min-height: 0;
+            padding: 0;
+            background: #000000;
+        }
+
+        .media-frame:has(> iframe) iframe,
+        .media-frame:has(> img) img {
+            width: 100%;
+            max-width: none;
+            border-radius: 0;
+        }
+
+        .media-label {
+            max-width: 560px;
+            color: #d4d4d8;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .media-caption {
+            padding: 16px 20px 18px;
+            border-top: 1px solid var(--panel-border);
+            color: var(--subtle-text);
+            font-size: 0.92rem;
             line-height: 1.55;
         }
-        img {
-            max-width: min(92vw, 920px);
+
+        .quote-panel {
+            margin: 44px 0;
+            padding: 34px;
+            border-left: 2px solid #ffffff;
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+            font-size: clamp(1.3rem, 2vw, 1.7rem);
+            font-weight: 600;
+            line-height: 1.45;
+            letter-spacing: -0.02em;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin: 38px 0 8px;
+        }
+
+        .paradigm-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1px;
+            overflow: hidden;
+            margin: 38px 0 8px;
+            border: 1px solid var(--panel-border);
             border-radius: 12px;
+            background: var(--panel-border);
+        }
+
+        .paradigm-item {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: 18px;
+            padding: 24px;
+            background: var(--panel-bg);
+        }
+
+        .paradigm-index {
+            color: var(--subtle-text);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .paradigm-item h3 {
+            color: var(--ink);
+            font-size: 1.03rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .paradigm-item p {
+            color: var(--muted-text);
+            font-size: 0.96rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .paradigm-item ul {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted-text);
+            list-style: disc;
+        }
+
+        .paradigm-item li {
+            font-size: 0.96rem;
+            line-height: 1.55;
+            display: list-item;
+        }
+
+        .evaluation-scroll-panel {
+            margin: 38px 0 34px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-color: #111111 var(--panel-border);
+        }
+
+        .evaluation-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.35fr);
+            gap: 24px;
+            align-items: stretch;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .evaluation-levels {
+            display: grid;
+            gap: 14px;
+        }
+
+        .evaluation-card {
+            position: relative;
+            min-height: 128px;
+            padding: 22px 24px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: var(--panel-bg);
+        }
+
+        .evaluation-card h3 {
+            color: var(--ink);
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .evaluation-card p {
+            color: var(--muted-text);
+            font-size: 0.98rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .evaluation-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 18px;
+            bottom: 18px;
+            width: 3px;
+            border-radius: 999px;
+            background: #111111;
+        }
+
+        .evaluation-visual {
+            width: 100%;
+            aspect-ratio: 2998 / 1338;
+            min-height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: transparent;
+        }
+
+        .evaluation-visual img {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .physcode-visuals {
+            display: grid;
+            gap: 18px;
+            margin: 40px 0 12px;
+        }
+
+        .gif-pair {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .physcode-pair {
+            align-items: stretch;
+        }
+
+        .physcode-pair .media-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .physcode-pair .media-frame:has(> img) {
+            height: 230px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .physcode-pair .media-frame:has(> img) img {
+            width: auto;
+            max-width: 100%;
             height: auto;
+            max-height: 100%;
+        }
+
+        .physcode-pair .media-caption {
+            flex: 1;
+        }
+
+        .experiment-carousel {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(100%, 100%);
+            gap: 18px;
+            margin: 40px 0 24px;
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .experiment-slide {
+            scroll-snap-align: start;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--panel-bg);
+        }
+
+        .experiment-slide img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .experiment-caption {
+            padding: 18px 20px 20px;
+            border-top: 1px solid var(--panel-border);
+        }
+
+        .experiment-caption h3 {
+            color: var(--ink);
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .experiment-caption p {
+            color: var(--muted-text);
+            font-size: 0.98rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .chart-wrapper {
+            margin: 40px 0 44px;
+            padding: 24px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: var(--panel-bg);
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            color: var(--muted-text);
+            font-size: 0.95rem;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-swatch.survival {
+            background: linear-gradient(135deg, #1a73e8, #5c8be8);
+        }
+
+        .legend-swatch.curiosity {
+            background: linear-gradient(135deg, #ff8a00, #ffbd45);
+        }
+
+        .legend-swatch.utility {
+            background: linear-gradient(135deg, #1e8e3e, #4cd964);
+        }
+
+        .leaderboard-chart-horizontal {
+            width: 100%;
+            min-height: 640px;
+        }
+
+        .result-detail {
+            margin: 56px 0 0;
+        }
+
+        .result-detail h3 {
+            color: var(--ink);
+            font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+            font-weight: 700;
+            line-height: 1.18;
+            letter-spacing: -0.03em;
+            margin-bottom: 14px;
+        }
+
+        .robot-carousel {
+            margin: 40px 0 20px;
+        }
+
+        .robot-stage {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: #000000;
+        }
+
+        .robot-track {
+            display: flex;
+            transition: transform 280ms ease;
+        }
+
+        .robot-slide {
+            min-width: 100%;
+            margin: 0;
+        }
+
+        .robot-slide video,
+        .robot-slide img {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #000000;
+        }
+
+        .robot-caption {
+            padding: 16px 20px 18px;
+            border-top: 1px solid var(--panel-border);
+            background: var(--panel-bg);
+            color: var(--muted-text);
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        .robot-caption strong {
+            color: var(--ink);
+        }
+
+        .zelda-video {
+            margin-top: 30px;
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: #000000;
+        }
+
+        .zelda-video video,
+        .zelda-player {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 260px;
+            background: #000000;
+        }
+
+        .zelda-tags {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            gap: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 16px 18px 18px;
+            border-top: 1px solid var(--panel-border);
+            background: var(--panel-bg);
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .zelda-tag {
+            flex: 0 0 auto;
+            border: 1px solid var(--panel-border);
+            border-radius: 999px;
+            padding: 8px 14px;
+            background: #ffffff;
+            color: var(--ink);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            scroll-snap-align: start;
+            white-space: nowrap;
+        }
+
+        .zelda-tag:hover {
+            background: var(--soft-bg);
+        }
+
+        .zelda-tags::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .zelda-tags::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .zelda-tags::-webkit-scrollbar-thumb {
+            background: #c8c8bf;
+            border-radius: 999px;
+        }
+
+        .robot-nav {
+            position: absolute;
+            top: 50%;
+            z-index: 2;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+
+        .robot-nav:hover {
+            background: rgba(0, 0, 0, 0.72);
+        }
+
+        .robot-nav.prev {
+            left: 14px;
+        }
+
+        .robot-nav.next {
+            right: 14px;
+        }
+
+        .evaluation-placeholder {
+            padding: 28px;
+            color: var(--subtle-text);
+            font-size: 0.98rem;
+            line-height: 1.55;
+            text-align: center;
+        }
+
+        .result-card {
+            min-height: 168px;
+            padding: 24px;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: #111111;
+        }
+
+        .result-card h3 {
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.35;
+        }
+
+        .result-card p {
+            color: var(--subtle-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .article-divider {
+            height: 1px;
+            background: #333333;
+            margin: 82px 0 0;
+        }
+
+        /* Light theme overrides for the imported RHOS dark stylesheet. */
+        body {
+            background: var(--page-bg);
+            color: var(--ink);
+        }
+
+        .main-header {
+            background-color: rgba(247, 247, 244, 0.9);
+            border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+        }
+
+        .logo,
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--ink);
+        }
+
+        .main-nav a {
+            color: #6b6b63;
+        }
+
+        .btn-primary {
+            background-color: #111111;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a2a2a;
+        }
+
+        .btn-outline {
+            border-color: #111111;
+            color: #111111;
+            background-color: rgba(255, 255, 255, 0.64);
+        }
+
+        .btn-outline:hover {
+            background-color: #ffffff;
+        }
+
+        .research-hero {
+            border-bottom-color: var(--panel-border);
+        }
+
+        .research-hero-bg::before {
+            background:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.4) 58%, rgba(247, 247, 244, 0.96) 100%),
+                radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.24), transparent 38%);
+        }
+
+        .research-hero-bg img {
+            opacity: 0.88;
+        }
+
+        .research-title,
+        .research-subtitle,
+        .eyebrow {
+            color: #ffffff;
+        }
+
+        .eyebrow::before {
+            background: #ffffff;
+        }
+
+        .research-pill {
+            border-color: rgba(17, 17, 17, 0.14);
+            background: rgba(255, 255, 255, 0.84);
+            color: var(--ink);
+        }
+
+        .lead,
+        .article-section h2,
+        .article-shell strong,
+        .article-shell em,
+        .media-label,
+        .quote-panel,
+        .result-card h3 {
+            color: var(--ink);
+        }
+
+        .article-list li,
+        .media-panel,
+        .quote-panel,
+        .result-card {
+            background: var(--surface-bg);
+            border-color: var(--panel-border);
+        }
+
+        .article-list li::before {
+            background: var(--ink);
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.08);
+        }
+
+        .media-frame {
+            color: var(--ink);
+            background:
+                linear-gradient(135deg, rgba(17, 17, 17, 0.06), rgba(255, 255, 255, 0.72)),
+                var(--soft-bg);
+        }
+
+        .quote-panel {
+            border-left-color: var(--ink);
+        }
+
+        .article-divider,
+        .media-caption {
+            border-color: var(--panel-border);
+        }
+
+        .article-divider {
+            background: var(--panel-border);
+        }
+
+        .main-footer {
+            border-top-color: var(--panel-border);
+            color: var(--subtle-text);
+        }
+
+        .socials a:hover {
+            color: var(--ink);
+        }
+
+        @media (max-width: 900px) {
+            .research-hero {
+                min-height: 72vh;
+                padding-bottom: 64px;
+            }
+
+            .article-shell {
+                padding-top: 72px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .paradigm-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gif-pair {
+                grid-template-columns: 1fr;
+            }
+
+            .evaluation-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .evaluation-visual {
+                width: 100%;
+            }
+
+            .physcode-pair .media-frame:has(> img) {
+                height: 190px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .research-hero {
+                margin-top: 0;
+                padding: 70px 0 52px;
+            }
+
+            .research-hero-content,
+            .article-shell {
+                min-width: 0;
+            }
+
+            .research-title {
+                max-width: calc(100vw - 40px);
+                font-size: 2.72rem;
+                line-height: 1.02;
+                letter-spacing: -0.045em;
+                text-wrap: auto;
+            }
+
+            .mobile-title-break {
+                display: block;
+            }
+
+            .research-subtitle,
+            .article-shell p {
+                max-width: 100%;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-actions .btn {
+                width: 100%;
+            }
+
+            .article-section {
+                padding-top: 58px;
+            }
+
+            .article-list li {
+                padding: 20px 20px 20px 46px;
+            }
+
+            .article-list li::before {
+                left: 20px;
+            }
+
+            .media-frame {
+                min-height: 240px;
+                padding: 24px;
+            }
+
+            .quote-panel {
+                padding: 26px 24px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .research-hero-content,
+            .article-shell {
+                max-width: 350px;
+            }
+
+            .research-title,
+            .research-subtitle,
+            .hero-actions .btn,
+            .article-shell p,
+            .media-panel,
+            .quote-panel,
+            .results-grid,
+            .evaluation-scroll-panel {
+                max-width: 350px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>IPR-1: Interactive Physical Reasoner</h1>
-    <p>IPR-1 is an implicit physical-causal world model that studies how interactive experience can scale physical reasoning.</p>
-    <img src="/research/ipr-1/ipr-teaser.png" alt="IPR-1 Interactive Physical Reasoner">
+    <header class="main-header">
+        <div class="container header-inner">
+            <a class="logo" href="https://www.rhos.ai/">RHOS</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="https://www.rhos.ai/">Home</a></li>
+                    <li><a href="https://www.rhos.ai/research" class="active">Research</a></li>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Join us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="research-hero">
+            <div class="research-hero-bg">
+                <img src="/research/ipr-1/assets/ipr.png" alt="Robotic arm in a physical AI lab">
+            </div>
+            <div class="container research-hero-content">
+                <div class="eyebrow">CVPR'26 Research</div>
+                <h1 class="research-title">
+                    IPR-1:<br class="mobile-title-break">
+                    Interactive<br class="mobile-title-break">
+                    Physical<br class="mobile-title-break">
+                    Reasoner
+                </h1>
+                <p class="research-subtitle">
+                    An implicit physical-causal world model for learning intuitive physics, causal interaction, and
+                    animal-like intelligence through physics-centric interaction.
+                </p>
+                <div class="hero-actions">
+                    <a href="https://arxiv.org/abs/2511.15407" class="btn btn-primary">Read Paper</a>
+                    <a href="https://github.com/mybearyZhang/ipr-1/" class="btn btn-outline">View on GitHub</a>
+                </div>
+                <div class="research-meta">
+                    <span class="research-pill">Physical AI</span>
+                    <span class="research-pill">World Models</span>
+                    <span class="research-pill">CVPR'26</span>
+                </div>
+            </div>
+        </section>
+
+        <article class="container article-shell">
+            <p class="lead">
+                True intelligence is not about memorizing video pixels in cyberspace. It is about internalizing the laws
+                of the physical world through interaction.
+            </p>
+
+            <p>
+                <strong>IPR-1 (Interactive Physical Reasoner)</strong> is an implicit physical-causal world model that
+                can look ahead across 1,000+ physical worlds within one model. Following our long-term view on visual
+                reasoning and physical reasoning, IPR-1 studies how interaction and scaling can lead to physical
+                understanding, causal reasoning, and promising zero-shot transfer to real-world robotic control.
+            </p>
+
+            <div class="media-panel">
+                <div class="media-frame">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/DNcNbAnLJOI?si=k8us0o5o9kHTyhyI"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <div class="media-caption">IPR-1 demonstrates robust physical reasoning across diverse environments.
+                </div>
+            </div>
+
+            <section class="article-section">
+                <h2>Background</h2>
+                <p>
+                    How do humans come to understand the world? Not from labels alone. We learn physics and causality
+                    through interaction: as experience accumulates, prediction sharpens, reasoning stabilizes, and
+                    ability scales. Recent progress in Vision-Language Models (VLMs) and World Models has brought us
+                    closer to the promise of AGI, but their limits show up quickly in dynamic environments. Even a
+                    small viewpoint shift can break the illusion: many models tend to overfit to visual patterns,
+                    not the underlying physical and causal mechanisms.
+                </p>
+
+                <p>
+                    The gap appears in different forms. VLM/VLA agents, whether in embodied domains, games, or other
+                    interactive settings, bring broad semantic priors and can reason over high-level goals, but they
+                    <strong>lack
+                        look-ahead and the predictive grounding</strong> required for interactive physical tasks. They
+                    can explain a
+                    scene, yet fail to anticipate what their own actions will cause. World Models face the opposite
+                    issue: they can imagine futures and generate realistic frames, but in practice they often
+                    <strong>imitate visual patterns</strong> rather than analyze physics and causality. In embodied
+                    environments, where contact and occlusion are routine, full-scene pixel prediction is often a noisy
+                    and indirect signal for choosing actions.
+                </p>
+
+                <p>
+                    So can AI move beyond describing physics and learn to act within it? We argue that an
+                    agent should acquire human-like reasoning from interaction and keep improving with more experience.
+                    This is the motivation behind <strong>IPR-1 (Interactive Physical Reasoner)</strong>. Following our
+                    long-term view on visual reasoning and physical reasoning, IPR-1 distills shared physical and causal
+                    mechanisms through interaction and scaling, rather than memorizing domain-specific appearances or
+                    action interfaces. To evaluate this paradigm at scale, we curate over 1,000 heterogeneous games as
+                    controllable physical worlds. On this large-scale physical reasoning benchmark, <strong>an 8B IPR-1
+                        model
+                        outperforms much larger top models, including GPT-5</strong>, while also zero-shot transferring
+                    to novel
+                    environments.
+                </p>
+
+                <div class="media-panel">
+                    <div class="media-frame">
+                        <img src="/research/ipr-1/assets/teaser.png" alt="IPR-1 teaser">
+                    </div>
+                    <div class="media-caption">IPR-1 learns physical reasoning through interaction across diverse game
+                        worlds.</div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h2>Towards Animal-Like Intelligence</h2>
+                <p>
+                    Given a complex video of physical interaction, strongest closed-source models can often produce a
+                    polished
+                    analysis. But once they are asked to actually play, their intelligence quickly looks fragile. On the
+                    path toward general embodied physical intelligence, four mainstream paradigms expose different
+                    bottlenecks:
+                </p>
+
+                <div class="paradigm-grid">
+                    <div class="paradigm-item">
+                        <div class="paradigm-index">01</div>
+                        <div>
+                            <h3>Vision-Language Models / VLAs</h3>
+                            <ul>
+                                <li>Strong at static semantic reasoning and high-level goal understanding.</li>
+                                <li>Lack mental look-ahead in dynamic interaction.</li>
+                                <li>Future consequences easily disconnect from action.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="paradigm-item">
+                        <div class="paradigm-index">02</div>
+                        <div>
+                            <h3>World Models</h3>
+                            <ul>
+                                <li>Can generate visually convincing imagined futures.</li>
+                                <li>Often imitate visual patterns rather than analyze physics.</li>
+                                <li>Unstable under complex contact, occlusion, and interaction.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="paradigm-item">
+                        <div class="paradigm-index">03</div>
+                        <div>
+                            <h3>Imitation Learning</h3>
+                            <ul>
+                                <li>Replays expert trajectories effectively in familiar settings.</li>
+                                <li>Does not necessarily internalize physical-causal mechanisms.</li>
+                                <li>Brittle when geometry, contact, or object layout shifts.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="paradigm-item">
+                        <div class="paradigm-index">04</div>
+                        <div>
+                            <h3>Reinforcement Learning</h3>
+                            <ul>
+                                <li>Can solve single environments through massive trial and error.</li>
+                                <li>Often relies on task-specific shortcuts and dense rewards.</li>
+                                <li>Weak at zero-shot transfer to new physical worlds.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h2>The Interactive Evaluation Pyramid</h2>
+                <p>
+                    To move beyond the pseudo-intelligence that can appear in static language benchmarks, we discard
+                    traditional Q&A evaluation and build an interactive assessment pyramid inspired by <strong>Maslow's
+                        hierarchy</strong>. The goal is to strip away linguistic polish and measure physical competence
+                    through
+                    survival, exploration, and goal completion.
+                </p>
+
+                <div class="evaluation-scroll-panel" aria-label="Interactive evaluation pyramid">
+                    <div class="evaluation-layout">
+                        <div class="evaluation-levels">
+                            <div class="evaluation-card">
+                                <h3>Utility</h3>
+                                <p>Tests whether an agent can use its physical understanding to complete explicit goals,
+                                    such as collecting coins or reaching the destination.</p>
+                            </div>
+                            <div class="evaluation-card">
+                                <h3>Curiosity</h3>
+                                <p>Tests whether an agent can explore a broad physical space while maintaining basic
+                                    survival.</p>
+                            </div>
+                            <div class="evaluation-card">
+                                <h3>Survival</h3>
+                                <p>Tests whether an agent has primitive physical intuition for avoiding harm and
+                                    preserving
+                                    itself, such as dodging monsters or not falling off cliffs.</p>
+                            </div>
+                        </div>
+                        <div class="evaluation-visual">
+                            <img src="/research/ipr-1/assets/pyramid.png"
+                                alt="Interactive evaluation pyramid">
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    After evaluating classic models across 1,000+ game worlds, the conclusion is direct: massive
+                    parameters do not automatically produce physical intuition. Even trillion-parameter models can
+                    struggle on core Survival and Utility metrics, while the 8B IPR model succeeds by focusing on
+                    physics-centric interaction rather than brute-force memorization.
+                </p>
+            </section>
+
+            <section class="article-section">
+                <h2>Sandtable Inference: Prediction-Reinforced Reasoning</h2>
+                <p>
+                    Before acting, humans often run a sandtable simulation in the mind. IPR-1 reproduces this process by
+                    connecting the strategic reasoning of a VLM with the simulation capability of a World Model, forming
+                    a prediction-reasoning-reinforcement loop.
+                </p>
+
+                <ul class="article-list">
+                    <li><strong>Proposal:</strong> The VLM uses multimodal scene understanding to propose several
+                        high-potential candidate action sequences.</li>
+                    <li><strong>Rollout & Scoring:</strong> The World Model acts as an implicit physical engine,
+                        rolling out candidate actions in imagination, predicting future states, and computing
+                        reward/value scores.</li>
+                    <li><strong>Reinforcement:</strong> The system executes the best-scoring action, while future-aware
+                        feedback reinforces and improves the VLM policy.</li>
+                </ul>
+
+                <blockquote class="quote-panel">
+                    Through this predict-reason-reinforce loop, static semantic knowledge becomes active physical
+                    interaction, giving the agent an intuition for future physical consequences.
+                </blockquote>
+
+                <div class="media-panel">
+                    <div class="media-frame">
+                        <img src="/research/ipr-1/assets/pipeline.png" alt="IPR-1 architecture loop">
+                    </div>
+                    <div class="media-caption">Sandtable inference: the VLM proposes candidate actions, the World Model
+                        rolls them out in imagination, and predictive feedback reinforces the policy.</div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h2>PhysCode: The Native Language of Physics</h2>
+                <p>
+                    With sandtable inference in place, the next challenge is representation: how can a model grounded in
+                    text and pixels reason about actions, forces, and dynamics? We introduce
+                    <strong>PhysCode</strong>, a physics-centric action code that bridges VLM reasoning and world-model
+                    prediction by aligning semantic intent with physical dynamics.
+                </p>
+
+                <p>
+                    PhysCode is pretrained from video clips, optical flow, and action semantics to form a discrete
+                    action vocabulary. Rather than modeling every visual detail, it filters out noisy background
+                    variation and anchors high-level intent to the low-level dynamics that actually govern interaction.
+                    The result is a shared action space where policy reasoning and forward prediction can reinforce each
+                    other.
+                </p>
+
+                <div class="physcode-visuals">
+                    <div class="media-panel">
+                        <div class="media-frame">
+                            <img src="/research/ipr-1/assets/word-cloud.png" alt="PhysCode word cloud">
+                        </div>
+                        <div class="media-caption">A word-cloud view of PhysCode action semantics, highlighting the
+                            interaction concepts covered by the learned action vocabulary.</div>
+                    </div>
+                    <div class="media-panel">
+                        <div class="media-frame">
+                            <img src="/research/ipr-1/assets/visualization.png"
+                                alt="PhysCode data visualization">
+                        </div>
+                        <div class="media-caption">The learned representation organizes actions by dynamics, making
+                            visually different games comparable in a shared physical space.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h2>Experiments: Understanding Physics in Game Worlds</h2>
+                <p>
+                    We evaluate IPR-1 from four angles: whether PhysCode provides a transferable action space, how the
+                    model compares across 1,000+ games, whether physical reasoning scales with more interactive
+                    experience, and whether the agent can adapt when the rules of the environment change. Together, the
+                    results suggest that IPR-1 is learning reusable physical structure rather than memorizing game
+                    interfaces or control routines.
+                </p>
+
+                <div class="result-detail">
+                    <h3>Does PhysCode Really Work?</h3>
+                    <p>PhysCode defines actions by their underlying dynamics instead of raw keyboard commands, reducing
+                        ambiguity across games with different control interfaces. In blind tests on unseen games,
+                        PhysCode-based models transfer more reliably, suggesting that the representation captures
+                        reusable physical structure rather than game-specific controls. When games are grouped by core
+                        mechanisms such as gravity or inertia, models trained on one group perform better on unseen games
+                        governed by the same mechanism.</p>
+                    <div class="gif-pair physcode-pair">
+                        <div class="media-panel">
+                            <div class="media-frame">
+                                <img src="/research/ipr-1/assets/physical1.png"
+                                    alt="PhysCode physical representation example 1">
+                            </div>
+                            <div class="media-caption">PhysCode groups actions by underlying dynamics, reducing
+                                cross-environment operation conflicts.</div>
+                        </div>
+                        <div class="media-panel">
+                            <div class="media-frame">
+                                <img src="/research/ipr-1/assets/physical2.png"
+                                    alt="PhysCode physical representation example 2">
+                            </div>
+                            <div class="media-caption">When games share core mechanisms such as gravity or inertia,
+                                PhysCode transfers more reliably to unseen worlds.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-detail">
+                    <h3>1000+ Game Worlds: Small Beats Large</h3>
+                    <p>On the 1000+ Game Worlds benchmark, a compact 8B IPR model combines semantic planning, physical prediction, and
+                        closed-loop reinforcement to outperform much larger static models across the core reasoning
+                        dimensions.</p>
+                    <div class="chart-wrapper">
+                        <div class="chart-legend" aria-label="Score legend">
+                            <span class="legend-item"><span class="legend-swatch survival"></span>Survival</span>
+                            <span class="legend-item"><span class="legend-swatch curiosity"></span>Curiosity</span>
+                            <span class="legend-item"><span class="legend-swatch utility"></span>Utility</span>
+                        </div>
+                        <div id="leaderboard-chart-horizontal" class="leaderboard-chart-horizontal" role="img"
+                            aria-live="polite"
+                            aria-label="Horizontal leaderboard bar chart showing benchmark scores per method"></div>
+                    </div>
+                </div>
+
+                <div class="result-detail">
+                    <h3>Scaling Laws of Physical Reasoning</h3>
+                    <p>Doing well in familiar environments is not enough; the real test is whether competence improves
+                        as experience broadens. As the number of pretraining games and interaction steps increases, IPR
+                        improves steadily across Survival, Curiosity, and Utility, revealing a clear scaling trend for
+                        physical reasoning.</p>
+                    <div class="media-panel">
+                        <div class="media-frame">
+                            <img src="/research/ipr-1/assets/scaling.png"
+                                alt="Scaling laws of physical reasoning">
+                        </div>
+                    </div>
+                </div>
+                <div class="result-detail">
+                    <h3>Understanding Physics: Invariance Under Change</h3>
+                    <p>We further test physical understanding by changing environment parameters during gameplay, such
+                        as gravity strength or monster speed. Under this "hand of God" intervention, IPR-1 does not
+                        rigidly replay a memorized route. It adjusts jump timing, plans safer avoidance, and closes the
+                        loop between understanding physics, predicting future consequences, and choosing better actions.</p>
+                    <div class="gif-pair">
+                        <div class="media-panel">
+                            <div class="media-frame">
+                                <img src="/research/ipr-1/assets/part4.gif"
+                                    alt="IPR-1 physical adaptation example part 4">
+                            </div>
+                            <div class="media-caption">IPR-1 adapts its behavior under changing physical dynamics.</div>
+                        </div>
+                        <div class="media-panel">
+                            <div class="media-frame">
+                                <img src="/research/ipr-1/assets/part5.gif"
+                                    alt="IPR-1 physical adaptation example part 5">
+                            </div>
+                            <div class="media-caption">Adaptation in a visually complex, high-fidelity environment.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-detail">
+                    <h3>Robotics Transfer</h3>
+                    <p>
+                        We further test whether physical and causal reasoning learned through interaction can transfer
+                        to
+                        robotic tasks. The videos below compare IPR against strong multimodal baselines in the same
+                        setting.
+                    </p>
+
+                    <div class="robot-carousel" data-robot-carousel>
+                        <div class="robot-stage">
+                            <button class="robot-nav prev" type="button" data-robot-prev
+                                aria-label="Previous robot video">&lt;</button>
+                            <div class="robot-track" data-robot-track>
+                                <figure class="robot-slide">
+                                    <img src="/research/ipr-1/assets/robots/ipr.gif" alt="IPR robotic transfer">
+                                    <figcaption class="robot-caption"><strong>IPR</strong> demonstrates zero-shot
+                                        robotic behavior grounded in physical reasoning.</figcaption>
+                                </figure>
+                                <figure class="robot-slide">
+                                    <img src="/research/ipr-1/assets/robots/gpt.gif" alt="GPT-5 robotic baseline">
+                                    <figcaption class="robot-caption"><strong>GPT-5</strong> fails to understand the task
+                                        and control.</figcaption>
+                                </figure>
+                                <figure class="robot-slide">
+                                    <img src="/research/ipr-1/assets/robots/gemini.gif" alt="Gemini 2.5 Pro robotic baseline">
+                                    <figcaption class="robot-caption"><strong>Gemini 2.5 Pro</strong> fails to understand
+                                        the task and control.</figcaption>
+                                </figure>
+                                <figure class="robot-slide">
+                                    <img src="/research/ipr-1/assets/robots/qwen.gif" alt="Qwen-3-VL robotic baseline">
+                                    <figcaption class="robot-caption"><strong>Qwen-3-VL</strong> manages to approach, but
+                                        fails to pick.</figcaption>
+                                </figure>
+                            </div>
+                            <button class="robot-nav next" type="button" data-robot-next
+                                aria-label="Next robot video">&gt;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-detail">
+                    <h3>Zelda: Long-Horizon Physical Reasoning in a 3D World</h3>
+                    <p>
+                        We use Zelda as a 3D proxy for realistic simulation: it combines rich physical interaction,
+                        diverse objectives, and visually complex scenes that require planning beyond short-horizon
+                        reaction.
+                    </p>
+                    <p>
+                        Commercial models often fail through delayed reactions, imprecise control, and weak future
+                        prediction. IPR improves by iteratively adding necessary physical and task conditions into the
+                        reasoning loop, eventually completing long-horizon tasks.
+                    </p>
+                    <p>
+                        The same state can also admit multiple valid strategies. In an apple-picking task, IPR discovers
+                        different solutions under the same physical setup, showing its potential for open-ended embodied
+                        reasoning.
+                    </p>
+                    <div class="zelda-video">
+                        <div id="zelda-player" class="zelda-player"></div>
+                        <div class="zelda-tags" aria-label="Zelda video chapter shortcuts">
+                            <button class="zelda-tag" type="button" data-zelda-time="0">Zelda Environment</button>
+                            <button class="zelda-tag" type="button" data-zelda-time="21">Baseline VLM</button>
+                            <button class="zelda-tag" type="button" data-zelda-time="27">IPR Evolution</button>
+                            <button class="zelda-tag" type="button" data-zelda-time="148">IPR Full Walkthrough</button>
+                            <button class="zelda-tag" type="button" data-zelda-time="280">IPR Multi-Strategy</button>
+                            <button class="zelda-tag" type="button" data-zelda-time="322">More Trials</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="article-divider"></div>
+
+            <section class="article-section">
+                <h2>Conclusion</h2>
+                <p>
+                    We believe IPR-1 points to a new scaling path for general physical foundation models and embodied
+                    intelligence. Instead of scaling only data, parameters, or static supervision, this path scales
+                    physics-centric interaction, allowing agents to build increasingly advanced physical reasoning
+                    abilities through experience.
+                </p>
+
+                <p>
+                    We are now continuing along the IPR-1 direction to scale toward IPR-2, while evaluating its
+                    potential
+                    in real-world robotics and more complex physical environments.
+                </p>
+
+                <div class="media-panel">
+                    <div class="media-frame">
+                        <img src="/research/ipr-1/assets/ipr-2.png" alt="IPR-2 preview">
+                    </div>
+                    <div class="media-caption">Towards IPR-2: scaling physics-centric interaction into real-world
+                        robotic and physical environments.</div>
+                </div>
+            </section>
+
+            <section class="article-section">
+                <h2>Citation</h2>
+                <pre><code>@article{zhang2025ipr,
+  title={IPR-1: Interactive Physical Reasoner},
+  author={Zhang, Mingyu and Zhuo, Lifeng and Tan, Tianxi and Xie, Guocan and Nie, Xian and Li, Yan and Zhao, Renjie and He, Zizhu and Wang, Ziyu and Cai, Jiting and others},
+  journal={arXiv preprint arXiv:2511.15407},
+  year={2025}
+}</code></pre>
+            </section>
+        </article>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="logo">RHOS</div>
+                <div class="socials">
+                    <a href="https://github.com/rhos-ai">Github</a>
+                    <a href="https://huggingface.co/rhos-ai">Huggingface</a>
+                </div>
+                <div class="legal">
+                    &copy; 2025 RHOS lab. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/research/ipr-1/vendor/echarts-5.5.0.min.js"></script>
+    <script>
+        (() => {
+            const metrics = [
+                { key: "survival", label: "Survival" },
+                { key: "curiosity", label: "Curiosity" },
+                { key: "utility", label: "Utility" }
+            ];
+
+            const sharedMethods = [
+                { name: "ACT-BC\n(25M)", values: { survival: 8.8, curiosity: 79.3, utility: 25.5 } },
+                { name: "Qwen3-VL\n(8B SFT)", values: { survival: 9.9, curiosity: 81.2, utility: 36.8 } }
+            ];
+
+            const iprMethods = [
+                { name: "IPR\n(8B)", values: { survival: 25.2, curiosity: 117.3, utility: 49.3 }, highlight: true }
+            ];
+
+            const objectiveMethods = {
+                survival: [
+                    { name: "PPO\n(150M)", values: { survival: 12.5, curiosity: 23.3, utility: 58.8 } },
+                    { name: "DQN\n(120M)", values: { survival: 12.1, curiosity: 85.6, utility: 49.7 } },
+                    { name: "DreamerV3\n(200M)", values: { survival: 10.2, curiosity: 112.0, utility: 29.8 } },
+                    { name: "V-JEPA2\n(600M)", values: { survival: 10.2, curiosity: 115.0, utility: 19.1 } },
+                    { name: "Genie\n(3B)", values: { survival: 10.8, curiosity: 119.8, utility: 12.8 } },
+                    { name: "GPT-4o\n(>1T)", values: { survival: 10.8, curiosity: 3.9, utility: 30.2 } },
+                    { name: "GPT-5\n(>1T)", values: { survival: 14.0, curiosity: 12.7, utility: 26.3 } },
+                    { name: "Qwen3-VL\n(30B-A3B)", values: { survival: 9.1, curiosity: 32.5, utility: 28.9 } }
+                ],
+                curiosity: [
+                    { name: "PPO\n(150M)", values: { survival: 11.4, curiosity: 19.0, utility: 60.9 } },
+                    { name: "DQN\n(120M)", values: { survival: 13.1, curiosity: 77.2, utility: 42.4 } },
+                    { name: "DreamerV3\n(200M)", values: { survival: 10.8, curiosity: 116.1, utility: 23.5 } },
+                    { name: "V-JEPA2\n(600M)", values: { survival: 10.0, curiosity: 140.2, utility: 14.6 } },
+                    { name: "Genie\n(3B)", values: { survival: 10.4, curiosity: 137.4, utility: 10.0 } },
+                    { name: "GPT-4o\n(>1T)", values: { survival: 7.9, curiosity: 36.8, utility: 18.6 } },
+                    { name: "GPT-5\n(>1T)", values: { survival: 9.3, curiosity: 29.8, utility: 33.3 } },
+                    { name: "Qwen3-VL\n(30B-A3B)", values: { survival: 8.6, curiosity: 87.8, utility: 15.5 } }
+                ],
+                utility: [
+                    { name: "PPO\n(150M)", values: { survival: 12.0, curiosity: 22.0, utility: 53.4 } },
+                    { name: "DQN\n(120M)", values: { survival: 12.5, curiosity: 62.0, utility: 44.5 } },
+                    { name: "DreamerV3\n(200M)", values: { survival: 9.7, curiosity: 96.4, utility: 13.9 } },
+                    { name: "V-JEPA2\n(600M)", values: { survival: 10.2, curiosity: 113.6, utility: 15.2 } },
+                    { name: "Genie\n(3B)", values: { survival: 11.0, curiosity: 124.8, utility: 12.2 } },
+                    { name: "GPT-4o\n(>1T)", values: { survival: 8.7, curiosity: 31.9, utility: 33.7 } },
+                    { name: "GPT-5\n(>1T)", values: { survival: 10.8, curiosity: 18.5, utility: 37.1 } },
+                    { name: "Qwen3-VL\n(30B-A3B)", values: { survival: 10.8, curiosity: 52.8, utility: 28.5 } }
+                ]
+            };
+
+            const baselineGuides = [
+                { id: "baseline-random", label: "Random", value: 1 },
+                { id: "baseline-human", label: "Human", value: 100 }
+            ];
+
+            const formatScore = (value) => Number.isInteger(value) ? value.toString() : value.toFixed(1);
+
+            function buildAggregatedMethods() {
+                const names = new Set();
+                ["survival", "curiosity", "utility"].forEach(metric => {
+                    objectiveMethods[metric].forEach(method => names.add(method.name));
+                });
+                const findBy = (metric, name) => objectiveMethods[metric].find(method => method.name === name);
+                return Array.from(names).map(name => ({
+                    name,
+                    values: {
+                        survival: Number(findBy("survival", name)?.values?.survival ?? 0),
+                        curiosity: Number(findBy("curiosity", name)?.values?.curiosity ?? 0),
+                        utility: Number(findBy("utility", name)?.values?.utility ?? 0)
+                    }
+                }));
+            }
+
+            function initLeaderboardChart() {
+                const chart = document.getElementById("leaderboard-chart-horizontal");
+                if (!chart) return;
+
+                const raw = [...sharedMethods, ...buildAggregatedMethods(), ...iprMethods];
+                const order = [
+                    "IPR\n(8B)",
+                    "Qwen3-VL\n(8B SFT)",
+                    "Qwen3-VL\n(30B-A3B)",
+                    "GPT-4o\n(>1T)",
+                    "GPT-5\n(>1T)",
+                    "PPO\n(150M)",
+                    "DQN\n(120M)",
+                    "DreamerV3\n(200M)",
+                    "V-JEPA2\n(600M)",
+                    "Genie\n(3B)",
+                    "ACT-BC\n(25M)"
+                ];
+                const rank = new Map(order.map((name, index) => [name, index]));
+                const dataset = raw.sort((a, b) => (rank.get(a.name) ?? 999) - (rank.get(b.name) ?? 999));
+                const maxValue = Math.ceil(Math.max(
+                    ...dataset.flatMap(method => metrics.map(metric => Number(method.values[metric.key] ?? 0))),
+                    ...baselineGuides.map(guide => guide.value)
+                ) * 1.05 / 10) * 10;
+
+                if (!window.echarts) {
+                    chart.textContent = "Leaderboard chart unavailable.";
+                    return;
+                }
+
+                const instance = window.echarts.init(chart, null, { renderer: "canvas", useDirtyRect: true });
+                const highlightSet = new Set(dataset.filter(method => method.highlight).map(method => method.name));
+                const colors = { survival: "#1a73e8", curiosity: "#ff8a00", utility: "#1e8e3e" };
+
+                instance.setOption({
+                    animationDuration: 450,
+                    grid: { left: 16, right: 18, top: 8, bottom: 24, containLabel: true },
+                    tooltip: {
+                        trigger: "axis",
+                        axisPointer: { type: "shadow" },
+                        backgroundColor: "rgba(32, 33, 36, 0.92)",
+                        borderWidth: 0,
+                        textStyle: { color: "#fff", fontSize: 12 },
+                        padding: [10, 12],
+                        extraCssText: "box-shadow: 0 12px 30px rgba(0,0,0,0.25); border-radius: 10px;",
+                        formatter: params => {
+                            const rows = Array.isArray(params) ? params : [params];
+                            const lines = [`<div style="font-weight:700;margin-bottom:6px">${rows[0]?.axisValueLabel ?? ""}</div>`];
+                            rows.forEach(row => {
+                                lines.push(`<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${row.color};margin-right:8px"></span>${row.seriesName}: ${formatScore(Number(row.data ?? 0))}`);
+                            });
+                            return lines.join("<br/>");
+                        }
+                    },
+                    xAxis: {
+                        type: "value",
+                        min: 0,
+                        max: maxValue,
+                        axisLabel: { showMaxLabel: false, color: "rgba(32, 33, 36, 0.75)" },
+                        axisLine: { show: false },
+                        splitLine: { lineStyle: { color: "rgba(32, 33, 36, 0.08)" } }
+                    },
+                    yAxis: {
+                        type: "category",
+                        data: dataset.map(method => method.name),
+                        inverse: true,
+                        axisTick: { show: false },
+                        axisLine: { show: false },
+                        axisLabel: {
+                            interval: 0,
+                            width: 108,
+                            overflow: "truncate",
+                            formatter: value => {
+                                const [name, size] = String(value).split("\n");
+                                const hi = highlightSet.has(value);
+                                return size ? `{${hi ? "nameHi" : "name"}|${name}}\n{${hi ? "sizeHi" : "size"}|${size}}` : `{${hi ? "nameHi" : "name"}|${name}}`;
+                            },
+                            rich: {
+                                name: { color: "rgba(32, 33, 36, 0.95)", fontWeight: 700, fontSize: 14 },
+                                size: { color: "rgba(32, 33, 36, 0.75)", fontWeight: 500, fontSize: 11 },
+                                nameHi: { color: "#1a73e8", fontWeight: 800, fontSize: 15 },
+                                sizeHi: { color: "#1a73e8", fontWeight: 600, fontSize: 12 }
+                            }
+                        }
+                    },
+                    series: metrics.map((metric, index) => ({
+                        type: "bar",
+                        name: metric.label,
+                        data: dataset.map(method => Number(method.values[metric.key] ?? 0)),
+                        barWidth: 10,
+                        barMaxWidth: 14,
+                        itemStyle: { color: colors[metric.key], borderRadius: [0, 7, 7, 0] },
+                        emphasis: { focus: "series" },
+                        ...(index === 0 ? {
+                            markLine: {
+                                silent: true,
+                                symbol: ["none", "none"],
+                                animation: false,
+                                label: { show: true, position: "insideEndTop", formatter: "{b}", fontSize: 11 },
+                                data: baselineGuides.map(guide => ({
+                                    name: guide.label,
+                                    xAxis: guide.value,
+                                    lineStyle: {
+                                        width: 2,
+                                        type: "dashed",
+                                        color: guide.id === "baseline-human" ? "rgba(30, 142, 62, 0.65)" : "rgba(32, 33, 36, 0.28)"
+                                    },
+                                    label: { color: guide.id === "baseline-human" ? "#1e8e3e" : "rgba(32, 33, 36, 0.7)" }
+                                }))
+                            }
+                        } : {})
+                    }))
+                });
+
+                window.addEventListener("resize", () => instance.resize());
+            }
+
+            function initRobotCarousel() {
+                const root = document.querySelector("[data-robot-carousel]");
+                if (!root) return;
+                const track = root.querySelector("[data-robot-track]");
+                const slides = Array.from(root.querySelectorAll(".robot-slide"));
+                const prev = root.querySelector("[data-robot-prev]");
+                const next = root.querySelector("[data-robot-next]");
+                let index = 0;
+
+                const update = () => {
+                    track.style.transform = `translateX(${-index * 100}%)`;
+                    slides.forEach((slide, slideIndex) => {
+                        const video = slide.querySelector("video");
+                        if (video && slideIndex !== index) video.pause();
+                    });
+                };
+
+                prev?.addEventListener("click", () => {
+                    index = (index - 1 + slides.length) % slides.length;
+                    update();
+                });
+                next?.addEventListener("click", () => {
+                    index = (index + 1) % slides.length;
+                    update();
+                });
+                update();
+            }
+
+            function initZeldaTags() {
+                const tags = document.querySelectorAll("[data-zelda-time]");
+                const playerEl = document.getElementById("zelda-player");
+                if (!playerEl || !tags.length) return;
+
+                let pendingTime = null;
+                let player = null;
+
+                const seek = (time) => {
+                    if (!player || typeof player.seekTo !== "function") {
+                        pendingTime = time;
+                        return;
+                    }
+                    player.seekTo(time, true);
+                    player.playVideo?.();
+                };
+
+                window.onYouTubeIframeAPIReady = () => {
+                    player = new YT.Player("zelda-player", {
+                        videoId: "4Tx1Vc74BaE",
+                        playerVars: {
+                            rel: 0,
+                            modestbranding: 1,
+                            playsinline: 1
+                        },
+                        events: {
+                            onReady: () => {
+                                if (pendingTime !== null) {
+                                    seek(pendingTime);
+                                    pendingTime = null;
+                                }
+                            }
+                        }
+                    });
+                };
+
+                if (!document.querySelector("script[src='https://www.youtube.com/iframe_api']")) {
+                    const script = document.createElement("script");
+                    script.src = "https://www.youtube.com/iframe_api";
+                    document.head.appendChild(script);
+                }
+
+                tags.forEach(tag => {
+                    tag.addEventListener("click", () => {
+                        const time = Number(tag.getAttribute("data-zelda-time") || 0);
+                        seek(Number.isFinite(time) ? time : 0);
+                    });
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                initLeaderboardChart();
+                initRobotCarousel();
+                initZeldaTags();
+            });
+        })();
+    </script>
+    <script src="/research/ipr-1/assets/site/script.js"></script>
 </body>
+
 </html>
