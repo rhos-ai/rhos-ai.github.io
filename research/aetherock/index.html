@@ -37,32 +37,103 @@
     <link rel="stylesheet" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
+        body.project-page {
             background-color: #000;
             color: #fff;
             margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
         }
-        h1 {
+        .project-page .main-header {
+            width: 100%;
+        }
+        .project-main {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 96px 0 40px;
             text-align: center;
-            margin-bottom: 80px;
+        }
+        .project-main h1 {
+            text-align: center;
+            margin-bottom: 32px;
             font-size: 3.5rem;
             max-width: 1200px;
+            line-height: 1.05;
         }
-        img {
-            max-width: 50%;
+        .project-main p {
+            color: #aaa;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            margin: 0 auto 44px;
+            max-width: 780px;
+        }
+        .project-main img {
+            max-width: min(72vw, 900px);
             border-radius: 12px;
             height: auto;
         }
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        @media (max-width: 768px) {
+            .project-main {
+                width: min(100% - 32px, 720px);
+                padding-top: 58px;
+            }
+            .project-main h1 {
+                font-size: clamp(2rem, 11vw, 3rem);
+            }
+            .project-main img {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
-<body>
-    <h1>AetheRock: An Arm-Worn Robot Teaching System for Force-Guided Vision-Tactile Learning</h1>
-    <img src="/research/aetherock/aetherock.png" alt="AetheRock">
+<body class="project-page">
+    <header class="main-header">
+        <div class="container header-inner">
+            <a class="logo" href="/index.html">
+                <img class="brand-logo" src="/assets/logo_white_nav.png" alt="" width="160" height="100">
+                <span>RHOS</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/research.html" class="active">Research</a></li>
+                    <li><a href="/index.html#about">About</a></li>
+                    <li><a href="/careers.html">Careers</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-main">
+        <h1>AetheRock: An Arm-Worn Robot Teaching System for Force-Guided Vision-Tactile Learning</h1>
+        <p>A robot teaching system for collecting force-guided vision-tactile interaction signals.</p>
+        <img src="/research/aetherock/aetherock-thumb.png" alt="AetheRock robot teaching system" width="900" height="671">
+        <div class="project-links">
+            <a class="doc-link muted" href="/research.html">Back to research</a>
+            <a class="doc-link" href="/research/aetherock/aetherock.png">Full-resolution image</a>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="logo">RHOS</div>
+                <div class="socials">
+                    <a href="https://github.com/rhos-ai">Github</a>
+                    <a href="https://huggingface.co/rhos-ai">Huggingface</a>
+                </div>
+                <div class="legal">
+                    &copy; 2026 RHOS Inc.
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

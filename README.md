@@ -11,10 +11,13 @@ Static website for RHOS, including the homepage, research index, research projec
 ├── research/                          # Research project pages and assets
 ├── careers.html                       # Careers openings index
 ├── careers/                           # Individual job pages
+├── careers-data.js                    # Shared careers role metadata
 ├── careers.js                         # Careers language toggle and application modal
 ├── api/applications.js                # Vercel API for job applications
 ├── assets/                            # Shared static assets
 ├── docs/careers-application-setup.md  # Application backend setup notes
+├── robots.txt                         # Search crawler directives
+├── sitemap.xml                        # Canonical URL sitemap
 ├── style.css                          # Global site styles
 └── vercel.json                        # Vercel rewrites and security headers
 ```
@@ -55,6 +58,11 @@ The `vercel.json` file configures:
 - Clean routes for `/research` and `/careers`
 - Research project rewrites
 - Security headers, including HSTS, CSP, referrer policy, permissions policy, and frame protection
+
+Search indexing files are served statically:
+
+- `/robots.txt`
+- `/sitemap.xml`
 
 After changing environment variables, redeploy the active Production deployment.
 
@@ -171,6 +179,7 @@ Before pushing changes, run:
 
 ```bash
 node --check careers.js
+node --check careers-data.js
 node --check api/applications.js
 node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))"
 git diff --check

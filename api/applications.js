@@ -1,3 +1,5 @@
+import { careerPositions } from '../careers-data.js';
+
 export const config = {
     runtime: 'edge'
 };
@@ -15,12 +17,7 @@ const duplicateCooldownMs = 24 * 60 * 60 * 1000;
 const ipRateWindowMs = 10 * 60 * 1000;
 const ipRateLimit = 3;
 
-const positions = new Map([
-    ['model-algorithm-engineer-world-model', 'Model Algorithm Engineer — World Model Direction'],
-    ['data-algorithm-engineer-human-video', 'Data Algorithm Engineer — Embodied Intelligence Human Video Direction'],
-    ['motion-control-engineer', 'Motion Control Engineer'],
-    ['robotic-arm-gripper-hardware-engineer', 'Robotic Arm / Gripper Hardware Engineer']
-]);
+const positions = new Map(careerPositions.map((position) => [position.slug, position.title]));
 
 function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {

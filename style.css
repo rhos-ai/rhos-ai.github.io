@@ -143,10 +143,22 @@ ul {
 }
 
 .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0;
     user-select: none;
+    line-height: 1;
+}
+
+.brand-logo {
+    display: block;
+    width: 30px;
+    height: 19px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .main-nav ul {
@@ -640,10 +652,13 @@ ul {
 }
 
 .brief-heading h2,
-.bridge-copy h2 {
+.system-architecture h2,
+.bridge-copy h2,
+.about-band h2,
+.hiring-band h2 {
     color: #f5f5f0;
-    font-size: clamp(2.4rem, 5vw, 4.8rem);
-    line-height: 1.02;
+    font-size: clamp(1.9rem, 3.6vw, 3.25rem);
+    line-height: 1.08;
     margin-top: 26px;
     letter-spacing: 0;
 }
@@ -677,13 +692,6 @@ ul {
     grid-template-columns: 0.72fr 1.28fr;
     gap: 72px;
     align-items: start;
-}
-
-.system-architecture h2 {
-    color: #f5f5f0;
-    font-size: clamp(2.2rem, 4.6vw, 4.35rem);
-    line-height: 1.04;
-    margin-top: 26px;
 }
 
 .architecture-stack {
@@ -734,13 +742,6 @@ ul {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.about-band h2 {
-    color: #f5f5f0;
-    font-size: clamp(2rem, 4.5vw, 4.35rem);
-    line-height: 1.04;
-    margin-top: 24px;
-}
-
 .about-band-copy {
     color: #b8b8b2;
     font-size: 1.08rem;
@@ -767,14 +768,6 @@ ul {
     align-items: end;
     padding-top: 34px;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.hiring-band h2 {
-    max-width: 760px;
-    color: #f5f5f0;
-    font-size: clamp(2.25rem, 5vw, 4.6rem);
-    line-height: 1.02;
-    margin-top: 24px;
 }
 
 .hiring-band-copy {
@@ -1837,7 +1830,7 @@ body.show-zh .lang-zh {
     .bridge-copy h2,
     .about-band h2,
     .hiring-band h2 {
-        font-size: clamp(2rem, 10vw, 2.45rem);
+        font-size: clamp(1.62rem, 7.6vw, 2.25rem);
     }
 
     .home-research-project {

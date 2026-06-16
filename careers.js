@@ -1,26 +1,7 @@
+import { careerPositions } from './careers-data.js';
+
 (() => {
-    const positions = [
-        {
-            slug: 'model-algorithm-engineer-world-model',
-            title: 'Model Algorithm Engineer — World Model Direction',
-            titleZh: '模型算法工程师（世界模型方向）'
-        },
-        {
-            slug: 'data-algorithm-engineer-human-video',
-            title: 'Data Algorithm Engineer — Embodied Intelligence Human Video Direction',
-            titleZh: '数据算法工程师（具身智能人类视频方向）'
-        },
-        {
-            slug: 'motion-control-engineer',
-            title: 'Motion Control Engineer',
-            titleZh: '运控工程师'
-        },
-        {
-            slug: 'robotic-arm-gripper-hardware-engineer',
-            title: 'Robotic Arm / Gripper Hardware Engineer',
-            titleZh: '机械臂/夹爪硬件工程师'
-        }
-    ];
+    const positions = careerPositions;
 
     const allowedResumeTypes = [
         'application/pdf',
@@ -87,7 +68,23 @@
         }
     };
 
-    let currentLanguage = localStorage.getItem('rhos-careers-language') || 'en';
+    function getStoredLanguage() {
+        try {
+            return window.localStorage?.getItem('rhos-careers-language') || 'en';
+        } catch {
+            return 'en';
+        }
+    }
+
+    function setStoredLanguage(language) {
+        try {
+            window.localStorage?.setItem('rhos-careers-language', language);
+        } catch {
+            // Language persistence is optional.
+        }
+    }
+
+    let currentLanguage = getStoredLanguage();
     let modalElements = null;
     let applicationStartedAt = Date.now();
     let turnstileWidgetId = null;
@@ -109,7 +106,7 @@
         const showChinese = language === 'zh';
         document.body.classList.toggle('show-zh', showChinese);
         document.documentElement.lang = showChinese ? 'zh-CN' : 'en';
-        localStorage.setItem('rhos-careers-language', language);
+        setStoredLanguage(language);
         document.querySelectorAll('[data-language-toggle]').forEach((button) => {
             button.setAttribute('aria-pressed', String(showChinese));
             button.textContent = showChinese ? 'EN' : '中文';
