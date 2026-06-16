@@ -1059,6 +1059,23 @@ ul {
     margin-top: 30px;
 }
 
+.application-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.turnstile-field {
+    align-items: start;
+}
+
+.turnstile-widget {
+    min-height: 65px;
+}
+
 .application-field {
     display: grid;
     gap: 8px;

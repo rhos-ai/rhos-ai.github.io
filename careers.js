@@ -28,6 +28,7 @@
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
     const maxResumeBytes = 10 * 1024 * 1024;
+    const turnstileSiteKey = '0x4AAAAAADluQlA5vAUrHKNJ';
 
     const text = {
         en: {
@@ -45,6 +46,8 @@
             resumeHint: 'PDF, DOC, or DOCX. Max 10MB.',
             resumeCta: 'Choose resume',
             resumeEmpty: 'No file selected',
+            verification: 'Verification',
+            verificationError: 'Please complete the verification.',
             submit: 'Submit application',
             submitting: 'Submitting...',
             cancel: 'Close',
@@ -70,6 +73,8 @@
             resumeHint: '支持 PDF、DOC、DOCX，最大 10MB。',
             resumeCta: '选择简历',
             resumeEmpty: '未选择文件',
+            verification: '验证',
+            verificationError: '请先完成验证。',
             submit: '提交申请',
             submitting: '提交中...',
             cancel: '关闭',
@@ -84,6 +89,8 @@
 
     let currentLanguage = localStorage.getItem('rhos-careers-language') || 'en';
     let modalElements = null;
+    let applicationStartedAt = Date.now();
+    let turnstileWidgetId = null;
 
     function isChinese() {
         return currentLanguage === 'zh';
@@ -291,6 +298,31 @@
         form.className = 'application-form';
         form.noValidate = true;
 
+        const honeypot = document.createElement('input');
+        honeypot.type = 'text';
+        honeypot.name = 'companyWebsite';
+        honeypot.tabIndex = -1;
+        honeypot.autocomplete = 'off';
+        honeypot.setAttribute('aria-hidden', 'true');
+        honeypot.className = 'application-honeypot';
+
+        const startedAt = document.createElement('input');
+        startedAt.type = 'hidden';
+        startedAt.name = 'formStartedAt';
+
+        const turnstileToken = document.createElement('input');
+        turnstileToken.type = 'hidden';
+        turnstileToken.name = 'cf-turnstile-response';
+
+        const turnstileField = document.createElement('div');
+        turnstileField.className = 'application-field turnstile-field';
+        const turnstileLabel = document.createElement('span');
+        turnstileLabel.setAttribute('data-field-label', 'verification');
+        const turnstileContainer = document.createElement('div');
+        turnstileContainer.className = 'turnstile-widget';
+        turnstileContainer.setAttribute('data-turnstile-widget', '');
+        turnstileField.append(turnstileLabel, turnstileContainer);
+
         const positionLabel = document.createElement('label');
         positionLabel.className = 'application-field position-field';
         positionLabel.htmlFor = 'jobSlug';
@@ -309,8 +341,10 @@
             createPhoneField(),
             createResumeField(),
             createField({ id: 'profileUrl', type: 'url' }),
-            createField({ id: 'notes', textarea: true })
+            createField({ id: 'notes', textarea: true }),
+            turnstileField
         ];
+        form.append(honeypot, startedAt, turnstileToken);
         fields.forEach((field) => form.append(field));
 
         const status = document.createElement('p');
@@ -345,6 +379,7 @@
         });
         form.addEventListener('submit', submitApplication);
         updateApplicationModalText();
+        loadTurnstile();
         return modalElements;
     }
 
@@ -357,6 +392,7 @@
             email: copy.email,
             phone: copy.phone,
             resume: copy.resume,
+            verification: copy.verification,
             profileUrl: `${copy.profileUrl} (${copy.optional})`,
             notes: `${copy.notes} (${copy.optional})`
         };
@@ -406,6 +442,8 @@
     function openApplicationModal(defaultSlug) {
         const elements = createApplicationModal();
         elements.form.reset();
+        applicationStartedAt = Date.now();
+        elements.form.querySelector('input[name="formStartedAt"]').value = String(applicationStartedAt);
         updateResumeFileName(elements.form.querySelector('#resume'));
         elements.status.textContent = '';
         elements.status.className = 'application-status';
@@ -421,6 +459,52 @@
         document.body.classList.remove('modal-open');
     }
 
+    function loadTurnstile() {
+        if (window.turnstile) {
+            renderTurnstile();
+            return;
+        }
+        if (document.querySelector('script[data-turnstile-script]')) return;
+
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.setAttribute('data-turnstile-script', '');
+        script.addEventListener('load', renderTurnstile);
+        document.head.append(script);
+    }
+
+    function renderTurnstile() {
+        if (!modalElements || !window.turnstile || turnstileWidgetId !== null) return;
+        const container = modalElements.form.querySelector('[data-turnstile-widget]');
+        const tokenInput = modalElements.form.querySelector('[name="cf-turnstile-response"]');
+        if (!container || !tokenInput) return;
+
+        turnstileWidgetId = window.turnstile.render(container, {
+            sitekey: turnstileSiteKey,
+            theme: 'dark',
+            callback: (token) => {
+                tokenInput.value = token;
+            },
+            'expired-callback': () => {
+                tokenInput.value = '';
+            },
+            'error-callback': () => {
+                tokenInput.value = '';
+            }
+        });
+    }
+
+    function resetTurnstile() {
+        if (!modalElements) return;
+        const tokenInput = modalElements.form.querySelector('[name="cf-turnstile-response"]');
+        if (tokenInput) tokenInput.value = '';
+        if (window.turnstile && turnstileWidgetId !== null) {
+            window.turnstile.reset(turnstileWidgetId);
+        }
+    }
+
     function validateApplication(formData, file) {
         const copy = getCurrentCopy();
         const requiredFields = ['jobSlug', 'name', 'email', 'phone'];
@@ -429,6 +513,7 @@
         }
         if (!allowedResumeTypes.includes(file.type)) return copy.fileTypeError;
         if (file.size > maxResumeBytes) return copy.fileSizeError;
+        if (!String(formData.get('cf-turnstile-response') || '').trim()) return copy.verificationError;
         return '';
     }
 
@@ -466,10 +551,12 @@
             status.className = 'application-status success';
             form.reset();
             updateResumeFileName(form.querySelector('#resume'));
+            resetTurnstile();
             renderPositionOptions(selectedPosition.slug);
         } catch (error) {
             status.textContent = error.message || copy.submitError;
             status.className = 'application-status error';
+            resetTurnstile();
         } finally {
             submit.disabled = false;
             submit.textContent = copy.submit;
