@@ -7,6 +7,7 @@ Static website for RHOS, including the homepage, research index, research projec
 ```text
 .
 ├── index.html                         # Homepage
+├── about.html                         # Draft company overview, not linked in production navigation
 ├── research.html                      # Research index
 ├── research/                          # Research project pages and assets
 ├── careers.html                       # Careers openings index
