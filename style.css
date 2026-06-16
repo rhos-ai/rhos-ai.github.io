@@ -1561,18 +1561,26 @@ body.show-zh .lang-zh {
     /* Header Adjustments */
     .main-header {
         height: auto;
-        padding: 15px 0;
+        padding: 12px 0;
     }
 
     .header-inner {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
     }
 
     .main-nav ul {
-        gap: 15px;
+        gap: 6px;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    .main-nav a {
+        display: inline-flex;
+        min-height: 34px;
+        align-items: center;
+        padding: 0 8px;
+        font-size: 0.82rem;
     }
     
     .logo {
@@ -1591,6 +1599,15 @@ body.show-zh .lang-zh {
         gap: 36px;
     }
 
+    .doc-kicker,
+    .section-rule,
+    .plate-spec span,
+    .bridge-table span,
+    .unit-number {
+        font-size: 0.68rem;
+        line-height: 1.35;
+    }
+
     .home-hero-copy h1 {
         font-size: clamp(4.1rem, 23vw, 6.4rem);
         margin-top: 22px;
@@ -1599,6 +1616,7 @@ body.show-zh .lang-zh {
     .home-hero-subtitle {
         font-size: clamp(1.05rem, 5.2vw, 1.4rem);
         line-height: 1.25;
+        white-space: normal;
     }
 
     .home-hero-statement {
@@ -1611,6 +1629,10 @@ body.show-zh .lang-zh {
         max-width: 100%;
         justify-self: stretch;
         padding: 10px;
+    }
+
+    .plate-media {
+        aspect-ratio: 1.08;
     }
 
     .plate-spec,
@@ -1631,12 +1653,13 @@ body.show-zh .lang-zh {
 
     .brief-heading h2,
     .bridge-copy h2 {
-        font-size: 2.45rem;
+        font-size: clamp(2rem, 10vw, 2.45rem);
     }
 
     .section-rule {
         flex-direction: column;
         gap: 10px;
+        align-items: flex-start;
     }
 
     .loop-unit {
@@ -1690,6 +1713,10 @@ body.show-zh .lang-zh {
         padding: 16px;
     }
 
+    .careers-toolbar {
+        justify-content: flex-start;
+    }
+
     .careers-hero {
         padding: 64px 0 54px;
     }
@@ -1724,8 +1751,20 @@ body.show-zh .lang-zh {
         padding: 24px 0;
     }
 
+    .job-card h2 {
+        font-size: clamp(1.42rem, 8vw, 2.15rem);
+    }
+
     .job-meta {
         align-content: start;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .job-meta > span {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
     }
 
     .job-sidebar {
@@ -1745,11 +1784,32 @@ body.show-zh .lang-zh {
     }
 
     .application-dialog {
+        width: min(100%, 560px);
+        max-height: 92vh;
         padding: 24px;
+    }
+
+    .application-dialog h2 {
+        max-width: calc(100% - 46px);
+        font-size: clamp(1.65rem, 10vw, 2.35rem);
+    }
+
+    .application-form {
+        gap: 15px;
     }
 
     .phone-input-row {
         grid-template-columns: 1fr;
+    }
+
+    .application-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .application-actions .doc-link {
+        width: 100%;
+        justify-content: center;
     }
 
     /* Deploy Section Adjustments */
@@ -1770,5 +1830,121 @@ body.show-zh .lang-zh {
     
     .socials {
         justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --nav-height: 68px;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
+
+    .main-nav ul {
+        max-width: 320px;
+    }
+
+    .home-hero,
+    .careers-hero,
+    .research-index-hero {
+        padding-top: 44px;
+    }
+
+    .home-hero-copy h1 {
+        font-size: clamp(3.45rem, 24vw, 5rem);
+    }
+
+    .home-hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .doc-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .plate-spec div,
+    .bridge-table div {
+        min-height: 70px;
+        padding: 12px;
+    }
+
+    .loop-unit {
+        min-height: 190px;
+    }
+
+    .research-topic-strip span,
+    .research-project-meta span {
+        min-height: 28px;
+        font-size: 0.65rem;
+    }
+
+    .research-project h2 {
+        font-size: clamp(1.55rem, 9.5vw, 2.2rem);
+    }
+
+    .research-project-media {
+        aspect-ratio: 1.12;
+    }
+
+    .careers-hero h1,
+    .job-body h1 {
+        font-size: clamp(2rem, 13vw, 3rem);
+    }
+
+    .job-sidebar-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .job-body h2 {
+        font-size: 1.25rem;
+    }
+
+    .job-body h3,
+    .job-body h3 + p {
+        padding-left: 22px;
+    }
+
+    .application-modal {
+        align-items: start;
+        padding: 12px;
+        overflow-y: auto;
+    }
+
+    .application-dialog {
+        width: 100%;
+        max-height: none;
+        padding: 18px;
+    }
+
+    .application-close {
+        top: 12px;
+        right: 12px;
+    }
+
+    .application-field input,
+    .application-field select,
+    .application-field textarea {
+        font-size: 16px;
+    }
+
+    .resume-upload-control {
+        grid-template-columns: 42px minmax(0, 1fr);
+        min-height: 74px;
+        padding: 12px;
+    }
+
+    .resume-upload-control b {
+        width: 42px;
+        height: 42px;
+    }
+
+    .turnstile-widget {
+        max-width: 100%;
+        overflow: hidden;
     }
 }

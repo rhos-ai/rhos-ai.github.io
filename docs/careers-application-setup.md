@@ -73,4 +73,12 @@ The API includes these baseline protections:
 - one application per email per role per 24 hours
 - three applications per IP per 10 minutes
 
+If the application is saved but the HR notification email fails, the API still returns success and marks the row:
+
+```text
+status = email_failed
+```
+
+Filter for this status in Supabase to manually follow up or resend.
+
 The API uses the Supabase service role key, so row-level security policies are not required for this server-side insert path.

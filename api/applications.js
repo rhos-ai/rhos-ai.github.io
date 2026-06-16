@@ -26,7 +26,8 @@ function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {
         status,
         headers: {
-            'content-type': 'application/json; charset=utf-8'
+            'content-type': 'application/json; charset=utf-8',
+            'cache-control': 'no-store'
         }
     });
 }
@@ -249,6 +250,26 @@ async function insertApplication({ supabaseUrl, serviceKey, application }) {
     return rows[0];
 }
 
+async function updateApplicationStatus({ supabaseUrl, serviceKey, id, status }) {
+    if (!id) return;
+
+    const query = new URLSearchParams({ id: `eq.${id}` });
+    const response = await fetch(`${supabaseUrl}/rest/v1/career_applications?${query.toString()}`, {
+        method: 'PATCH',
+        headers: {
+            authorization: `Bearer ${serviceKey}`,
+            apikey: serviceKey,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+    });
+
+    if (!response.ok) {
+        const details = await response.text();
+        throw new Error(`Application status update failed: ${details}`);
+    }
+}
+
 async function sendHrEmail({ resendKey, fromEmail, toEmail, application }) {
     const safeApplication = {
         job_title: escapeHtml(application.job_title),
@@ -366,15 +387,28 @@ export default async function handler(request) {
         };
 
         const savedApplication = await insertApplication({ supabaseUrl, serviceKey, application });
-        await sendHrEmail({
-            resendKey,
-            fromEmail,
-            toEmail: hrEmail,
-            application
-        });
+        try {
+            await sendHrEmail({
+                resendKey,
+                fromEmail,
+                toEmail: hrEmail,
+                application
+            });
+        } catch (emailError) {
+            console.error('HR email failed after application insert', emailError);
+            await updateApplicationStatus({
+                supabaseUrl,
+                serviceKey,
+                id: savedApplication?.id,
+                status: 'email_failed'
+            }).catch((statusError) => {
+                console.error('Failed to mark application email failure', statusError);
+            });
+        }
 
         return jsonResponse({ ok: true, id: savedApplication?.id || null });
     } catch (error) {
-        return jsonResponse({ error: error.message || 'Application submission failed.' }, 500);
+        console.error('Application submission failed', error);
+        return jsonResponse({ error: 'Application submission failed. Please try again later.' }, 500);
     }
 }
