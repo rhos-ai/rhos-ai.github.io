@@ -30,38 +30,6 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/research/gm-100",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/",
-      "permanent": false
-    },
-    {
-      "source": "/research/gm-100/",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/",
-      "permanent": false
-    },
-    {
-      "source": "/research/gm-100/index.html",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/",
-      "permanent": false
-    },
-    {
-      "source": "/research/gm-100/results/",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/#leaderboard",
-      "permanent": false
-    },
-    {
-      "source": "/research/gm-100/psr/",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/#leaderboard",
-      "permanent": false
-    },
-    {
-      "source": "/research/gm-100/tasks/",
-      "destination": "https://gm-100-page.vercel.app/research/gm-100/#tasks",
-      "permanent": false
-    }
-  ],
   "rewrites": [
     {
       "source": "/research/AetheRock",
@@ -102,6 +70,30 @@
     {
       "source": "/research/gm-100/_vercel/:path*",
       "destination": "https://gm-100-page.vercel.app/_vercel/:path*"
+    },
+    {
+      "source": "/research/gm-100",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/"
+    },
+    {
+      "source": "/research/gm-100/",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/"
+    },
+    {
+      "source": "/research/gm-100/index.html",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/"
+    },
+    {
+      "source": "/research/gm-100/results/",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/#leaderboard"
+    },
+    {
+      "source": "/research/gm-100/psr/",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/#leaderboard"
+    },
+    {
+      "source": "/research/gm-100/tasks/",
+      "destination": "https://gm-100-page.vercel.app/research/gm-100/#tasks"
     },
     {
       "source": "/research/gm-100/:path*",
