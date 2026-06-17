@@ -229,18 +229,177 @@ ul {
     text-transform: uppercase;
 }
 
-.home-hero-copy h1 {
+.home-brand-lockup {
+    position: relative;
+    display: inline-block;
+    margin-top: 30px;
+}
+
+.home-brand-lockup h1 {
     font-size: clamp(5rem, 12vw, 9.5rem);
     line-height: 0.88;
-    margin-top: 30px;
+    margin: 0;
     letter-spacing: 0;
+}
+
+.pronunciation-badge {
+    position: absolute;
+    left: 0;
+    bottom: -48px;
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(154, 244, 223, 0.32);
+    padding: 0 11px;
+    color: var(--color-accent);
+    background: rgba(154, 244, 223, 0.045);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.pronunciation-badge:hover,
+.pronunciation-badge:focus-within {
+    border-color: rgba(154, 244, 223, 0.62);
+    background: rgba(154, 244, 223, 0.075);
+    color: #c9fff2;
+}
+
+.pronunciation-badge span {
+    color: #c9fff2;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.rose-mark {
+    position: relative;
+    isolation: isolate;
+    display: inline-grid;
+    width: 1.35em;
+    height: 1.35em;
+    place-items: center;
+    color: #f5f5f0;
+    font-size: 0.9rem;
+    line-height: 1;
+    transform-origin: 50% 72%;
+    animation: roseBloom 4.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+.rose-mark::before {
+    content: "";
+    position: absolute;
+    inset: -0.42em;
+    z-index: -1;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle, rgba(154, 244, 223, 0.2), transparent 58%),
+        radial-gradient(circle, rgba(245, 245, 240, 0.12), transparent 42%);
+    opacity: 0;
+    transform: scale(0.52);
+    animation: roseGlow 4.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+.pronunciation-badge:hover .rose-mark,
+.pronunciation-badge:focus-within .rose-mark {
+    animation: roseBloomHover 0.72s cubic-bezier(0.18, 0.8, 0.25, 1) both;
+}
+
+.pronunciation-badge:hover .rose-mark::before,
+.pronunciation-badge:focus-within .rose-mark::before {
+    animation: roseGlowHover 0.72s cubic-bezier(0.18, 0.8, 0.25, 1) both;
+}
+
+@keyframes roseBloom {
+    0% {
+        transform: scale(0.82) rotate(-7deg);
+    }
+
+    10% {
+        transform: scale(1.12) rotate(2deg);
+    }
+
+    18%,
+    72% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    82% {
+        transform: scale(1.04) rotate(1deg);
+    }
+
+    100% {
+        transform: scale(0.98) rotate(0deg);
+    }
+}
+
+@keyframes roseBloomHover {
+    0% {
+        transform: scale(0.96) rotate(-3deg);
+    }
+
+    44% {
+        transform: scale(1.24) rotate(4deg);
+    }
+
+    100% {
+        transform: scale(1.08) rotate(0deg);
+    }
+}
+
+@keyframes roseGlow {
+    0% {
+        opacity: 0;
+        transform: scale(0.52);
+    }
+
+    10% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+
+    26% {
+        opacity: 0.2;
+        transform: scale(1.18);
+    }
+
+    72% {
+        opacity: 0.14;
+        transform: scale(0.96);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.82);
+    }
+}
+
+@keyframes roseGlowHover {
+    0% {
+        opacity: 0.18;
+        transform: scale(0.7);
+    }
+
+    48% {
+        opacity: 1;
+        transform: scale(1.32);
+    }
+
+    100% {
+        opacity: 0.36;
+        transform: scale(1.08);
+    }
 }
 
 .home-hero-subtitle {
     color: #f4f4f1;
     font-size: clamp(1.42rem, 2.55vw, 2.35rem);
     font-weight: 600;
-    margin-top: 26px;
+    margin-top: 64px;
     white-space: nowrap;
 }
 
@@ -788,6 +947,17 @@ ul {
     color: #b8b8b2;
     font-size: 1.04rem;
     line-height: 1.65;
+}
+
+@media (max-width: 1100px) {
+    .pronunciation-badge {
+        left: 0;
+        bottom: -46px;
+    }
+
+    .home-hero-subtitle {
+        margin-top: 62px;
+    }
 }
 
 /* About */
@@ -1950,15 +2120,29 @@ body.show-zh .lang-zh {
         line-height: 1.35;
     }
 
-    .home-hero-copy h1 {
-        font-size: clamp(4.1rem, 23vw, 6.4rem);
+    .home-brand-lockup {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
         margin-top: 22px;
+    }
+
+    .home-brand-lockup h1 {
+        font-size: clamp(4.1rem, 23vw, 6.4rem);
+    }
+
+    .pronunciation-badge {
+        position: static;
+        min-height: 28px;
+        margin-top: 24px;
+        font-size: 0.7rem;
     }
 
     .home-hero-subtitle {
         font-size: clamp(1.05rem, 5.2vw, 1.4rem);
         line-height: 1.25;
         white-space: normal;
+        margin-top: 18px;
     }
 
     .home-hero-statement {
@@ -2267,7 +2451,7 @@ body.show-zh .lang-zh {
         aspect-ratio: 1;
     }
 
-    .home-hero-copy h1 {
+    .home-brand-lockup h1 {
         font-size: clamp(3.45rem, 24vw, 5rem);
     }
 
@@ -2389,7 +2573,13 @@ body.show-zh .lang-zh {
     .particle-scan::before,
     .particle-scan::after,
     .calibration-frame,
-    .calibration-point {
+    .calibration-point,
+    .rose-mark,
+    .rose-mark::before,
+    .pronunciation-badge:hover .rose-mark,
+    .pronunciation-badge:hover .rose-mark::before,
+    .pronunciation-badge:focus-within .rose-mark,
+    .pronunciation-badge:focus-within .rose-mark::before {
         animation: none !important;
     }
 }
