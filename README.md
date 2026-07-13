@@ -77,6 +77,8 @@ SUPABASE_SERVICE_ROLE_KEY
 RESEND_API_KEY
 APPLICATION_FROM_EMAIL
 TURNSTILE_SECRET_KEY
+IP_HASH_SALT
+TURNSTILE_ALLOWED_HOSTNAMES
 HR_NOTIFY_EMAIL
 ```
 
@@ -84,27 +86,27 @@ Notes:
 
 - `SUPABASE_URL` should be the project root URL, for example `https://xxxx.supabase.co`.
 - Do not include `/rest/v1/` in `SUPABASE_URL`.
-- `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, and `TURNSTILE_SECRET_KEY` must never be committed.
+- `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, and `IP_HASH_SALT` must never be committed.
 - `APPLICATION_FROM_EMAIL` must use a domain verified in Resend, for example `RhOS Careers <careers@rhos.ai>`.
+- `TURNSTILE_ALLOWED_HOSTNAMES` is optional and defaults to `www.rhos.ai,rhos.ai`; add intended preview domains when testing there.
 - `HR_NOTIFY_EMAIL` defaults to `hr@rhos.ai` if omitted.
 
 ## Careers Application Backend
 
-The application modal posts `FormData` to:
+The application modal uses two JSON actions at:
 
 ```text
 /api/applications
 ```
 
-The API:
+The application flow:
 
-- Verifies Cloudflare Turnstile
-- Validates the role, required fields, email, URL, file type, and file size
-- Limits duplicate submissions by email and role
-- Limits high-frequency submissions by IP
-- Uploads resumes to Supabase Storage
-- Inserts the application into Supabase Postgres
-- Sends an HR notification email through Resend
+- Verifies Cloudflare Turnstile hostname and `career_application` action
+- Validates metadata and creates an expiring pending application
+- Hashes the client IP with `IP_HASH_SALT` for rate limiting without storing the raw address
+- Returns a two-hour signed URL so the browser uploads directly to private Supabase Storage
+- Downloads and validates the stored PDF, DOC, or DOCX signature before activation
+- Sends an HR notification through Resend with a 30-day signed resume link
 - Sets `reply_to` to the applicant email so HR can reply directly
 
 If the application is saved but the HR email fails, the API still returns success and marks the row:
@@ -115,61 +117,28 @@ status = email_failed
 
 ## Supabase Setup
 
-Create a private Storage bucket:
+Create a private Storage bucket with a 10MB limit and the three allowed resume MIME types:
 
 ```text
 career-resumes
 ```
 
-Create the applications table:
-
-```sql
-create table career_applications (
-  id uuid primary key default gen_random_uuid(),
-  created_at timestamptz not null default now(),
-  job_slug text not null,
-  job_title text not null,
-  name text not null,
-  email text not null,
-  phone text not null,
-  profile_url text,
-  notes text,
-  resume_path text not null,
-  resume_url text not null,
-  request_ip text,
-  user_agent text,
-  status text not null default 'new'
-);
-```
-
-For an existing table, run:
-
-```sql
-alter table career_applications
-  add column if not exists request_ip text,
-  add column if not exists user_agent text;
-
-create index if not exists career_applications_email_job_created_idx
-  on career_applications (email, job_slug, created_at desc);
-
-create index if not exists career_applications_request_ip_created_idx
-  on career_applications (request_ip, created_at desc);
-```
+Run the complete new-table or migration SQL, including RLS and least-privilege grants, from [docs/careers-application-setup.md](docs/careers-application-setup.md).
 
 ## Security Notes
 
 Current baseline protections include:
 
-- Cloudflare Turnstile
+- Cloudflare Turnstile hostname and action validation
 - Honeypot bot field
 - Minimum form-fill time
 - Server-side role whitelist
 - Server-side validation and length limits
-- PDF/DOC/DOCX resume uploads only
+- Server-side PDF/DOC/DOCX signature validation after upload
 - 10MB resume limit
 - Private Supabase Storage bucket
-- Signed resume download URLs
-- Email and IP submission throttling
+- One-time signed upload URLs and expiring resume download URLs
+- Email and salted IP-hash submission throttling
 - HTML escaping in HR notification emails
 - Generic API errors for server failures
 - Site-wide security headers through Vercel
@@ -179,10 +148,7 @@ Current baseline protections include:
 Before pushing changes, run:
 
 ```bash
-node --check careers.js
-node --check careers-data.js
-node --check api/applications.js
-node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8'))"
+npm run check
 git diff --check
 ```
 

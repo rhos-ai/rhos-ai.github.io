@@ -29,13 +29,22 @@ import { careerPositions } from './careers-data.js';
             resumeEmpty: 'No file selected',
             verification: 'Verification',
             verificationError: 'Please complete the verification.',
+            consent: 'I consent to RhOS using this information to review and manage my job application.',
+            consentError: 'Please confirm the recruitment data consent.',
             submit: 'Submit application',
-            submitting: 'Submitting...',
+            preparing: 'Preparing secure upload...',
+            uploading: 'Uploading resume...',
+            finalizing: 'Finalizing application...',
             cancel: 'Close',
             success: 'Application submitted. We will review it soon.',
             requiredError: 'Please complete all required fields.',
             fileTypeError: 'Please upload a PDF, DOC, or DOCX resume.',
             fileSizeError: 'Resume must be 10MB or smaller.',
+            prepareError: 'We could not prepare the secure upload. Please try again.',
+            uploadError: 'Resume upload failed. Please check your connection and try again.',
+            finalizeError: 'The resume could not be verified. Please check the file and try again.',
+            duplicateError: 'You have already applied for this role recently.',
+            rateLimitError: 'Too many applications were submitted. Please try again later.',
             submitError: 'Submission failed. Please try again later.',
             optional: 'Optional'
         },
@@ -56,13 +65,22 @@ import { careerPositions } from './careers-data.js';
             resumeEmpty: '未选择文件',
             verification: '验证',
             verificationError: '请先完成验证。',
+            consent: '我同意 RhOS 使用以上信息审核和管理本次职位申请。',
+            consentError: '请确认招聘数据使用同意项。',
             submit: '提交申请',
-            submitting: '提交中...',
+            preparing: '正在准备安全上传...',
+            uploading: '正在上传简历...',
+            finalizing: '正在完成申请...',
             cancel: '关闭',
             success: '申请已提交，我们会尽快查看。',
             requiredError: '请填写所有必填项。',
             fileTypeError: '请上传 PDF、DOC 或 DOCX 格式的简历。',
             fileSizeError: '简历文件不能超过 10MB。',
+            prepareError: '无法准备安全上传，请稍后重试。',
+            uploadError: '简历上传失败，请检查网络后重试。',
+            finalizeError: '无法验证简历文件，请检查文件后重试。',
+            duplicateError: '你最近已经申请过该职位。',
+            rateLimitError: '提交次数过多，请稍后重试。',
             submitError: '提交失败，请稍后重试。',
             optional: '选填'
         }
@@ -88,6 +106,7 @@ import { careerPositions } from './careers-data.js';
     let modalElements = null;
     let applicationStartedAt = Date.now();
     let turnstileWidgetId = null;
+    let modalOpener = null;
 
     function isChinese() {
         return currentLanguage === 'zh';
@@ -264,6 +283,23 @@ import { careerPositions } from './careers-data.js';
         return field;
     }
 
+    function createConsentField() {
+        const label = document.createElement('label');
+        label.className = 'application-consent';
+        label.htmlFor = 'applicationConsent';
+
+        const input = document.createElement('input');
+        input.id = 'applicationConsent';
+        input.name = 'applicationConsent';
+        input.type = 'checkbox';
+        input.required = true;
+
+        const copy = document.createElement('span');
+        copy.setAttribute('data-consent-copy', '');
+        label.append(input, copy);
+        return label;
+    }
+
     function createApplicationModal() {
         if (modalElements) return modalElements;
 
@@ -276,6 +312,7 @@ import { careerPositions } from './careers-data.js';
         dialog.setAttribute('role', 'dialog');
         dialog.setAttribute('aria-modal', 'true');
         dialog.setAttribute('aria-labelledby', 'application-title');
+        dialog.setAttribute('aria-describedby', 'application-intro');
 
         const close = document.createElement('button');
         close.className = 'application-close';
@@ -288,6 +325,7 @@ import { careerPositions } from './careers-data.js';
         title.setAttribute('data-modal-title', '');
 
         const intro = document.createElement('p');
+        intro.id = 'application-intro';
         intro.className = 'application-intro';
         intro.setAttribute('data-modal-intro', '');
 
@@ -339,7 +377,8 @@ import { careerPositions } from './careers-data.js';
             createResumeField(),
             createField({ id: 'profileUrl', type: 'url' }),
             createField({ id: 'notes', textarea: true }),
-            turnstileField
+            turnstileField,
+            createConsentField()
         ];
         form.append(honeypot, startedAt, turnstileToken);
         fields.forEach((field) => form.append(field));
@@ -347,6 +386,7 @@ import { careerPositions } from './careers-data.js';
         const status = document.createElement('p');
         status.className = 'application-status';
         status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
 
         const actions = document.createElement('div');
         actions.className = 'application-actions';
@@ -372,7 +412,12 @@ import { careerPositions } from './careers-data.js';
             if (event.target === overlay) closeApplicationModal();
         });
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && !overlay.hasAttribute('hidden')) closeApplicationModal();
+            if (overlay.hasAttribute('hidden')) return;
+            if (event.key === 'Escape') {
+                closeApplicationModal();
+                return;
+            }
+            if (event.key === 'Tab') trapModalFocus(event);
         });
         form.addEventListener('submit', submitApplication);
         updateApplicationModalText();
@@ -396,6 +441,7 @@ import { careerPositions } from './careers-data.js';
 
         modalElements.dialog.querySelector('[data-modal-title]').textContent = copy.modalTitle;
         modalElements.dialog.querySelector('[data-modal-intro]').textContent = copy.modalIntro;
+        modalElements.close.setAttribute('aria-label', copy.cancel);
         Object.entries(labels).forEach(([id, value]) => {
             const label = modalElements.dialog.querySelector(`[data-field-label="${id}"]`);
             if (label) label.textContent = value;
@@ -410,6 +456,8 @@ import { careerPositions } from './careers-data.js';
         if (resumeCta) resumeCta.textContent = copy.resumeCta;
         const resumeInput = modalElements.dialog.querySelector('#resume');
         if (resumeInput) updateResumeFileName(resumeInput);
+        const consentCopy = modalElements.dialog.querySelector('[data-consent-copy]');
+        if (consentCopy) consentCopy.textContent = copy.consent;
         modalElements.cancel.textContent = copy.cancel;
         modalElements.submit.textContent = copy.submit;
         renderPositionOptions(modalElements.positionSelect.value);
@@ -436,8 +484,9 @@ import { careerPositions } from './careers-data.js';
         positionSelect.value = selectedSlug || positions[0].slug;
     }
 
-    function openApplicationModal(defaultSlug) {
+    function openApplicationModal(defaultSlug, opener) {
         const elements = createApplicationModal();
+        modalOpener = opener || document.activeElement;
         elements.form.reset();
         applicationStartedAt = Date.now();
         elements.form.querySelector('input[name="formStartedAt"]').value = String(applicationStartedAt);
@@ -447,6 +496,8 @@ import { careerPositions } from './careers-data.js';
         renderPositionOptions(defaultSlug);
         elements.overlay.removeAttribute('hidden');
         document.body.classList.add('modal-open');
+        resetTurnstile();
+        renderTurnstile();
         setTimeout(() => elements.form.querySelector('#name')?.focus(), 0);
     }
 
@@ -454,6 +505,26 @@ import { careerPositions } from './careers-data.js';
         if (!modalElements) return;
         modalElements.overlay.setAttribute('hidden', '');
         document.body.classList.remove('modal-open');
+        resetTurnstile();
+        const opener = modalOpener;
+        modalOpener = null;
+        setTimeout(() => opener?.focus(), 0);
+    }
+
+    function trapModalFocus(event) {
+        const focusable = Array.from(modalElements.dialog.querySelectorAll(
+            'button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), a[href]'
+        )).filter((element) => element.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     }
 
     function loadTurnstile() {
@@ -481,6 +552,7 @@ import { careerPositions } from './careers-data.js';
         turnstileWidgetId = window.turnstile.render(container, {
             sitekey: turnstileSiteKey,
             theme: 'dark',
+            action: 'career_application',
             callback: (token) => {
                 tokenInput.value = token;
             },
@@ -511,7 +583,28 @@ import { careerPositions } from './careers-data.js';
         if (!allowedResumeTypes.includes(file.type)) return copy.fileTypeError;
         if (file.size > maxResumeBytes) return copy.fileSizeError;
         if (!String(formData.get('cf-turnstile-response') || '').trim()) return copy.verificationError;
+        if (formData.get('applicationConsent') !== 'on') return copy.consentError;
         return '';
+    }
+
+    function setSubmissionStatus(message, state = '') {
+        modalElements.status.textContent = message;
+        modalElements.status.className = `application-status${state ? ` ${state}` : ''}`;
+    }
+
+    async function postApplicationAction(payload) {
+        const response = await fetch('/api/applications', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const error = new Error(result.error || 'application_request_failed');
+            error.status = response.status;
+            throw error;
+        }
+        return result;
     }
 
     async function submitApplication(event) {
@@ -532,27 +625,78 @@ import { careerPositions } from './careers-data.js';
         status.className = validationError ? 'application-status error' : 'application-status';
         if (validationError || !selectedPosition) return;
 
-        formData.set('jobTitle', selectedPosition.title);
-        formData.set('jobTitleZh', selectedPosition.titleZh);
         submit.disabled = true;
-        submit.textContent = copy.submitting;
+        submit.textContent = copy.preparing;
+        let submissionPhase = 'prepare';
 
         try {
-            const response = await fetch('/api/applications', {
-                method: 'POST',
-                body: formData
+            setSubmissionStatus(copy.preparing);
+            const prepared = await postApplicationAction({
+                action: 'prepare',
+                jobSlug: selectedPosition.slug,
+                name: String(formData.get('name') || '').trim(),
+                email: String(formData.get('email') || '').trim(),
+                phone,
+                profileUrl: String(formData.get('profileUrl') || '').trim(),
+                notes: String(formData.get('notes') || '').trim(),
+                resume: {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size
+                },
+                companyWebsite: String(formData.get('companyWebsite') || ''),
+                formStartedAt: Number(formData.get('formStartedAt')),
+                consent: formData.get('applicationConsent') === 'on',
+                turnstileToken: String(formData.get('cf-turnstile-response') || '')
             });
-            const result = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(result.error || copy.submitError);
-            status.textContent = copy.success;
-            status.className = 'application-status success';
+
+            submit.textContent = copy.uploading;
+            setSubmissionStatus(copy.uploading);
+            submissionPhase = 'upload';
+            const uploadResponse = await fetch(prepared.uploadUrl, {
+                method: 'PUT',
+                headers: {
+                    'content-type': file.type,
+                    'x-upsert': 'false'
+                },
+                body: file
+            });
+            if (!uploadResponse.ok) throw new Error('resume_upload_failed');
+
+            submit.textContent = copy.finalizing;
+            setSubmissionStatus(copy.finalizing);
+            submissionPhase = 'finalize';
+            await postApplicationAction({
+                action: 'finalize',
+                applicationId: prepared.applicationId,
+                finalizeToken: prepared.finalizeToken
+            });
+
+            setSubmissionStatus(copy.success, 'success');
             form.reset();
+            applicationStartedAt = Date.now();
+            form.querySelector('input[name="formStartedAt"]').value = String(applicationStartedAt);
             updateResumeFileName(form.querySelector('#resume'));
             resetTurnstile();
             renderPositionOptions(selectedPosition.slug);
         } catch (error) {
-            status.textContent = error.message || copy.submitError;
-            status.className = 'application-status error';
+            const knownErrors = {
+                verification_failed: copy.verificationError,
+                duplicate_submission: copy.duplicateError,
+                rate_limited: copy.rateLimitError,
+                consent_required: copy.consentError,
+                invalid_resume_type: copy.fileTypeError,
+                resume_type_mismatch: copy.fileTypeError,
+                resume_too_large: copy.fileSizeError,
+                invalid_resume_content: copy.finalizeError,
+                resume_size_mismatch: copy.finalizeError
+            };
+            const phaseErrors = {
+                prepare: copy.prepareError,
+                upload: copy.uploadError,
+                finalize: copy.finalizeError
+            };
+            setSubmissionStatus(knownErrors[error.message] || phaseErrors[submissionPhase] || copy.submitError, 'error');
             resetTurnstile();
         } finally {
             submit.disabled = false;
@@ -570,7 +714,7 @@ import { careerPositions } from './careers-data.js';
 
     document.querySelectorAll('[data-apply-button]').forEach((button) => {
         button.addEventListener('click', () => {
-            openApplicationModal(button.dataset.jobSlug);
+            openApplicationModal(button.dataset.jobSlug, button);
         });
     });
 })();

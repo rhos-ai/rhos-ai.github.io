@@ -1,0 +1,13 @@
+{
+  "name": "rhos-ai-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:syntax": "node --check api/applications.js && node --check careers.js && node --check careers-data.js",
+    "check": "npm run test:syntax && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
