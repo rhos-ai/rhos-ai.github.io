@@ -1,6 +1,6 @@
-# RHOS Website
+# RhOS Website
 
-Static website for RHOS, including the homepage, research index, research project pages, careers pages, and a Vercel API for careers applications.
+Static website for RhOS, including the homepage, research index, research project pages, careers pages, and a Vercel API for careers applications.
 
 ## Project Structure
 
@@ -85,7 +85,7 @@ Notes:
 - `SUPABASE_URL` should be the project root URL, for example `https://xxxx.supabase.co`.
 - Do not include `/rest/v1/` in `SUPABASE_URL`.
 - `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, and `TURNSTILE_SECRET_KEY` must never be committed.
-- `APPLICATION_FROM_EMAIL` must use a domain verified in Resend, for example `RHOS Careers <careers@rhos.ai>`.
+- `APPLICATION_FROM_EMAIL` must use a domain verified in Resend, for example `RhOS Careers <careers@rhos.ai>`.
 - `HR_NOTIFY_EMAIL` defaults to `hr@rhos.ai` if omitted.
 
 ## Careers Application Backend

@@ -235,11 +235,11 @@ ul {
     margin-top: 30px;
 }
 
-.home-brand-lockup h1 {
-    font-size: clamp(5rem, 12vw, 9.5rem);
-    line-height: 0.88;
-    margin: 0;
-    letter-spacing: 0;
+.home-hero-logo {
+    display: block;
+    width: clamp(19rem, 46vw, 39rem);
+    max-width: 100%;
+    height: auto;
 }
 
 .pronunciation-badge {
@@ -2127,8 +2127,8 @@ body.show-zh .lang-zh {
         margin-top: 22px;
     }
 
-    .home-brand-lockup h1 {
-        font-size: clamp(4.1rem, 23vw, 6.4rem);
+    .home-hero-logo {
+        width: clamp(16rem, 84vw, 31rem);
     }
 
     .pronunciation-badge {
@@ -2451,8 +2451,8 @@ body.show-zh .lang-zh {
         aspect-ratio: 1;
     }
 
-    .home-brand-lockup h1 {
-        font-size: clamp(3.45rem, 24vw, 5rem);
+    .home-hero-logo {
+        width: clamp(14rem, 84vw, 22rem);
     }
 
     .home-hero-actions {

@@ -13,7 +13,7 @@ import { careerPositions } from './careers-data.js';
 
     const text = {
         en: {
-            modalTitle: 'Apply to RHOS',
+            modalTitle: 'Apply to RhOS',
             modalIntro: 'Submit your information and resume. HR will review your application and follow up by email.',
             position: 'Position',
             name: 'Name',
@@ -40,7 +40,7 @@ import { careerPositions } from './careers-data.js';
             optional: 'Optional'
         },
         zh: {
-            modalTitle: '加入 RHOS',
+            modalTitle: '加入 RhOS',
             modalIntro: '请提交你的信息和简历，HR 会查看申请并通过邮件联系你。',
             position: '应聘职位',
             name: '姓名',
