@@ -14,20 +14,20 @@
   <meta property="og:url" content="https://www.rhos.ai/research/khora/">
   <meta property="og:title" content="Khora - Research Preview">
   <meta property="og:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
-  <meta property="og:image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
-  <meta property="og:image:secure_url" content="https://www.rhos.ai/research/khora/assets/images/method.png">
-  <meta property="og:image:type" content="image/png">
+  <meta property="og:image" content="https://www.rhos.ai/research/khora/assets/images/method.svg">
+  <meta property="og:image:secure_url" content="https://www.rhos.ai/research/khora/assets/images/method.svg">
+  <meta property="og:image:type" content="image/svg+xml">
   <meta property="og:image:alt" content="Khora shared world model architecture">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:domain" content="www.rhos.ai">
   <meta name="twitter:url" content="https://www.rhos.ai/research/khora/">
   <meta name="twitter:title" content="Khora - Research Preview">
   <meta name="twitter:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
-  <meta name="twitter:image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <meta name="twitter:image" content="https://www.rhos.ai/research/khora/assets/images/method.svg">
   <meta name="twitter:image:alt" content="Khora shared world model architecture">
   <meta itemprop="name" content="Khora - Research Preview">
   <meta itemprop="description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
-  <meta itemprop="image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <meta itemprop="image" content="https://www.rhos.ai/research/khora/assets/images/method.svg">
   <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp" type="image/webp" fetchpriority="high" />
   <link rel="preload" as="video" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4" type="video/mp4" fetchpriority="high" />
   <meta name="theme-color" content="#f7f3ed" />
@@ -463,6 +463,48 @@
     .btn-light { color: var(--ink); background: rgba(255,255,255,.44); border-color: var(--line); }
     .btn-disabled { opacity: .58; cursor: not-allowed; }
     html[lang="en"] .btn { font-size: 13px; padding: 12px 16px; }
+    .btn-tip {
+      position: relative;
+      display: inline-flex;
+    }
+    .btn-tip-bubble {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(4px);
+      z-index: 5;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 250, 243, 0.96);
+      color: var(--ink-soft);
+      box-shadow: 0 12px 28px rgba(79, 55, 31, 0.12);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .btn-tip-bubble::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 10px;
+      height: 10px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 243, 0.96);
+      transform: translateX(-50%) translateY(-55%) rotate(45deg);
+    }
+    .btn-tip:hover .btn-tip-bubble,
+    .btn-tip:focus-within .btn-tip-bubble,
+    .btn-tip.is-open .btn-tip-bubble {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
     .hero-visual {
       position: relative;
@@ -1244,17 +1286,14 @@
 
     .demo-panel {
       position: relative;
-      margin-top: 42px;
+      margin-top: 16px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 28px;
-      align-items: stretch;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
       border: 1px solid rgba(25, 22, 18, 0.12);
       border-radius: 38px;
-      padding: 26px;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(178,95,44,.2), transparent 32%),
-        linear-gradient(135deg, rgba(22,22,22,.98), rgba(39,35,30,.96));
+      padding: 0;
+      background: #111;
       color: #fff;
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -1274,50 +1313,72 @@
       outline: 3px solid rgba(231,180,130,.75);
       outline-offset: 4px;
     }
-    .demo-background {
-      position: absolute;
-      inset: -7%;
-      z-index: -2;
-      width: 114%;
-      height: 114%;
-      object-fit: cover;
-      filter: blur(4px) brightness(.58) saturate(.86);
-      transform: scale(1.025);
-      pointer-events: none;
+    .demo-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1680 / 460;
+      overflow: hidden;
+      background: #0a0a0a;
     }
-    .demo-panel::after {
+    .demo-media::after {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: -1;
-      background: linear-gradient(105deg, rgba(14,13,12,.58), rgba(25,21,18,.34));
+      background: rgba(14, 13, 12, 0.28);
       pointer-events: none;
     }
+    .demo-background {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 0.88;
+      filter: brightness(0.92) saturate(0.94);
+      pointer-events: none;
+    }
+    .demo-footer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px 32px;
+      align-items: center;
+      padding: clamp(20px, 2.4vw, 28px) clamp(22px, 2.8vw, 32px);
+      background: #141210;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .demo-copy { min-width: 0; }
     .demo-panel h3 {
-      margin: 16px 0;
+      margin: 10px 0 8px;
       font-family: ui-serif, Georgia, "Noto Serif SC", serif;
-      font-size: clamp(28px, 3.5vw, 44px);
-      line-height: 1.05;
-      letter-spacing: -0.045em;
+      font-size: clamp(24px, 2.8vw, 36px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
       font-weight: 560;
     }
-    .demo-panel p { margin: 0; max-width: 560px; color: rgba(255,255,255,.72); line-height: 1.72; font-size: 15.5px; }
+    .demo-panel p {
+      margin: 0;
+      max-width: 620px;
+      color: rgba(255,255,255,.72);
+      line-height: 1.6;
+      font-size: 14.5px;
+    }
     .soon-badge {
       display: inline-flex;
       align-items: center;
       gap: 9px;
-      padding: 9px 12px;
+      padding: 7px 11px;
       border: 1px solid rgba(255,255,255,.17);
       border-radius: 999px;
       background: rgba(255,255,255,.08);
       color: rgba(255,255,255,.86);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
     .demo-launch {
       align-self: center;
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1445,7 +1506,8 @@
       .hero-layout { grid-template-columns: 1fr; padding-top: 120px; }
       .hero-layout > * { min-width: 0; }
       .hero-visual { min-height: 460px; }
-      .article-grid, .scale-block, .demo-panel { grid-template-columns: 1fr; }
+      .article-grid, .scale-block { grid-template-columns: 1fr; }
+      .demo-footer { grid-template-columns: 1fr; }
       .pipeline { grid-template-columns: repeat(2, 1fr); }
       .pipe-node:nth-child(3) { border-left: 0; }
       .pipe-node:nth-child(n+3) { border-top: 1px solid var(--line); }
@@ -1490,7 +1552,9 @@
       .pipe-node { min-height: 0; padding: 22px 4px; border-left: 0; border-top: 1px solid var(--line); }
       .pipe-node:first-child { border-top: 0; }
       .pipe-node:nth-child(3) { border-left: 0; }
-      .demo-panel, .access-card { padding: 20px; }
+      .demo-panel { margin-top: 12px; }
+      .demo-footer { padding: 18px 18px 20px; gap: 16px; }
+      .access-card { padding: 20px; }
       .method-figure { padding: 10px; }
       .method-figure img { border-radius: 14px; }
       .scale-compare { gap: 8px; padding: 10px; }
@@ -1571,7 +1635,7 @@
           <button type="button" class="lang-option" role="option" data-lang="zh" aria-selected="false">中文</button>
         </div>
       </div>
-      <a class="access-pill" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer"><span class="dot"></span><span data-en="Launch demo" data-zh="进入 Demo"></span></a>
+      <a class="access-pill" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer"><span class="dot"></span><span data-en="Launch Demo" data-zh="进入 Demo"></span></a>
     </div>
   </div>
 </header>
@@ -1587,8 +1651,12 @@
                   data-zh="Khora 把世界模型从单视角视频预测，推进到共享世界状态：多名玩家独立行动，但每一路画面都来自同一个持续演化的世界状态。"></span>
           </p>
           <div class="hero-actions">
-            <a class="btn btn-dark" href="#highlights"><span data-en="View Demos" data-zh="查看演示"></span></a>
-            <a class="btn btn-light" href="#architecture"><span data-en="Explore the architecture" data-zh="了解技术路线"></span></a>
+            <a class="btn btn-dark" href="#highlights"><span data-en="View Demo Videos" data-zh="查看演示视频"></span></a>
+            <a class="btn btn-light" href="#architecture"><span data-en="Architecture" data-zh="了解技术路线"></span></a>
+            <span class="btn-tip" id="techReportTip">
+              <a class="btn btn-light btn-disabled" href="javascript:void(0)" aria-disabled="true" aria-describedby="techReportSoon"><span data-en="Tech Report" data-zh="技术报告"></span></a>
+              <span class="btn-tip-bubble" id="techReportSoon" role="tooltip"><span data-en="Coming soon" data-zh="即将发布"></span></span>
+            </span>
           </div>
         </div>
 
@@ -1661,7 +1729,7 @@
     </div>
 
     <figure class="method-figure fade" aria-label="Khora method diagram">
-      <img src="assets/images/method.png" alt="Khora method diagram showing the shared world state, action update, and multi-view rendering pipeline" loading="lazy" decoding="async" />
+      <img src="assets/images/method.svg" alt="Khora method diagram showing the shared world state, action update, and multi-view rendering pipeline" loading="lazy" decoding="async" />
       <figcaption><span data-en="Overview of Khora. Player actions update a shared STBoard, from which synchronized, view-specific observations are rendered for all players." data-zh="Khora 架构概览。玩家动作更新共享 STBoard，模型再从中为所有玩家渲染同步且视角特定的观察。"></span></figcaption>
     </figure>
 
@@ -1816,14 +1884,18 @@
     </div>
 
     <a class="demo-panel demo-link fade" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer" aria-label="Launch the Khora live demo">
-      <video class="demo-background" muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT5.background.web.mp4" aria-hidden="true"></video>
-      <div>
-        <div class="soon-badge"><span class="dot"></span><span data-en="Live now" data-zh="现已开放"></span></div>
-        <h3><span data-en="Step into the shared world." data-zh="进入这个共享世界。"></span></h3>
-        <p><span data-en="Open the public demo to move, interact, and experience Khora as a controllable world rather than an offline video."
-                 data-zh="打开公开 Demo，直接移动、交互，并体验作为可控世界而非离线视频的 Khora。"></span></p>
+      <div class="demo-media">
+        <video class="demo-background" muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT5.background.web.mp4" aria-hidden="true"></video>
       </div>
-      <span class="demo-launch"><span data-en="Launch live demo" data-zh="进入实时 Demo"></span></span>
+      <div class="demo-footer">
+        <div class="demo-copy">
+          <div class="soon-badge"><span class="dot"></span><span data-en="Live now" data-zh="现已开放"></span></div>
+          <h3><span data-en="Step into the shared world." data-zh="进入这个共享世界。"></span></h3>
+          <p><span data-en="Open the public demo to move, interact, and experience Khora as a controllable world rather than an offline video."
+                   data-zh="打开公开 Demo，直接移动、交互，并体验作为可控世界而非离线视频的 Khora。"></span></p>
+        </div>
+        <span class="demo-launch"><span data-en="Launch live demo" data-zh="进入实时 Demo"></span></span>
+      </div>
     </a>
   </section>
 
@@ -3064,9 +3136,29 @@
   }
 
   setLang(initialLang());
+  function setupTechReportTip() {
+    const tip = document.getElementById('techReportTip');
+    if (!tip) return;
+    const button = tip.querySelector('.btn');
+    if (!button) return;
+
+    const close = () => tip.classList.remove('is-open');
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      tip.classList.toggle('is-open');
+    });
+    document.addEventListener('click', (event) => {
+      if (!tip.contains(event.target)) close();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') close();
+    });
+  }
+
   setupLangMenu();
   setupFade();
   setupHighlightVideos();
+  setupTechReportTip();
   setupActionTracking();
   setupSceneCarousel();
   setupHeroGridReveal();
