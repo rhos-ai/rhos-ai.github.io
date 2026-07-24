@@ -444,6 +444,12 @@ ul {
     color: #b8b8b2;
 }
 
+.project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
 .hero-technical-plate {
     width: 100%;
     max-width: 540px;
@@ -2503,6 +2509,12 @@ body.show-zh .lang-zh {
     .doc-link {
         width: 100%;
         justify-content: center;
+    }
+
+    .project-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
     }
 
     .plate-spec div,
