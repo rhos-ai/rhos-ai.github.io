@@ -9,6 +9,7 @@ const deployablePages = [
     'research.html',
     'careers.html',
     'research/aetherock/index.html',
+    'research/khora/index.html',
     'research/ipr-1/index.html',
     'careers/model-algorithm-engineer-world-model/index.html',
     'careers/data-algorithm-engineer-human-video/index.html',
@@ -79,11 +80,13 @@ test('Vercel config is valid JSON with strict core and proxy CSP policies', () =
     const core = policies.find((entry) => entry.source === '/');
     const ipr = policies.find((entry) => entry.source === '/research/ipr-1/:path*');
     const gm100 = policies.find((entry) => entry.source === '/research/gm-100/:path*');
+    const khora = policies.find((entry) => entry.source === '/research/khora/:path*');
     assert.ok(core?.value);
     assert.doesNotMatch(core.value, /script-src[^;]*'unsafe-inline'/);
     assert.match(core.value, /https:\/\/\*\.supabase\.co/);
     assert.match(ipr?.value || '', /script-src[^;]*'unsafe-inline'/);
     assert.match(gm100?.value || '', /script-src[^;]*'unsafe-inline'/);
+    assert.match(khora?.value || '', /script-src[^;]*'unsafe-inline'/);
 });
 
 test('JavaScript and CSS references use expected file extensions', () => {

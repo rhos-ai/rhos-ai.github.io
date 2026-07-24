@@ -1,0 +1,3075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation." />
+  <meta name="author" content="RhOS">
+  <meta name="robots" content="index, follow">
+  <meta name="application-name" content="RhOS">
+  <link rel="canonical" href="https://www.rhos.ai/research/khora/">
+  <meta property="og:site_name" content="RhOS">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.rhos.ai/research/khora/">
+  <meta property="og:title" content="Khora - Research Preview">
+  <meta property="og:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta property="og:image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <meta property="og:image:secure_url" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="Khora shared world model architecture">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:domain" content="www.rhos.ai">
+  <meta name="twitter:url" content="https://www.rhos.ai/research/khora/">
+  <meta name="twitter:title" content="Khora - Research Preview">
+  <meta name="twitter:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta name="twitter:image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <meta name="twitter:image:alt" content="Khora shared world model architecture">
+  <meta itemprop="name" content="Khora - Research Preview">
+  <meta itemprop="description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta itemprop="image" content="https://www.rhos.ai/research/khora/assets/images/method.png">
+  <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp" type="image/webp" fetchpriority="high" />
+  <link rel="preload" as="video" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4" type="video/mp4" fetchpriority="high" />
+  <meta name="theme-color" content="#f7f3ed" />
+  <title>Khora — Research Preview</title>
+  <style>
+    :root {
+      --paper: #f7f3ed;
+      --paper-2: #ede5da;
+      --paper-3: #fffaf3;
+      --ink: #161616;
+      --ink-soft: #505050;
+      --ink-muted: #76706a;
+      --line: rgba(25, 22, 18, 0.13);
+      --line-strong: rgba(25, 22, 18, 0.24);
+      --accent: #b25f2c;
+      --accent-dark: #7e3d1d;
+      --green: #234d3a;
+      --card: rgba(255, 250, 243, 0.76);
+      --max: 1120px;
+      --read: 700px;
+      --radius: 28px;
+      --shadow: 0 28px 80px rgba(79, 55, 31, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; scroll-padding-top: 92px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% -10%, rgba(178, 95, 44, 0.18), transparent 28%),
+        radial-gradient(circle at 86% 10%, rgba(35, 77, 58, 0.10), transparent 30%),
+        linear-gradient(180deg, #fbf7f1 0%, var(--paper) 42%, #efe7dc 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    button, input, textarea { font: inherit; }
+    .skip-link {
+      position: fixed;
+      z-index: 200;
+      top: -60px;
+      left: 16px;
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 999px;
+      text-decoration: none;
+      transition: top .2s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 100;
+      border-bottom: 1px solid rgba(25, 22, 18, 0.09);
+      background: rgba(247, 243, 237, 0.78);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+    }
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 64px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 700;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-mark-link {
+      display: inline-flex;
+      flex: 0 0 auto;
+      text-decoration: none;
+    }
+    .brand-lockup {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+      line-height: 1;
+    }
+    .brand-lockup a {
+      color: inherit;
+      text-decoration: none;
+      transition: color .18s ease;
+    }
+    .brand-lockup a:hover,
+    .brand-lockup a:focus-visible {
+      color: var(--accent-dark);
+    }
+    .brand-product {
+      width: max-content;
+      color: var(--ink) !important;
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+    .brand-divider {
+      width: 1px;
+      height: 17px;
+      flex: 0 0 1px;
+      background: rgba(25, 22, 18, .18);
+    }
+    .brand-credit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink-muted);
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-credit-mark {
+      color: rgba(25, 22, 18, .32);
+      font-size: 11px;
+    }
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #fff8ee;
+      box-shadow: inset 0 0 0 6px rgba(178, 95, 44, 0.08);
+    }
+    .brand-mark::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+    .nav a {
+      padding: 9px 11px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+    }
+    .nav a:hover { color: var(--ink); background: rgba(25, 22, 18, 0.055); }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .lang-menu {
+      position: relative;
+      z-index: 120;
+    }
+    .lang-trigger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 26px 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255,255,255,.5);
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, color .15s ease;
+    }
+    .lang-trigger:hover,
+    .lang-menu.is-open .lang-trigger {
+      border-color: var(--line-strong);
+      color: var(--ink);
+      background: rgba(255,255,255,.78);
+    }
+    .lang-icon {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      opacity: .72;
+    }
+    .lang-icon svg { display: block; width: 100%; height: 100%; }
+    .lang-trigger-label {
+      min-width: 54px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .lang-chevron {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      opacity: .5;
+      line-height: 1;
+      transition: transform .15s ease;
+    }
+    .lang-menu.is-open .lang-chevron {
+      transform: translateY(-50%) rotate(180deg);
+    }
+    .lang-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: calc(100% + 8px);
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 250, 243, 0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 14px 40px rgba(79, 55, 31, 0.14);
+    }
+    .lang-panel[hidden] { display: none; }
+    .lang-option {
+      display: block;
+      width: 100%;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink-soft);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: background .12s ease, color .12s ease;
+    }
+    .lang-option:hover {
+      background: rgba(25, 22, 18, 0.05);
+      color: var(--ink);
+    }
+    .lang-option.is-active {
+      background: rgba(178, 95, 44, 0.16);
+      color: var(--accent-dark);
+    }
+    .access-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 8px 13px;
+      color: #fff;
+      background: var(--ink);
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #e7b482; }
+
+    main { overflow: hidden; }
+    .section {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 76px 0;
+    }
+    .section.compact { padding: 46px 0; }
+    .eyebrow {
+      color: var(--accent-dark);
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      margin: 0;
+      max-width: 930px;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(34px, 5.2vw, 66px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      font-weight: 520;
+    }
+    html[lang="zh-CN"] .section-title {
+      font-family: "Noto Serif SC", "Source Han Serif SC", ui-serif, Georgia, serif;
+      letter-spacing: -0.025em;
+      font-weight: 640;
+    }
+    .no-break-title,
+    .no-break-heading {
+      white-space: nowrap;
+      max-width: none;
+    }
+    html[lang="en"] .no-break-title,
+    html[lang="en"] .no-break-heading {
+      white-space: normal;
+      line-height: 1.12;
+      max-width: 930px;
+    }
+    .arch-title { font-size: clamp(32px, 4.15vw, 56px); }
+    .highlights-title { font-size: clamp(31px, 4vw, 54px); }
+    .demo-title { font-size: clamp(31px, 4vw, 54px); }
+    html[lang="en"] .section-title {
+      font-size: clamp(30px, 4.4vw, 56px);
+      line-height: 1.08;
+    }
+    html[lang="en"] .arch-title { font-size: clamp(27px, 3.5vw, 46px); line-height: 1.1; }
+    html[lang="en"] .highlights-title { font-size: clamp(26px, 3.4vw, 44px); line-height: 1.1; }
+    html[lang="en"] .demo-title { font-size: clamp(26px, 3.4vw, 44px); line-height: 1.1; }
+    html[lang="zh-CN"] .arch-title,
+    html[lang="zh-CN"] .highlights-title,
+    html[lang="zh-CN"] .demo-title { font-size: clamp(30px, 3.8vw, 50px); }
+    .section-lead {
+      max-width: var(--read);
+      margin: 24px 0 0;
+      color: var(--ink-soft);
+      font-size: clamp(17px, 1.65vw, 21px);
+      line-height: 1.62;
+      letter-spacing: -0.02em;
+    }
+    html[lang="en"] .section-lead {
+      font-size: clamp(16px, 1.5vw, 19px);
+      line-height: 1.66;
+    }
+    .small-lead {
+      max-width: 660px;
+      margin: 18px 0 0;
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-pin {
+      position: relative;
+      height: calc(270svh);
+    }
+    .hero-layout {
+      min-height: 100svh;
+      width: min(1360px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 126px 0 70px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(420px, .85fr);
+      align-items: center;
+      gap: 46px;
+    }
+    .hero-visual-col {
+      align-self: center;
+      min-width: 0;
+    }
+    .hero-visual-spacer {
+      display: none;
+      pointer-events: none;
+      min-height: 480px;
+    }
+    .hero-kicker {
+      width: fit-content;
+      margin-bottom: 22px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 243, 0.55);
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+    html[lang="en"] .hero-kicker {
+      font-size: 11.5px;
+      letter-spacing: .01em;
+      max-width: min(100%, 520px);
+      line-height: 1.45;
+    }
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(44px, 7.2vw, 92px);
+      line-height: .96;
+      letter-spacing: -0.04em;
+      font-weight: 520;
+    }
+    html[lang="en"] h1 {
+      font-size: clamp(36px, 4.4vw, 60px);
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+    }
+    .hero-title-line {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    html[lang="zh-CN"] h1 {
+      font-family: "Noto Serif SC", "Source Han Serif SC", ui-serif, Georgia, serif;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    h1 em { color: var(--accent-dark); font-style: normal; }
+    .hero-copy {
+      margin: 28px 0 0;
+      max-width: 640px;
+      color: var(--ink-soft);
+      font-size: clamp(17px, 1.7vw, 20px);
+      line-height: 1.68;
+      letter-spacing: -0.02em;
+    }
+    html[lang="en"] .hero-copy {
+      font-size: clamp(16px, 1.55vw, 18.5px);
+      line-height: 1.72;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 720;
+      font-size: 14px;
+      border: 1px solid transparent;
+    }
+    .btn-dark { color: #fff; background: var(--ink); }
+    .btn-light { color: var(--ink); background: rgba(255,255,255,.44); border-color: var(--line); }
+    .btn-disabled { opacity: .58; cursor: not-allowed; }
+    html[lang="en"] .btn { font-size: 13px; padding: 12px 16px; }
+
+    .hero-visual {
+      position: relative;
+      min-height: 480px;
+      border: 1px solid var(--line);
+      border-radius: 42px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.55), rgba(255,255,255,.18)),
+        radial-gradient(circle at 78% 20%, rgba(178,95,44,.19), transparent 28%),
+        #ede5d9;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      contain: layout paint;
+      transform: translate3d(0, 0, 0) scale(1);
+      transform-origin: 50% 50%;
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+    .hero-visual.fade {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      transition: none;
+    }
+    .hero-video-visual {
+      aspect-ratio: 832 / 480;
+      min-height: 0 !important;
+    }
+    @media (min-width: 1360px) {
+      html[lang="en"] h1 { font-size: 57px; }
+      html[lang="zh-CN"] h1 { font-size: 72px; }
+      .hero-visual-col {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .hero-video-visual {
+        flex: 0 0 var(--hero-natural-width, 100%);
+        width: var(--hero-natural-width, 100%);
+        height: var(--hero-natural-height, auto);
+      }
+    }
+    .hero-video-visual .world-card {
+      inset: 0;
+      border: 0;
+      border-radius: inherit;
+      background: #111;
+    }
+    .hero-visual.is-pinned {
+      z-index: 50;
+      margin: 0;
+      opacity: 1;
+    }
+    .hero-visual.is-settled {
+      position: absolute;
+      z-index: 10;
+      margin: 0;
+      opacity: 1;
+    }
+    .world-reveal-meter {
+      position: absolute;
+      right: 18px;
+      bottom: 52px;
+      z-index: 2;
+      display: flex;
+      gap: 6px;
+    }
+    .world-reveal-meter span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.28);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .world-reveal-meter span.active {
+      background: #f2c48f;
+      transform: scale(1.15);
+    }
+    .world-card {
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(25, 22, 18, 0.1);
+      border-radius: 32px;
+      background: rgba(255, 250, 243, 0.68);
+      overflow: hidden;
+      --grid-scale: 1;
+    }
+    .world-grid {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: transparent;
+      transform-origin: 50% 50%;
+      transform: translate3d(0, 0, 0) scale(var(--grid-scale));
+      transition: none;
+      will-change: transform;
+      backface-visibility: hidden;
+      overflow: visible;
+      isolation: isolate;
+    }
+    .world-video-reveal {
+      display: block;
+      background: transparent;
+    }
+    .hero-reveal-video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #111;
+      pointer-events: none;
+      transform: translateZ(0);
+    }
+    .hero-world-layer {
+      position: absolute;
+      overflow: hidden;
+      background: transparent;
+      opacity: 0;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      pointer-events: none;
+      contain: paint;
+      transition: opacity .18s ease;
+    }
+    .hero-world-layer.is-ready,
+    .hero-world-layer.has-poster {
+      opacity: var(--layer-opacity, 0);
+    }
+    .hero-world-layer video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill;
+      pointer-events: none;
+      transform: translateZ(0);
+    }
+    .hero-layer-base {
+      z-index: 1;
+    }
+    .hero-layer-hd {
+      z-index: 2;
+      opacity: 0;
+      transition: opacity .22s linear;
+      will-change: opacity;
+    }
+    .hero-layer-hd.is-visible {
+      opacity: 1;
+    }
+    .world-tile {
+      position: relative;
+      min-height: 0;
+      background:
+        linear-gradient(150deg, rgba(27, 32, 31, .93), rgba(74, 58, 42, .88)),
+        #171717;
+      overflow: hidden;
+    }
+    .world-tile::before {
+      content: "";
+      position: absolute;
+      inset: 18% 12%;
+      border: 1px solid rgba(255,255,255,.13);
+      transform: perspective(220px) rotateX(62deg) rotateZ(var(--rot));
+      background: radial-gradient(circle at 60% 35%, rgba(231,180,130,.38), transparent 24%);
+    }
+    .world-tile::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      left: var(--x);
+      top: var(--y);
+      border-radius: 50%;
+      background: #f2c48f;
+      box-shadow: 0 0 0 5px rgba(242,196,143,.16), 24px 18px 0 rgba(255,255,255,.54);
+    }
+    .world-label {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 2;
+      padding: 9px 12px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(0,0,0,.44);
+      backdrop-filter: blur(12px);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transform-origin: left bottom;
+      /* Keep legend at constant on-screen size while the hero card scales */
+      transform: scale(calc(1 / var(--hero-scale, 1)));
+    }
+    .floating-note {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      z-index: 2;
+      width: min(260px, calc(100% - 36px));
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: 22px;
+      color: #fff;
+      background: rgba(22,22,22,.52);
+      backdrop-filter: blur(18px);
+      font-size: 13px;
+      line-height: 1.68;
+    }
+
+    .hero-summary {
+      padding: 12px 0 0;
+    }
+    .hero-summary-section {
+      width: min(var(--hero-summary-width, 980px), calc(100% - 28px));
+      padding: 0 0 46px;
+    }
+    .hero-summary p {
+      margin: 0;
+      max-width: none;
+      color: var(--ink-soft);
+      font-size: clamp(16px, 1.4vw, 18px);
+      line-height: 1.68;
+      text-wrap: pretty;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: .82fr 1.18fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .problem-grid { row-gap: 30px; }
+    .sticky { position: sticky; top: 112px; }
+    .prose {
+      color: var(--ink-soft);
+      max-width: 720px;
+      font-size: 17px;
+      line-height: 1.86;
+      letter-spacing: -0.01em;
+    }
+    .prose p { margin: 0 0 24px; }
+    .problem-prose {
+      align-self: start;
+      padding-top: 5px;
+      font-size: clamp(16.5px, 1.25vw, 18px);
+      line-height: 1.78;
+    }
+    .problem-prose p { margin: 0; }
+    .problem-prose p + p { margin-top: 14px; }
+    .problem-title {
+      font-size: clamp(30px, 4.35vw, 56px);
+      line-height: 1.12;
+      max-width: none;
+    }
+    .problem-title .title-line {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    html[lang="en"] .problem-title .title-line {
+      white-space: nowrap;
+    }
+    html[lang="en"] .problem-title {
+      font-size: clamp(25px, 2.9vw, 38px);
+      line-height: 1.2;
+      letter-spacing: -0.028em;
+    }
+    html[lang="en"] .problem-grid {
+      grid-template-columns: 0.62fr 1.38fr;
+      column-gap: 48px;
+      align-items: stretch;
+    }
+    html[lang="en"] .problem-grid > .sticky {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-self: stretch;
+    }
+    html[lang="en"] .problem-prose {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      align-self: stretch;
+      padding-top: 78px;
+      font-size: clamp(15.5px, 1.15vw, 17px);
+      line-height: 1.62;
+      text-wrap: pretty;
+    }
+    html[lang="en"] .problem-prose p + p { margin-top: 0; }
+    html[lang="zh-CN"] .problem-title {
+      font-size: clamp(29px, 4.05vw, 52px);
+      letter-spacing: -0.018em;
+    }
+    .quote-box {
+      margin: 34px 0;
+      padding: 22px;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 24px 24px 0;
+      background: rgba(255,250,243,.7);
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: clamp(22px, 2.3vw, 30px);
+      line-height: 1.18;
+      letter-spacing: -0.045em;
+    }
+    .quote-row {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 20px 24px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--accent);
+      border-radius: 22px;
+      background:
+        linear-gradient(90deg, rgba(178,95,44,.10), rgba(255,250,243,.68)),
+        rgba(255,250,243,.74);
+      box-shadow: 0 14px 42px rgba(79,55,31,.08);
+      font-size: clamp(18px, 1.75vw, 24px);
+      line-height: 1.32;
+      letter-spacing: -0.025em;
+    }
+    html[lang="en"] .quote-row {
+      font-size: clamp(16.5px, 1.55vw, 21px);
+      line-height: 1.4;
+      text-wrap: balance;
+    }
+
+    @media (min-width: 981px) {
+      html[lang="en"] .arch-title {
+        max-width: none;
+        white-space: nowrap;
+      }
+    }
+
+    .pipeline {
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      align-items: stretch;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .pipe-node {
+      position: relative;
+      min-height: 176px;
+      padding: 26px 24px 28px;
+      border-left: 1px solid var(--line);
+    }
+    .pipe-node:first-child { border-left: 0; }
+    .pipe-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent-dark);
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .pipe-tag::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+      opacity: .55;
+    }
+    .pipe-node h3 { margin: 24px 0 9px; font-size: 20px; letter-spacing: -0.025em; }
+    .pipe-node p { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.58; }
+    html[lang="en"] .pipe-node p { font-size: 13px; line-height: 1.5; }
+
+    .method-figure {
+      margin: 36px 0 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,250,243,.42)),
+        rgba(255,250,243,.7);
+      box-shadow: 0 18px 54px rgba(79, 55, 31, 0.1);
+      overflow: hidden;
+    }
+    .method-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: calc(var(--radius) - 6px);
+      background: #fff;
+    }
+    .method-figure figcaption {
+      padding: 12px 4px 2px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .scale-block {
+      margin-top: 52px;
+      display: grid;
+      grid-template-columns: minmax(300px, 1.05fr) minmax(0, 1.05fr);
+      gap: 28px;
+      align-items: center;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.52), rgba(255,250,243,.34)),
+        rgba(255,250,243,.62);
+      box-shadow: 0 18px 54px rgba(79, 55, 31, 0.08);
+    }
+    .scale-copy { max-width: none; min-width: 0; }
+    .scale-kicker {
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .scale-block h3 {
+      margin: 0;
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: clamp(26px, 2.8vw, 36px);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+    }
+    html[lang="en"] .scale-block h3 {
+      font-size: clamp(22px, 2.25vw, 30px);
+      line-height: 1.16;
+    }
+    html[lang="en"] .scale-title-line {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .scale-lead {
+      margin: 14px 0 0;
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.68;
+      max-width: 46ch;
+    }
+    html[lang="en"] .scale-lead {
+      font-size: 15px;
+      line-height: 1.66;
+    }
+    .formula {
+      font-family: "Times New Roman", Cambria, "Noto Serif SC", ui-serif, Georgia, serif;
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+    .scale-points {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .scale-points li {
+      position: relative;
+      padding-left: 16px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .scale-points li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .62em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .scale-compare {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      min-width: 0;
+      padding: 14px;
+      border-radius: 22px;
+      background: #0b0b0b;
+    }
+    .scale-compare-item {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 8px;
+      margin: 0;
+      min-width: 0;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .scale-compare-gpu {
+      font-size: clamp(12px, 1.15vw, 16px);
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .scale-compare-item img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: contain;
+      object-position: center;
+      border-radius: 12px;
+      background: #111;
+    }
+    .scale-compare-item figcaption {
+      display: grid;
+      gap: 2px;
+      font-size: clamp(11px, 1.05vw, 13px);
+      line-height: 1.3;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+    .scale-compare-item figcaption small {
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.86em;
+      font-weight: 550;
+    }
+    html[lang="en"] .scale-kicker {
+      font-size: 10.5px;
+      letter-spacing: .11em;
+    }
+
+    .proof-stack { margin-top: 50px; display: grid; gap: 80px; }
+    .proof {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .proof-copy { max-width: none; }
+    .proof-index { color: var(--accent-dark); font-size: 12px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .proof h3 {
+      margin: 14px 0 14px;
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: clamp(27px, 2.75vw, 38px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      font-weight: 560;
+    }
+    html[lang="zh-CN"] .proof h3 { font-weight: 650; }
+    html[lang="en"] .proof h3 {
+      font-size: clamp(23px, 2.35vw, 32px);
+      line-height: 1.16;
+      letter-spacing: -0.03em;
+    }
+    .proof h3.no-break-heading { font-size: clamp(25px, 2.55vw, 35px); }
+    html[lang="en"] .proof h3.no-break-heading {
+      font-size: clamp(22px, 2.2vw, 30px);
+      line-height: 1.16;
+    }
+    html[lang="zh-CN"] .proof h3.no-break-heading { font-size: clamp(24px, 2.45vw, 34px); }
+    .proof h3.realtime-heading { font-size: clamp(24px, 2.35vw, 33px); }
+    .proof p {
+      margin: 0;
+      max-width: none;
+      color: var(--ink-soft);
+      font-size: 17px;
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+    html[lang="en"] .single-line-copy {
+      white-space: nowrap;
+      text-wrap: nowrap;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .chips span {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink-muted);
+      background: rgba(255,255,255,.34);
+      font-size: 12px;
+    }
+    .video-card {
+      width: 100%;
+      border: 1px solid rgba(25, 22, 18, 0.12);
+      border-radius: 24px;
+      background: #111;
+      overflow: hidden;
+      box-shadow: 0 20px 58px rgba(79, 55, 31, 0.13);
+    }
+    .proof-realtime .realtime-heading {
+      font-size: clamp(23px, 2.1vw, 30px);
+      letter-spacing: -0.028em;
+    }
+    html[lang="en"] .proof-realtime .realtime-heading {
+      font-size: clamp(21px, 1.95vw, 27px);
+      line-height: 1.16;
+      letter-spacing: -0.022em;
+    }
+    html[lang="zh-CN"] .proof-realtime .realtime-heading {
+      font-size: clamp(22px, 2vw, 28px);
+      letter-spacing: -0.018em;
+    }
+    .video-stage {
+      position: relative;
+      width: 100%;
+      background: #0f0f0f;
+    }
+    .video-stage video {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #0f0f0f;
+      pointer-events: none;
+    }
+    .video-stage video::-webkit-media-controls {
+      display: none !important;
+    }
+    .video-stage video::-webkit-media-controls-enclosure {
+      display: none !important;
+    }
+    .tracking-half {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 2;
+      width: 50%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .tracking-half[data-track="gt"] { left: 0; }
+    .tracking-half[data-track="gen"] { left: 50%; }
+    .tracking-box {
+      position: absolute;
+      left: var(--track-x, 48%);
+      top: var(--track-y, 30%);
+      width: var(--track-w, 8%);
+      height: var(--track-h, 30%);
+      border: 2px solid #f2c48f;
+      border-radius: 5px;
+      background: rgba(242, 196, 143, .08);
+      box-shadow: 0 0 0 1px rgba(18, 14, 10, .35), 0 0 18px rgba(242, 196, 143, .25);
+      opacity: var(--track-opacity, 0);
+      transform: translate3d(0, 0, 0);
+      transition: opacity .12s linear;
+    }
+    .tracking-box::before {
+      content: attr(data-player-label);
+      position: absolute;
+      left: -2px;
+      bottom: calc(100% + 4px);
+      width: max-content;
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: #16120e;
+      background: #f2c48f;
+      font-size: 8px;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .tracking-box[data-player="2"]::before {
+      top: calc(100% + 4px);
+      bottom: auto;
+    }
+    .scene-transfer-stage {
+      min-height: clamp(250px, 31vw, 360px);
+      padding: 22px 64px;
+      overflow: hidden;
+      touch-action: pan-y;
+      display: grid;
+      align-items: center;
+      background: transparent;
+    }
+    .scene-transfer-card {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+    .scene-strip {
+      display: grid;
+      grid-template-columns: minmax(0, .72fr) minmax(0, 1.8fr) minmax(0, .72fr);
+      gap: clamp(12px, 2vw, 24px);
+      align-items: center;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .scene-transfer-stage.is-switching .scene-strip {
+      opacity: .52;
+      transform: translateX(var(--scene-shift, 0));
+    }
+    .scene-slide {
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      overflow: hidden;
+      box-shadow: none;
+      color: inherit;
+      font: inherit;
+    }
+    button.scene-slide { cursor: pointer; }
+    button.scene-slide.current { cursor: default; }
+    .scene-slide video {
+      width: 100%;
+      aspect-ratio: 832 / 480;
+      display: block;
+      object-fit: cover;
+    }
+    .scene-slide.side {
+      opacity: .55;
+      filter: grayscale(1) brightness(.72);
+      transform: scale(.9);
+      transition: opacity .18s ease, filter .18s ease, transform .18s ease;
+    }
+    .scene-slide.side:hover {
+      opacity: .78;
+      filter: grayscale(.7) brightness(.84);
+      transform: scale(.94);
+    }
+    .scene-carousel-button {
+      position: absolute;
+      top: 50%;
+      z-index: 3;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(15,15,15,.55);
+      backdrop-filter: blur(12px);
+      font: 400 28px/1 ui-sans-serif, system-ui, sans-serif;
+      cursor: pointer;
+      transform: translateY(-50%);
+      transition: background .18s ease, border-color .18s ease;
+    }
+    .scene-carousel-button:hover { background: rgba(178,95,44,.82); border-color: rgba(255,255,255,.7); }
+    .scene-carousel-button.prev { left: 16px; }
+    .scene-carousel-button.next { right: 16px; }
+    .labels {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      pointer-events: none;
+    }
+    .labels.cols-1 { grid-template-columns: 1fr; }
+    .labels.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .labels.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .labels.rows-1 { grid-template-rows: 1fr; }
+    .labels > div { position: relative; border-left: 1px solid rgba(255,255,255,.15); }
+    .labels > div:first-child { border-left: 0; }
+    .labels span {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(12px);
+      font-size: 9px;
+      font-weight: 750;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .video-caption {
+      padding: 11px 14px 13px;
+      color: rgba(255,255,255,.72);
+      background: #111;
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    .demo-panel {
+      position: relative;
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: stretch;
+      border: 1px solid rgba(25, 22, 18, 0.12);
+      border-radius: 38px;
+      padding: 26px;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(178,95,44,.2), transparent 32%),
+        linear-gradient(135deg, rgba(22,22,22,.98), rgba(39,35,30,.96));
+      color: #fff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .demo-link {
+      color: #fff;
+      text-decoration: none;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .demo-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.28);
+      box-shadow: 0 24px 70px rgba(57, 38, 20, .22);
+    }
+    .demo-link:focus-visible {
+      outline: 3px solid rgba(231,180,130,.75);
+      outline-offset: 4px;
+    }
+    .demo-background {
+      position: absolute;
+      inset: -7%;
+      z-index: -2;
+      width: 114%;
+      height: 114%;
+      object-fit: cover;
+      filter: blur(4px) brightness(.58) saturate(.86);
+      transform: scale(1.025);
+      pointer-events: none;
+    }
+    .demo-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(105deg, rgba(14,13,12,.58), rgba(25,21,18,.34));
+      pointer-events: none;
+    }
+    .demo-panel h3 {
+      margin: 16px 0;
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: clamp(28px, 3.5vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      font-weight: 560;
+    }
+    .demo-panel p { margin: 0; max-width: 560px; color: rgba(255,255,255,.72); line-height: 1.72; font-size: 15.5px; }
+    .soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .demo-launch {
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-width: 190px;
+      min-height: 54px;
+      padding: 0 22px;
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 14px;
+      color: var(--ink);
+      background: #f3cfaa;
+      box-shadow: 0 14px 34px rgba(0,0,0,.2);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .demo-launch::after {
+      content: "↗";
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .closing {
+      width: min(960px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 64px;
+      text-align: center;
+    }
+    .closing p {
+      margin: 0;
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: clamp(28px, 4.2vw, 48px);
+      line-height: 1.18;
+      letter-spacing: -0.04em;
+    }
+    .closing em { color: var(--accent-dark); font-style: normal; }
+    html[lang="zh-CN"] .closing em {
+      display: block;
+      margin-top: 0.12em;
+    }
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 42px 0 36px;
+      color: var(--ink-muted);
+      font-size: 13px;
+    }
+    .footer-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(140px, 0.7fr) auto;
+      gap: 32px 48px;
+      align-items: start;
+    }
+    .footer-brand {
+      display: grid;
+      gap: 12px;
+    }
+    .footer-brand-name {
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 560;
+      letter-spacing: -0.03em;
+    }
+    .footer-brand p {
+      margin: 0;
+      max-width: 320px;
+      color: var(--ink-muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .footer-col {
+      display: grid;
+      gap: 12px;
+      justify-items: start;
+    }
+    .footer-label {
+      color: var(--ink-muted);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .footer-links {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .footer-links a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 550;
+      letter-spacing: -0.01em;
+      transition: color .2s ease;
+    }
+    .footer-links a:hover { color: var(--accent-dark); }
+    .footer-top {
+      justify-self: end;
+      align-self: start;
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-size: 13px;
+      white-space: nowrap;
+      transition: color .2s ease;
+    }
+    .footer-top:hover { color: var(--accent-dark); }
+
+    .fade {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .fade.visible { opacity: 1; transform: translateY(0); }
+    .hero-layout > .fade {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    @media (max-width: 980px) {
+      .nav { display: none; }
+      .hero-layout { grid-template-columns: 1fr; padding-top: 120px; }
+      .hero-layout > * { min-width: 0; }
+      .hero-visual { min-height: 460px; }
+      .article-grid, .scale-block, .demo-panel { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: repeat(2, 1fr); }
+      .pipe-node:nth-child(3) { border-left: 0; }
+      .pipe-node:nth-child(n+3) { border-top: 1px solid var(--line); }
+      html[lang="en"] .scale-title-line { white-space: normal; }
+      html[lang="en"] .problem-grid { grid-template-columns: 1fr; column-gap: 0; }
+      .quote-row { grid-column: 1; }
+      .problem-prose { min-height: 0; }
+      .sticky { position: static; }
+      html[lang="en"] .problem-grid > .sticky { display: block; }
+      html[lang="en"] .problem-prose { display: block; padding-top: 0; }
+      html[lang="en"] .problem-prose p + p { margin-top: 14px; }
+      html[lang="en"] .single-line-copy {
+        white-space: normal;
+        text-wrap: pretty;
+      }
+    }
+    @media (max-width: 640px) {
+      .topbar-inner, .section, .hero-layout, .closing, .footer-inner { width: min(100% - 24px, var(--max)); }
+      .topbar-inner { min-height: 64px; gap: 10px; }
+      .brand { gap: 8px; }
+      .brand-lockup { max-width: calc(100vw - 190px); overflow: hidden; }
+      .access-pill { display: none; }
+      .hero-layout { padding-bottom: 54px; gap: 34px; }
+      .hero-pin { height: calc(245svh); }
+      .hero-visual { min-height: 360px; border-radius: 24px; }
+      .world-card { inset: 14px; border-radius: 22px; }
+      .floating-note { display: none; }
+      .section { padding: 56px 0; }
+      h1 { font-size: clamp(38px, 13vw, 62px); }
+      html[lang="en"] h1 {
+        font-size: clamp(34px, 10.2vw, 42px);
+        line-height: 1.06;
+      }
+      .hero-title-line { display: inline; white-space: normal; }
+      .section-title { font-size: clamp(30px, 10vw, 46px); }
+      .problem-title .title-line { white-space: normal; }
+      .no-break-title, .no-break-heading { white-space: normal; }
+      .proof h3 { font-size: clamp(25px, 8vw, 34px); }
+      .hero-summary-section { width: min(var(--hero-summary-width, 100%), calc(100% - 22px)); padding: 0 0 38px; }
+      .hero-summary { padding-top: 10px; }
+      .pipeline { grid-template-columns: 1fr; }
+      .pipe-node { min-height: 0; padding: 22px 4px; border-left: 0; border-top: 1px solid var(--line); }
+      .pipe-node:first-child { border-top: 0; }
+      .pipe-node:nth-child(3) { border-left: 0; }
+      .demo-panel, .access-card { padding: 20px; }
+      .method-figure { padding: 10px; }
+      .method-figure img { border-radius: 14px; }
+      .scale-compare { gap: 8px; padding: 10px; }
+      .scale-compare-item { gap: 8px; }
+      .scale-compare-item img { border-radius: 10px; }
+      .scale-compare-gpu { font-size: 12px; }
+      .scale-compare-item figcaption { font-size: 11px; }
+      .proof-stack { gap: 58px; }
+      .video-card { border-radius: 18px; }
+      .labels span { left: 7px; top: 7px; padding: 4px 6px; font-size: 8px; }
+      .tracking-box { border-width: 1.5px; }
+      .tracking-box::before { font-size: 6px; padding: 2px 4px; }
+      .scene-carousel-button { width: 36px; height: 36px; font-size: 24px; }
+      .scene-carousel-button.prev { left: 10px; }
+      .scene-carousel-button.next { right: 10px; }
+      .scene-transfer-stage { min-height: 220px; padding: 18px 38px; }
+      .scene-strip { grid-template-columns: minmax(0, .75fr) minmax(0, 2fr) minmax(0, .75fr); gap: 6px; }
+      .scene-slide.side { transform: scale(.86); }
+      .demo-launch { width: 100%; min-width: 0; }
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .footer-top { justify-self: start; }
+    }
+    @media (max-width: 360px) {
+      .brand-lockup { max-width: calc(100vw - 120px); }
+      .lang-trigger {
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+      }
+      .lang-trigger-label,
+      .lang-chevron { display: none; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand" aria-label="Khora by RhOS.ai and OphilusAI">
+      <a class="brand-mark-link" href="#top" aria-label="Khora home">
+        <span class="brand-mark" aria-hidden="true"></span>
+      </a>
+      <div class="brand-lockup">
+        <a class="brand-product" href="#top">Khora</a>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <span class="brand-credit">
+          <a href="https://rhos.ai/" target="_blank" rel="noopener noreferrer">RhOS.ai</a>
+          <span class="brand-credit-mark" aria-hidden="true">×</span>
+          <a href="https://ophilus.ai/" target="_blank" rel="noopener noreferrer">OphilusAI</a>
+        </span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#problem"><span data-en="Research" data-zh="研究问题"></span></a>
+        <a href="#architecture"><span data-en="Architecture" data-zh="技术架构"></span></a>
+        <a href="#highlights"><span data-en="Highlights" data-zh="核心亮点"></span></a>
+        <a href="#live-demo"><span data-en="Live demo" data-zh="实时 Demo"></span></a>
+      </nav>
+      <div class="lang-menu" id="langMenu">
+        <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="langPanel">
+          <span class="lang-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M3 12h18"></path>
+              <path d="M12 3c2.6 3 2.6 15 0 18"></path>
+              <path d="M12 3c-2.6 3-2.6 15 0 18"></path>
+            </svg>
+          </span>
+          <span class="lang-trigger-label" id="langTriggerLabel">English</span>
+          <span class="lang-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="lang-panel" id="langPanel" role="listbox" aria-label="Language" hidden>
+          <button type="button" class="lang-option is-active" role="option" data-lang="en" aria-selected="true">English</button>
+          <button type="button" class="lang-option" role="option" data-lang="zh" aria-selected="false">中文</button>
+        </div>
+      </div>
+      <a class="access-pill" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer"><span class="dot"></span><span data-en="Launch demo" data-zh="进入 Demo"></span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="hero-pin" id="heroPin">
+      <div class="hero-layout">
+        <div class="hero-copy-column fade">
+          <h1><span data-en="<span class=&quot;hero-title-line&quot;>The first scalable multi-</span><br><span class=&quot;hero-title-line&quot;>agent world model with</span><br><span class=&quot;hero-title-line&quot;>linear-time complexity.</span>" data-zh="全球首个线性无限扩展的多智能体世界模型。"></span></h1>
+          <p class="hero-copy">
+            <span data-en="Khora moves world modeling from single-view video prediction to real-time shared interaction: many players act independently, while every view is rendered from one evolving world state."
+                  data-zh="Khora 把世界模型从单视角视频预测，推进到共享世界状态：多名玩家独立行动，但每一路画面都来自同一个持续演化的世界状态。"></span>
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-dark" href="#highlights"><span data-en="View Demos" data-zh="查看演示"></span></a>
+            <a class="btn btn-light" href="#architecture"><span data-en="Explore the architecture" data-zh="了解技术路线"></span></a>
+          </div>
+        </div>
+
+        <div class="hero-visual-col">
+          <div class="hero-visual-spacer" id="heroVisualSpacer" aria-hidden="true"></div>
+          <div class="hero-visual hero-video-visual fade" id="heroVisual" aria-label="Illustration of scalable synchronized player viewpoints">
+      <div class="world-card">
+        <div class="world-grid world-video-reveal" id="heroWorldGrid" data-layer-dir="assets/videos/khora_0_8_layers" aria-hidden="true"></div>
+      </div>
+      <div class="world-reveal-meter" aria-hidden="true"></div>
+      <div class="world-label" id="worldScaleLabel">2×2 · one world state</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hero-summary-section fade" aria-label="128 by 128 player-view summary">
+    <div class="hero-summary">
+      <p><span data-en="In the videos, 16,384 (128 × 128) players share one generated world. Their viewpoints are not independent clips assembled into a mosaic: every observation is queried from the same evolving world state, keeping actions, geometry, visibility, and time synchronized as the population grows."
+               data-zh="在这些视频中，16,384（128 × 128）名玩家共享同一个生成世界。它们并非拼接在一起的独立视频，而是都从同一个持续演化的世界状态中读取，因此无论玩家数量如何增长，动作、几何、可见性与时间始终保持同步。"></span></p>
+    </div>
+  </section>
+
+  <section class="section" id="problem">
+    <div class="article-grid problem-grid">
+      <div class="sticky fade">
+        <div class="eyebrow">01 · Research Question</div>
+        <h2 class="section-title problem-title"><span data-en="<span class=&quot;title-line&quot;>Scaling is not just</span><br><span class=&quot;title-line&quot;>about more agents.</span><br><span class=&quot;title-line&quot;>It's about lower cost.</span>" data-zh="<span class=&quot;title-line&quot;>真正限制规模的，</span><br><span class=&quot;title-line&quot;>不是一致性，而是成本。</span>"></span></h2>
+      </div>
+      <div class="prose problem-prose fade">
+        <p><span data-en="Multi-agent world models are increasingly consistent and interactive, yet most support only a handful of agents because compute and memory costs rise rapidly with scale."
+                 data-zh="多智能体世界模型已经能够实现较好的一致性和交互能力。然而，目前的方法仍然只能支持少量智能体，并非因为一致性无法维持，而是因为计算和存储成本会随着规模快速增长。"></span></p>
+        <p><span data-en="Khora addresses this bottleneck with one shared representation that player actions update and all synchronized views render from."
+                 data-zh="Khora 正是围绕这个约束设计的。模型不是简单生成更多视频流，而是维护一个共享世界表示，用玩家动作更新这个表示，再从中渲染出一致的视角观察。"></span></p>
+      </div>
+      <div class="quote-box quote-row fade"><span data-en="How can world models scale to more agents without rapidly increasing computation and memory?" data-zh="真正的问题是：如何在不让成本爆炸的情况下，实现世界模型的规模扩展？"></span></div>
+    </div>
+  </section>
+
+  <section class="section" id="architecture">
+    <div class="fade">
+      <div class="eyebrow">02 · Architecture</div>
+      <h2 class="section-title no-break-title arch-title"><span data-en="A shared STBoard between action and rendering." data-zh="在动作和渲染之间，维护一块共享黑板。"></span></h2>
+      <p class="section-lead"><span data-en="Actions first update the world state. Rendering then queries that state for each player. This decouples the number of observers from the structure of the model."
+                                  data-zh="动作先更新世界状态；每个玩家再从这个状态中查询并生成自己的观察。"></span></p>
+    </div>
+
+    <div class="pipeline fade" aria-label="Khora pipeline diagram">
+      <div class="pipe-node">
+        <div class="pipe-tag"><span data-en="01 · Action" data-zh="01 · 动作"></span></div>
+        <h3><span data-en="Player actions" data-zh="玩家动作"></span></h3>
+        <p><span data-en="Movement and camera controls update the world." data-zh="移动与相机控制共同更新世界。"></span></p>
+      </div>
+      <div class="pipe-node">
+        <div class="pipe-tag"><span data-en="02 · Shared state" data-zh="02 · 共享状态"></span></div>
+        <h3><span data-en="STBoard" data-zh="STBoard"></span></h3>
+        <p><span data-en="Entities, geometry, visibility, and time remain aligned in one representation." data-zh="实体、几何、可见性与时间在同一个表示中保持对齐。"></span></p>
+      </div>
+      <div class="pipe-node">
+        <div class="pipe-tag"><span data-en="03 · Query" data-zh="03 · 查询"></span></div>
+        <h3><span data-en="View query" data-zh="视角查询"></span></h3>
+        <p><span data-en="Each player reads that state from their own position and pose." data-zh="每个玩家从自身位置与姿态读取这一状态。"></span></p>
+      </div>
+      <div class="pipe-node">
+        <div class="pipe-tag"><span data-en="04 · Render" data-zh="04 · 渲染"></span></div>
+        <h3><span data-en="Rendering" data-zh="视角渲染"></span></h3>
+        <p><span data-en="The model produces synchronized first-person observations." data-zh="模型生成彼此同步的第一人称观察。"></span></p>
+      </div>
+    </div>
+
+    <figure class="method-figure fade" aria-label="Khora method diagram">
+      <img src="assets/images/method.png" alt="Khora method diagram showing the shared world state, action update, and multi-view rendering pipeline" loading="lazy" decoding="async" />
+      <figcaption><span data-en="Overview of Khora. Player actions update a shared STBoard, from which synchronized, view-specific observations are rendered for all players." data-zh="Khora 架构概览。玩家动作更新共享 STBoard，模型再从中为所有玩家渲染同步且视角特定的观察。"></span></figcaption>
+    </figure>
+
+    <div class="scale-block fade" id="scaling">
+      <div class="scale-copy">
+        <div class="scale-kicker"><span data-en="Linear scalability" data-zh="线性可扩展性"></span></div>
+        <h3><span data-en="<span class=&quot;scale-title-line&quot;>Complexity grows with players,</span><br><span class=&quot;scale-title-line&quot;>not with player pairs.</span>" data-zh="复杂度随玩家数线性增长，<br>而非二次增长。"><span class="scale-title-line">Complexity grows with players,</span><br><span class="scale-title-line">not with player pairs.</span></span></h3>
+        <p class="scale-lead"><span data-en="A pairwise world model must reason about every observer relative to every other observer. Khora keeps one shared state and adds observers through query and render, so cost scales as <span class=&quot;formula&quot;>O(n)</span> instead of <span class=&quot;formula&quot;>O(n²)</span>."
+                                data-zh="成对式世界模型需要让每个观察者与其他所有观察者两两对齐；Khora 维护单一共享状态，通过查询与渲染增加观察者，因此成本按 <span class=&quot;formula&quot;>O(n)</span> 增长，而不是 <span class=&quot;formula&quot;>O(n²)</span>。">A pairwise world model must reason about every observer relative to every other observer. Khora keeps one shared state and adds observers through query and render, so cost scales as <span class="formula">O(n)</span> instead of <span class="formula">O(n²)</span>.</span></p>
+        <ul class="scale-points">
+          <li><span data-en="Shared STBoard: one state update, many synchronized views." data-zh="共享 STBoard：一次状态更新，多路同步观察。"></span></li>
+          <li><span data-en="Adding a player adds one query path, not a combinatorial web of cross-view constraints." data-zh="新增玩家只增加一条查询路径，而不是指数级增长的跨视角约束网。"></span></li>
+          <li><span data-en="At the same headcount, linear scaling leaves room for real-time interaction." data-zh="在相同人数下，线性扩展为实时交互留出空间。"></span></li>
+        </ul>
+      </div>
+      <div class="scale-compare" aria-label="GPU scaling comparison across single view, previous works, and Khora">
+        <figure class="scale-compare-item">
+          <div class="scale-compare-gpu"><span data-en="1 GPU" data-zh="1 GPU"></span></div>
+          <img src="assets/images/image1.png" alt="Single GPU for a single view" loading="lazy" decoding="async" />
+          <figcaption><span data-en="single view" data-zh="单视角"></span></figcaption>
+        </figure>
+        <figure class="scale-compare-item">
+          <div class="scale-compare-gpu"><span data-en="1,048,576 GPUs" data-zh="1,048,576 GPUs"></span></div>
+          <img src="assets/images/image2.png" alt="Over a million GPUs required for 1024 views in previous works" loading="lazy" decoding="async" />
+          <figcaption>
+            <span data-en="1,024 views" data-zh="1,024 视角"></span>
+            <small data-en="(previous works)" data-zh="（以往方法）"></small>
+          </figcaption>
+        </figure>
+        <figure class="scale-compare-item">
+          <div class="scale-compare-gpu"><span data-en="1,024 GPUs" data-zh="1,024 GPUs"></span></div>
+          <img src="assets/images/image3.png" alt="1024 GPUs for 1024 views with Khora" loading="lazy" decoding="async" />
+          <figcaption>
+            <span data-en="1,024 views" data-zh="1,024 视角"></span>
+            <small data-en="(Khora)" data-zh="（Khora）"></small>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="highlights">
+    <div class="fade">
+      <div class="eyebrow">03 · Highlight Videos</div>
+      <h2 class="section-title no-break-title highlights-title"><span data-en="Four checks for whether it is one world." data-zh="用四组视频，验证它是不是同一个世界。"></span></h2>
+      <p class="section-lead"><span data-en="Each capability is backed by a video proof."
+                                  data-zh="每个能力，都用视频说话。"></span></p>
+    </div>
+
+    <div class="proof-stack">
+      <article class="proof fade">
+        <div class="proof-copy">
+          <div class="proof-index">Highlight 01 · Action Consistency</div>
+          <h3 class="no-break-heading"><span data-en="One action leads to multiple consistent outcomes." data-zh="一个动作，多路后果一致。"></span></h3>
+          <p class="single-line-copy"><span data-en="Ground truth and generation start from the same frame, revealing whether motion and scene responses stay aligned."
+                   data-zh="同一个起点分别展示真实视频与模型生成结果，重点看移动和场景响应是否保持对齐。"></span></p>
+        </div>
+        <div class="video-card">
+          <div class="video-stage">
+            <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT1.trimmed.mp4" aria-label="Highlight 1 action consistency"></video>
+            <div class="tracking-half" data-track="gt" aria-hidden="true">
+              <div class="tracking-box" data-player="1" data-player-label="PLAYER 1"></div>
+              <div class="tracking-box" data-player="2" data-player-label="PLAYER 2"></div>
+            </div>
+            <div class="tracking-half" data-track="gen" aria-hidden="true">
+              <div class="tracking-box" data-player="1" data-player-label="PLAYER 1"></div>
+              <div class="tracking-box" data-player="2" data-player-label="PLAYER 2"></div>
+            </div>
+            <div class="labels cols-2 rows-1" aria-hidden="true">
+              <div><span>Ground Truth</span></div>
+              <div><span>Generated</span></div>
+            </div>
+          </div>
+          <div class="video-caption"><span data-en="Left: ground truth. Right: generated continuation from the same initial condition." data-zh="左：真实视频。右：同一起点下的模型生成延续。"></span></div>
+        </div>
+      </article>
+
+      <article class="proof fade">
+        <div class="proof-copy">
+          <div class="proof-index">Highlight 02 · Z-axis Structure</div>
+          <h3><span data-en="Vertical motion remains consistent across views." data-zh="高低变化，仍在同一空间里。"></span></h3>
+          <p class="single-line-copy"><span data-en="Elevation changes test whether camera height, occlusion, and relative geometry remain consistent across views."
+                   data-zh="Z 轴案例用来检查楼梯、高低层、相机位置和遮挡关系是否在多视角生成中保持一致。有高度，才是 3D 世界。"></span></p>
+        </div>
+        <div class="video-card">
+          <div class="video-stage">
+            <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT2.web.mp4" aria-label="Highlight 2 z-axis consistency"></video>
+            <div class="labels cols-2 rows-1" aria-hidden="true">
+              <div><span>View 1 · Generated</span></div>
+              <div><span>View 2 · Generated</span></div>
+            </div>
+          </div>
+          <div class="video-caption"><span data-en="Left and right: synchronized generated views showing consistent changes in elevation, camera height, and occlusion." data-zh="左、右：同步生成视角中的高度变化、相机高度与遮挡关系保持一致。"></span></div>
+        </div>
+      </article>
+
+      <article class="proof fade">
+        <div class="proof-copy">
+          <div class="proof-index">Highlight 03 · Scene Transfer</div>
+          <h3><span data-en="The behavior is not tied to one map." data-zh="不是只记住一张地图。"></span></h3>
+          <p class="single-line-copy"><span data-en="Three maps test whether interactive dynamics transfer across different layouts and visual styles."
+                   data-zh="三个场景横向展示。重点不是外观完全一致，而是交互规律是否能迁移到不同地图布局和视觉风格。"></span></p>
+        </div>
+        <div class="video-card scene-transfer-card">
+          <div class="video-stage scene-transfer-stage" id="sceneCarousel" tabindex="0" aria-label="Generated scene transfer videos. Videos advance automatically; swipe or use arrow keys to change maps.">
+            <div class="scene-strip">
+              <button class="scene-slide side" type="button" data-scene-index="2" aria-label="Show Ancient">
+                <video muted playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT3-ancient.generated.web.mp4" aria-hidden="true"></video>
+              </button>
+              <button class="scene-slide current" type="button" data-scene-index="0" aria-live="polite" aria-label="Current map: Dust2">
+                <video muted playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT3-dust2.generated.web.mp4" aria-label="Dust2 generated scene transfer"></video>
+              </button>
+              <button class="scene-slide side" type="button" data-scene-index="1" aria-label="Show Mirage">
+                <video muted playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT3-mirage.generated.web.mp4" aria-hidden="true"></video>
+              </button>
+            </div>
+            <button class="scene-carousel-button prev" type="button" aria-label="Previous map" title="Previous map">‹</button>
+            <button class="scene-carousel-button next" type="button" aria-label="Next map" title="Next map">›</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="proof fade">
+        <div class="proof-copy">
+          <div class="proof-index">Highlight 04 · Player Scaling</div>
+          <h3><span data-en="A unified world state for an expanding player population." data-zh="统一世界状态，支持持续扩展的玩家群体。"></span></h3>
+          <p class="single-line-copy"><span data-en="Sixteen views test whether motion, occlusion, and cross-view consistency remain stable as player count grows."
+                   data-zh="4×4 布局展示多名玩家同时存在的视角，是对实体规模、遮挡关系和运动一致性的压力测试。"></span></p>
+          <p class="single-line-copy"><span data-en="The top-right mini-map in each view makes cross-view action consistency directly visible: the same player movements remain aligned across observations."
+                   data-zh="每个画面右上角的俯视图直观显示，同一玩家动作在不同视角间保持对齐。"></span></p>
+          <p class="single-line-copy"><span data-en="Additional views are supported with linear scaling."
+                   data-zh="更多视角可通过线性扩展获得支持。"></span></p>
+        </div>
+        <div class="video-card">
+          <div class="video-stage">
+            <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT4.web.mp4" aria-label="Highlight 4 sixteen player demo"></video>
+          </div>
+          <div class="video-caption"><span data-en="Sixteen generated player views, synchronized through the same evolving world state." data-zh="16 个生成玩家视角，通过同一个持续演化的世界状态保持同步。"></span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section" id="live-demo">
+    <span id="demo" aria-hidden="true" style="position:relative;top:-92px"></span>
+    <div class="fade">
+      <div class="eyebrow">04 · Live Demo</div>
+      <h2 class="section-title no-break-title demo-title single-line-copy"><span data-en="Enter Khora directly in your browser." data-zh="直接在浏览器中进入 Khora。"></span></h2>
+      <p class="section-lead single-line-copy"><span data-en="The live demo is now open."
+                                  data-zh="实时 Demo 现已开放。"></span></p>
+    </div>
+
+    <a class="demo-panel demo-link fade" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer" aria-label="Launch the Khora live demo">
+      <video class="demo-background" muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/HIGHLIGHT5.background.web.mp4" aria-hidden="true"></video>
+      <div>
+        <div class="soon-badge"><span class="dot"></span><span data-en="Live now" data-zh="现已开放"></span></div>
+        <h3><span data-en="Step into the shared world." data-zh="进入这个共享世界。"></span></h3>
+        <p><span data-en="Open the public demo to move, interact, and experience Khora as a controllable world rather than an offline video."
+                 data-zh="打开公开 Demo，直接移动、交互，并体验作为可控世界而非离线视频的 Khora。"></span></p>
+      </div>
+      <span class="demo-launch"><span data-en="Launch live demo" data-zh="进入实时 Demo"></span></span>
+    </a>
+  </section>
+
+  <section class="closing fade">
+    <p><span data-en="Not more views of a video.<br>More observers in one world." data-zh="不是给视频增加视角，<br>而是让更多观察者进入同一个世界。">Not more views of a video.<br>More observers in one world.</span> <em>Khora.</em></p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-brand-name">Khora</div>
+      <p><span data-en="Research preview of a real-time multi-agent world model." data-zh="实时多智能体世界模型的研究预览。"></span></p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Links</div>
+      <ul class="footer-links">
+        <li><a href="https://rhos.ai/" target="_blank" rel="noopener noreferrer">RhOS.ai</a></li>
+        <li><a href="https://ophilus.ai/" target="_blank" rel="noopener noreferrer">OphilusAI</a></li>
+      </ul>
+    </div>
+    <a class="footer-top" href="#top"><span data-en="Back to top ↑" data-zh="返回顶部 ↑"></span></a>
+  </div>
+</footer>
+
+<script>
+  // Always open at the top on load/refresh; ignore restored scroll and deep-link hash.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  (function forceScrollTopOnLoad() {
+    try {
+      const url = new URL(window.location.href);
+      if (url.hash) history.replaceState({}, '', url.pathname + url.search);
+    } catch (error) {}
+    window.scrollTo(0, 0);
+  })();
+
+  let currentLang = 'en';
+
+  function initialLang() {
+    const fromUrl = new URLSearchParams(window.location.search).get('lang');
+    if (fromUrl === 'zh' || fromUrl === 'en') return fromUrl;
+    return 'en';
+  }
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('[data-en][data-zh]').forEach((el) => {
+      const value = el.getAttribute('data-' + lang);
+      if (value && value.includes('<')) el.innerHTML = value;
+      else el.textContent = value;
+    });
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    updateLangMenuUI(lang);
+    document.title = lang === 'zh'
+      ? 'Khora — Research Preview'
+      : 'Khora — Research Preview';
+    localStorage.setItem('Khora-lang', lang);
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.history.replaceState({}, '', url);
+    if (typeof window.__updateHeroGridReveal === 'function') window.__updateHeroGridReveal();
+  }
+
+  function toggleLang() {
+    setLang(currentLang === 'zh' ? 'en' : 'zh');
+  }
+
+  function updateLangMenuUI(lang) {
+    const labels = { en: 'English', zh: '中文' };
+    const triggerLabel = document.getElementById('langTriggerLabel');
+    const trigger = document.getElementById('langTrigger');
+    const panel = document.getElementById('langPanel');
+    const menu = document.getElementById('langMenu');
+    if (triggerLabel) triggerLabel.textContent = labels[lang] || labels.en;
+    document.querySelectorAll('.lang-option').forEach((option) => {
+      const active = option.dataset.lang === lang;
+      option.classList.toggle('is-active', active);
+      option.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    if (panel) panel.hidden = true;
+    if (menu) menu.classList.remove('is-open');
+  }
+
+  function setupLangMenu() {
+    const menu = document.getElementById('langMenu');
+    const trigger = document.getElementById('langTrigger');
+    const panel = document.getElementById('langPanel');
+    if (!menu || !trigger || !panel) return;
+
+    const openMenu = () => {
+      panel.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('is-open');
+    };
+
+    const closeMenu = () => {
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('is-open');
+    };
+
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (menu.classList.contains('is-open')) closeMenu();
+      else openMenu();
+    });
+
+    panel.querySelectorAll('.lang-option').forEach((option) => {
+      option.addEventListener('click', (event) => {
+        event.stopPropagation();
+        setLang(option.dataset.lang === 'zh' ? 'zh' : 'en');
+        closeMenu();
+      });
+    });
+
+    panel.addEventListener('click', (event) => event.stopPropagation());
+
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu();
+    });
+  }
+
+  function setupFade() {
+    const targets = document.querySelectorAll('.fade');
+    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      targets.forEach((el) => el.classList.add('visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    targets.forEach((el) => observer.observe(el));
+  }
+
+  function setupHighlightVideos() {
+    const videos = Array.from(document.querySelectorAll('#highlights .video-stage video, .demo-panel .demo-background'))
+      .filter((video) => !video.closest('#sceneCarousel'));
+    if (!videos.length) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const prepareVideo = (video) => {
+      if (video.dataset.loaded === 'true') return;
+      const src = video.dataset.src;
+      if (!src) return;
+      video.dataset.loaded = 'true';
+      video.preload = 'auto';
+      video.src = src;
+      try { video.load(); } catch (error) {}
+    };
+
+    const tryPlay = (video) => {
+      prepareVideo(video);
+      video.muted = true;
+      const playbackRate = Number(video.dataset.playbackRate || 1);
+      video.defaultPlaybackRate = playbackRate;
+      video.playbackRate = playbackRate;
+      const promise = video.play();
+      if (promise && typeof promise.catch === 'function') promise.catch(() => {});
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      videos.forEach((video) => {
+        prepareVideo(video);
+        if (!reducedMotion) tryPlay(video);
+      });
+      return;
+    }
+
+    const preloadObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        prepareVideo(entry.target);
+        preloadObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: '360px 0px', threshold: 0 });
+
+    const playbackObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting && !reducedMotion) tryPlay(video);
+        else video.pause();
+      });
+    }, { threshold: 0.25 });
+
+    videos.forEach((video) => {
+      preloadObserver.observe(video);
+      playbackObserver.observe(video);
+    });
+  }
+
+  function setupActionTracking() {
+    const video = document.querySelector('[data-track="gt"]')?.parentElement.querySelector('video');
+    const boxes = {
+      gt: {
+        player1: document.querySelector('[data-track="gt"] [data-player="1"]'),
+        player2: document.querySelector('[data-track="gt"] [data-player="2"]')
+      },
+      gen: {
+        player1: document.querySelector('[data-track="gen"] [data-player="1"]'),
+        player2: document.querySelector('[data-track="gen"] [data-player="2"]')
+      }
+    };
+    if (!video || Object.values(boxes).some((view) => Object.values(view).some((box) => !box))) return;
+
+    const tracks = {
+      gt: {
+        player1: [
+          { t: 0, x: 42, y: 34, w: 5, h: 24, o: 0 },
+          { t: .72, x: 42, y: 34, w: 5, h: 24, o: 0 },
+          { t: 1, x: 42, y: 32, w: 5, h: 25, o: 1 },
+          { t: 2, x: 52, y: 27, w: 9, h: 38, o: 1 },
+          { t: 3, x: 86, y: 0, w: 14, h: 78, o: 1 },
+          { t: 3.22, x: 96, y: 0, w: 4, h: 78, o: 0 },
+          { t: 10, x: 42, y: 34, w: 5, h: 24, o: 0 }
+        ],
+        player2: [
+          { t: 0, x: 48, y: 42, w: 5, h: 19, o: 0 },
+          { t: .68, x: 48, y: 42, w: 5, h: 19, o: 0 },
+          { t: .9, x: 48, y: 42, w: 5, h: 19, o: 1 },
+          { t: 2, x: 48, y: 41, w: 5, h: 20, o: 1 },
+          { t: 3.3, x: 48, y: 39, w: 6, h: 23, o: 1 },
+          { t: 4, x: 55, y: 28, w: 9, h: 37, o: 1 },
+          { t: 5, x: 67, y: 27, w: 11, h: 43, o: 1 },
+          { t: 5.72, x: 91, y: 18, w: 9, h: 49, o: 1 },
+          { t: 5.95, x: 97, y: 18, w: 3, h: 49, o: 0 },
+          { t: 10, x: 48, y: 42, w: 5, h: 19, o: 0 }
+        ]
+      },
+      gen: {
+        player1: [
+          { t: 0, x: 42, y: 34, w: 5, h: 24, o: 0 },
+          { t: .72, x: 42, y: 34, w: 5, h: 24, o: 0 },
+          { t: 1, x: 42, y: 32, w: 5, h: 25, o: 1 },
+          { t: 2, x: 48, y: 27, w: 11, h: 40, o: 1 },
+          { t: 3, x: 96, y: 2, w: 4, h: 75, o: 1 },
+          { t: 3.18, x: 98, y: 2, w: 2, h: 75, o: 0 },
+          { t: 10, x: 42, y: 34, w: 5, h: 24, o: 0 }
+        ],
+        player2: [
+          { t: 0, x: 48, y: 42, w: 5, h: 19, o: 0 },
+          { t: .68, x: 48, y: 42, w: 5, h: 19, o: 0 },
+          { t: .9, x: 48, y: 42, w: 5, h: 19, o: 1 },
+          { t: 2, x: 48, y: 41, w: 5, h: 21, o: 1 },
+          { t: 3.3, x: 48, y: 39, w: 6, h: 23, o: 1 },
+          { t: 4, x: 57, y: 29, w: 8, h: 36, o: 1 },
+          { t: 5, x: 65, y: 28, w: 12, h: 41, o: 1 },
+          { t: 5.72, x: 91, y: 18, w: 9, h: 49, o: 1 },
+          { t: 5.95, x: 97, y: 18, w: 3, h: 49, o: 0 },
+          { t: 10, x: 48, y: 42, w: 5, h: 19, o: 0 }
+        ]
+      }
+    };
+
+    const sample = (keyframes, time) => {
+      let nextIndex = keyframes.findIndex((keyframe) => keyframe.t >= time);
+      if (nextIndex <= 0) nextIndex = 1;
+      const previous = keyframes[nextIndex - 1];
+      const next = keyframes[nextIndex] || keyframes[keyframes.length - 1];
+      const amount = next.t === previous.t ? 0 : Math.min(1, Math.max(0, (time - previous.t) / (next.t - previous.t)));
+      return ['x', 'y', 'w', 'h', 'o'].reduce((result, key) => {
+        result[key] = previous[key] + (next[key] - previous[key]) * amount;
+        return result;
+      }, {});
+    };
+
+    const update = () => {
+      const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 6.03125;
+      const time = Number.isFinite(video.currentTime) ? video.currentTime % duration : 0;
+      Object.entries(boxes).forEach(([viewName, viewBoxes]) => {
+        Object.entries(viewBoxes).forEach(([playerName, box]) => {
+          const frame = sample(tracks[viewName][playerName], time);
+          box.style.setProperty('--track-x', frame.x + '%');
+          box.style.setProperty('--track-y', frame.y + '%');
+          box.style.setProperty('--track-w', frame.w + '%');
+          box.style.setProperty('--track-h', frame.h + '%');
+          box.style.setProperty('--track-opacity', frame.o.toFixed(2));
+        });
+      });
+    };
+
+    if ('requestVideoFrameCallback' in video) {
+      const onFrame = () => {
+        update();
+        if (video.isConnected) video.requestVideoFrameCallback(onFrame);
+      };
+      video.requestVideoFrameCallback(onFrame);
+    } else {
+      video.addEventListener('timeupdate', update);
+    }
+    video.addEventListener('seeked', update);
+    update();
+  }
+
+  function setupSceneCarousel() {
+    const carousel = document.getElementById('sceneCarousel');
+    const slides = Array.from(carousel?.querySelectorAll('[data-scene-index]') || []);
+    if (!carousel || slides.length !== 3) return;
+
+    const scenes = [
+      { name: 'Dust2', src: 'assets/videos/HIGHLIGHT3-dust2.generated.web.mp4' },
+      { name: 'Mirage', src: 'assets/videos/HIGHLIGHT3-mirage.generated.web.mp4' },
+      { name: 'Ancient', src: 'assets/videos/HIGHLIGHT3-ancient.generated.web.mp4' }
+    ];
+    const videos = slides.map((slide) => slide.querySelector('video')).filter(Boolean);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let currentIndex = 0;
+    let pointerStartX = null;
+    let switchTimer = 0;
+    let carouselInView = !('IntersectionObserver' in window);
+    let isSwitching = false;
+
+    const prepareVideo = (video) => {
+      if (!video || video.dataset.loaded === 'true') return;
+      const src = video.dataset.src;
+      if (!src) return;
+      video.dataset.loaded = 'true';
+      video.loop = false;
+      video.muted = true;
+      video.preload = 'auto';
+      video.src = src;
+      const playbackRate = Number(video.dataset.playbackRate || 1);
+      video.defaultPlaybackRate = playbackRate;
+      video.playbackRate = playbackRate;
+      try { video.load(); } catch (error) {}
+    };
+
+    const syncPlayback = (restartCurrent = false) => {
+      slides.forEach((slide) => {
+        const sceneIndex = Number(slide.dataset.sceneIndex);
+        const video = slide.querySelector('video');
+        if (!video) return;
+        if (sceneIndex !== currentIndex) {
+          video.pause();
+          if (video.readyState >= 1 && video.currentTime > 0.05) {
+            try { video.currentTime = 0; } catch (error) {}
+          }
+          return;
+        }
+        if (!carouselInView || document.hidden || reducedMotion) {
+          video.pause();
+          return;
+        }
+        prepareVideo(video);
+        if (restartCurrent && video.readyState >= 1) {
+          try { video.currentTime = 0; } catch (error) {}
+        }
+        const playbackRate = Number(video.dataset.playbackRate || 1);
+        video.defaultPlaybackRate = playbackRate;
+        video.playbackRate = playbackRate;
+        const promise = video.play();
+        if (promise && typeof promise.catch === 'function') promise.catch(() => {});
+      });
+    };
+
+    const render = (restartCurrent = false) => {
+      slides.forEach((slide) => {
+        const sceneIndex = Number(slide.dataset.sceneIndex);
+        const offset = (sceneIndex - currentIndex + scenes.length) % scenes.length;
+        const isCurrent = offset === 0;
+        const scene = scenes[sceneIndex];
+        const video = slide.querySelector('video');
+        slide.classList.toggle('current', isCurrent);
+        slide.classList.toggle('side', !isCurrent);
+        slide.style.order = String(isCurrent ? 2 : (offset === 1 ? 3 : 1));
+        slide.setAttribute('aria-current', isCurrent ? 'true' : 'false');
+        slide.setAttribute('aria-label', isCurrent ? `Current map: ${scene.name}` : `Show ${scene.name}`);
+        if (video) {
+          video.setAttribute('aria-hidden', isCurrent ? 'false' : 'true');
+          if (isCurrent) video.setAttribute('aria-label', scene.name + ' generated scene transfer');
+          else video.removeAttribute('aria-label');
+        }
+      });
+      syncPlayback(restartCurrent);
+    };
+
+    const selectScene = (index, direction = 0) => {
+      const nextIndex = (index + scenes.length) % scenes.length;
+      if (nextIndex === currentIndex || isSwitching) return;
+      const resolvedDirection = direction || (nextIndex === (currentIndex + 1) % scenes.length ? 1 : -1);
+      isSwitching = true;
+      videos.forEach((video) => video.pause());
+      carousel.style.setProperty('--scene-shift', resolvedDirection > 0 ? '-18px' : '18px');
+      carousel.classList.add('is-switching');
+      window.clearTimeout(switchTimer);
+      switchTimer = window.setTimeout(() => {
+        currentIndex = nextIndex;
+        render(true);
+        carousel.style.setProperty('--scene-shift', '0');
+        requestAnimationFrame(() => {
+          carousel.classList.remove('is-switching');
+          isSwitching = false;
+        });
+      }, 150);
+    };
+
+    carousel.querySelector('.prev')?.addEventListener('click', () => selectScene(currentIndex - 1, -1));
+    carousel.querySelector('.next')?.addEventListener('click', () => selectScene(currentIndex + 1, 1));
+    slides.forEach((slide) => slide.addEventListener('click', () => selectScene(Number(slide.dataset.sceneIndex))));
+    carousel.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        selectScene(currentIndex - 1, -1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        selectScene(currentIndex + 1, 1);
+      }
+    });
+    carousel.addEventListener('pointerdown', (event) => {
+      pointerStartX = event.clientX;
+    });
+    carousel.addEventListener('pointerup', (event) => {
+      if (pointerStartX === null) return;
+      const distance = event.clientX - pointerStartX;
+      pointerStartX = null;
+      if (Math.abs(distance) < 42) return;
+      selectScene(currentIndex + (distance < 0 ? 1 : -1), distance < 0 ? 1 : -1);
+    });
+    carousel.addEventListener('pointercancel', () => { pointerStartX = null; });
+
+    slides.forEach((slide) => {
+      const video = slide.querySelector('video');
+      if (!video) return;
+      video.addEventListener('ended', () => {
+        if (Number(slide.dataset.sceneIndex) === currentIndex && !isSwitching) {
+          selectScene(currentIndex + 1, 1);
+        }
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const preloadObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        videos.forEach(prepareVideo);
+        preloadObserver.disconnect();
+      }, { rootMargin: '360px 0px', threshold: 0 });
+      const playbackObserver = new IntersectionObserver((entries) => {
+        carouselInView = entries.some((entry) => entry.isIntersecting);
+        syncPlayback(false);
+      }, { threshold: 0.25 });
+      preloadObserver.observe(carousel);
+      playbackObserver.observe(carousel);
+    } else {
+      videos.forEach(prepareVideo);
+    }
+    document.addEventListener('visibilitychange', () => syncPlayback(false));
+    render();
+  }
+
+  function setupHeroGridReveal() {
+    const REVEAL_STEPS = [2, 4, 8, 16, 32, 64, 128];
+    const MAX_GRID = REVEAL_STEPS[REVEAL_STEPS.length - 1];
+    const pin = document.getElementById('heroPin');
+    const visual = document.getElementById('heroVisual');
+    const spacer = document.getElementById('heroVisualSpacer');
+    const copyColumn = document.querySelector('.hero-copy-column');
+    const card = document.querySelector('.world-card');
+    const grid = document.getElementById('heroWorldGrid');
+    const label = document.getElementById('worldScaleLabel');
+    const meter = document.querySelector('.world-reveal-meter');
+    const summary = document.querySelector('.hero-summary-section');
+    if (!pin || !visual || !spacer || !card || !grid || !label) return;
+
+    const START_GRID_SCALE = MAX_GRID / REVEAL_STEPS[0];
+    const END_GRID_SCALE = 1;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let naturalRect = null;
+    let targetState = null;
+    let currentState = null;
+    let raf = 0;
+    let needsMeasure = true;
+    let lastTime = 0;
+    let lastStep = null;
+    let mode = 'rest';
+    let pinBaseRect = null;
+    let lastScrollY = window.scrollY || 0;
+    let scrollDir = 0; // 1 = down, -1 = up
+    let dots = [];
+    let layerVideos = [];
+    let hdLayerVideos = [];
+    let loadLayersThrough = () => {};
+    let updateLayerVisibility = () => {};
+    let refreshLayerPlayback = () => {};
+    let activeLayerLevels = new Set([REVEAL_STEPS[0]]);
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const easeOut = (t) => 1 - Math.pow(1 - t, 2.4);
+    const easeInOut = (t) => t * t * (3 - 2 * t);
+    const round = (value, digits = 2) => Number(value).toFixed(digits);
+    const padLevel = (level) => String(level).padStart(3, '0');
+
+    const buildMeter = () => {
+      if (!meter) return;
+      meter.innerHTML = REVEAL_STEPS
+        .map((step, index) => `<span${index === 0 ? ' class="active"' : ''} data-step="${step}"></span>`)
+        .join('');
+      dots = Array.from(meter.querySelectorAll('span'));
+    };
+
+    const buildHeroLayers = () => {
+      if (grid.dataset.heroLayersReady === 'true') {
+        layerVideos = Array.from(grid.querySelectorAll('video[data-role="base"]'));
+        hdLayerVideos = Array.from(grid.querySelectorAll('video[data-role="hd"]'));
+        return;
+      }
+
+      const layerDir = grid.dataset.layerDir || 'assets/videos/khora_0_8_layers';
+      const codecProbe = document.createElement('video');
+      const supportsAv1 = codecProbe.canPlayType('video/mp4; codecs="av01.0.08M.08"') !== '';
+      const supportsHevc = codecProbe.canPlayType('video/mp4; codecs="hvc1.1.6.L120.B0"') !== '';
+      const preferredCodec = supportsAv1 ? 'av1' : (supportsHevc ? 'hevc' : 'h264');
+      const centerCodecLevels = new Set(REVEAL_STEPS.slice(0, 2));
+      grid.dataset.heroCodec = preferredCodec;
+      const fragment = document.createDocumentFragment();
+      [...REVEAL_STEPS].reverse().forEach((step) => {
+        const inset = ((MAX_GRID - step) / (MAX_GRID * 2)) * 100;
+        const size = (step / MAX_GRID) * 100;
+        const layer = document.createElement('div');
+        layer.className = 'hero-world-layer';
+        layer.dataset.level = String(step);
+        layer.style.left = inset + '%';
+        layer.style.top = inset + '%';
+        layer.style.width = size + '%';
+        layer.style.height = size + '%';
+        layer.style.zIndex = String(MAX_GRID - step + 1);
+
+        const video = document.createElement('video');
+        video.autoplay = false;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'none';
+        video.disablePictureInPicture = true;
+        video.className = 'hero-layer-base';
+        video.dataset.role = 'base';
+        video.dataset.level = String(step);
+        video.dataset.codec = 'h264-boot';
+        video.dataset.src = `${layerDir}/rhos_large_text_layer_${padLevel(step)}.boot.mp4`;
+        if (step === REVEAL_STEPS[0]) {
+          layer.classList.add('has-poster');
+          video.poster = `${layerDir}/poster_${padLevel(step)}.boot.webp`;
+          video.setAttribute('fetchpriority', 'high');
+        }
+        layer.appendChild(video);
+        const hdVideo = document.createElement('video');
+        hdVideo.autoplay = false;
+        hdVideo.muted = true;
+        hdVideo.loop = true;
+        hdVideo.playsInline = true;
+        hdVideo.preload = 'none';
+        hdVideo.disablePictureInPicture = true;
+        hdVideo.className = 'hero-layer-hd';
+        hdVideo.dataset.role = 'hd';
+        hdVideo.dataset.level = String(step);
+        const hdCodec = centerCodecLevels.has(step) ? preferredCodec : 'h264';
+        const hdCodecSuffix = hdCodec === 'h264' ? '' : `.${hdCodec}`;
+        hdVideo.dataset.codec = hdCodec;
+        hdVideo.dataset.src = `${layerDir}/rhos_large_text_layer_${padLevel(step)}${hdCodecSuffix}.mp4`;
+        layer.appendChild(hdVideo);
+        fragment.appendChild(layer);
+      });
+
+      grid.textContent = '';
+      grid.appendChild(fragment);
+      grid.dataset.heroLayersReady = 'true';
+      layerVideos = Array.from(grid.querySelectorAll('video[data-role="base"]'));
+      hdLayerVideos = Array.from(grid.querySelectorAll('video[data-role="hd"]'));
+
+      const loadedLayerVideos = () => layerVideos
+        .filter((video) => video.dataset.loaded === 'true')
+        .sort((a, b) => Number(a.dataset.level) - Number(b.dataset.level));
+
+      let clockStartedAt = null;
+      let heroInView = true;
+      const loopDuration = 8;
+
+      const clockTime = () => {
+        if (clockStartedAt === null) return 0;
+        return ((performance.now() - clockStartedAt) / 1000) % loopDuration;
+      };
+
+      const alignToClock = (video) => {
+        if (video.readyState < 1) return;
+        const targetTime = clockTime();
+        if (Math.abs(video.currentTime - targetTime) <= 0.18) return;
+        try { video.currentTime = targetTime; } catch (error) {}
+      };
+
+      const tryPlay = (video) => {
+        if (video.dataset.ready !== 'true') return Promise.resolve(false);
+        if (clockStartedAt === null) clockStartedAt = performance.now();
+        video.muted = true;
+        alignToClock(video);
+        const promise = video.play();
+        if (promise && typeof promise.catch === 'function') return promise.catch(() => false);
+        return Promise.resolve(true);
+      };
+
+      const layerForStep = (step) => layerVideos.find((video) => Number(video.dataset.level) === step);
+      const hdLayerForStep = (step) => hdLayerVideos.find((video) => Number(video.dataset.level) === step);
+
+      const revealHdLayer = (hdVideo) => {
+        if (hdVideo.dataset.ready !== 'true'
+          || hdVideo.dataset.revealPending === 'true'
+          || hdVideo.classList.contains('is-visible')) return;
+
+        const level = Number(hdVideo.dataset.level);
+        const baseVideo = layerForStep(level);
+        hdVideo.dataset.revealPending = 'true';
+        let revealed = false;
+        const reveal = () => {
+          if (revealed) return;
+          revealed = true;
+          hdVideo.dataset.revealPending = 'false';
+          if (!heroInView || document.hidden || !activeLayerLevels.has(level)) return;
+          hdVideo.classList.add('is-visible');
+          window.setTimeout(() => {
+            if (hdVideo.classList.contains('is-visible') && activeLayerLevels.has(level)) {
+              baseVideo?.pause();
+            }
+          }, 240);
+        };
+
+        tryPlay(hdVideo).then(() => {
+          if ('requestVideoFrameCallback' in hdVideo) {
+            hdVideo.requestVideoFrameCallback(reveal);
+          } else {
+            window.setTimeout(reveal, 60);
+          }
+        });
+        window.setTimeout(reveal, 450);
+      };
+
+      refreshLayerPlayback = () => {
+        layerVideos.forEach((baseVideo) => {
+          const level = Number(baseVideo.dataset.level);
+          const hdVideo = hdLayerForStep(level);
+          const shouldPlay = heroInView
+            && !document.hidden
+            && activeLayerLevels.has(level)
+            && baseVideo.dataset.ready === 'true';
+          if (!shouldPlay) {
+            if (!baseVideo.paused) baseVideo.pause();
+            if (hdVideo) {
+              if (!hdVideo.paused) hdVideo.pause();
+              hdVideo.classList.remove('is-visible');
+              hdVideo.dataset.revealPending = 'false';
+            }
+            return;
+          }
+
+          if (hdVideo?.dataset.ready === 'true') {
+            if (hdVideo.classList.contains('is-visible')) {
+              tryPlay(hdVideo);
+              if (!baseVideo.paused) baseVideo.pause();
+            } else {
+              tryPlay(baseVideo);
+              revealHdLayer(hdVideo);
+            }
+          } else {
+            tryPlay(baseVideo);
+          }
+        });
+      };
+
+      const layerLoadPromises = new Map();
+      const hdLoadPromises = new Map();
+      let requestedThroughStep = REVEAL_STEPS[0];
+      let heroLoaderActive = false;
+      let hdPreloadStarted = false;
+
+      const markLayerReady = (video) => {
+        if (video.dataset.ready === 'true') return;
+        video.dataset.ready = 'true';
+        video.parentElement?.classList.add('is-ready');
+        alignToClock(video);
+        requestAnimationFrame(() => updateLayerVisibility(currentState?.gridScale || START_GRID_SCALE));
+        window.setTimeout(() => {
+          const coarsePassReady = REVEAL_STEPS.every((step) => {
+            const baseVideo = layerForStep(step);
+            return baseVideo?.dataset.ready === 'true' || baseVideo?.dataset.error === 'true';
+          });
+          if (coarsePassReady) startHdPreload();
+        }, 0);
+      };
+
+      const loadStreamedPriorityLayer = (video) => new Promise((resolve) => {
+        let settled = false;
+        let readyResolved = false;
+        let loadPoll = 0;
+        let loadTimeout = 0;
+        const cleanup = () => {
+          window.clearInterval(loadPoll);
+          window.clearTimeout(loadTimeout);
+          video.removeEventListener('progress', checkBuffer);
+          video.removeEventListener('canplaythrough', checkBuffer);
+        };
+        const resolveReady = () => {
+          if (readyResolved) return;
+          readyResolved = true;
+          resolve(video);
+        };
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          video.dataset.downloaded = 'true';
+          video.dataset.loading = 'false';
+          resolveReady();
+        };
+        const fail = () => {
+          if (settled) return;
+          video.dataset.error = 'true';
+          finish();
+        };
+        const checkBuffer = () => {
+          if (video.readyState >= 2) {
+            markLayerReady(video);
+            resolveReady();
+          }
+          if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+          let bufferedEnd = 0;
+          for (let index = 0; index < video.buffered.length; index += 1) {
+            bufferedEnd = Math.max(bufferedEnd, video.buffered.end(index));
+          }
+          if (bufferedEnd >= video.duration - 0.25) finish();
+        };
+        video.preload = 'auto';
+        video.src = video.dataset.src;
+        video.addEventListener('loadedmetadata', () => alignToClock(video), { once: true });
+        video.addEventListener('loadeddata', checkBuffer, { once: true });
+        video.addEventListener('canplay', checkBuffer, { once: true });
+        video.addEventListener('canplaythrough', checkBuffer);
+        video.addEventListener('progress', checkBuffer);
+        video.addEventListener('error', fail, { once: true });
+        loadPoll = window.setInterval(checkBuffer, 100);
+        loadTimeout = window.setTimeout(finish, 12000);
+        try { video.load(); } catch (error) { fail(); }
+      });
+
+      const loadFetchedLayer = async (video) => {
+        try {
+          const response = await fetch(video.dataset.src, {
+            cache: 'force-cache',
+            priority: Number(video.dataset.level) <= REVEAL_STEPS[1] ? 'high' : 'auto'
+          });
+          if (!response.ok) throw new Error(`Hero layer ${video.dataset.level}: ${response.status}`);
+          const blob = await response.blob();
+          video.dataset.downloaded = 'true';
+          const objectUrl = URL.createObjectURL(blob);
+          video.dataset.objectUrl = objectUrl;
+          video.preload = 'auto';
+          video.src = objectUrl;
+          const ready = () => markLayerReady(video);
+          const fail = () => { video.dataset.error = 'true'; };
+          video.addEventListener('loadedmetadata', () => alignToClock(video), { once: true });
+          video.addEventListener('loadeddata', ready, { once: true });
+          video.addEventListener('error', fail, { once: true });
+          try { video.load(); } catch (error) { fail(); }
+          if (video.readyState >= 2) ready();
+        } catch (error) {
+          video.dataset.error = 'true';
+        } finally {
+          video.dataset.loading = 'false';
+        }
+        return video;
+      };
+
+      const loadSingleLayer = (video) => {
+        if (!video) return Promise.resolve(null);
+        if (video.dataset.ready === 'true') {
+          refreshLayerPlayback();
+          return Promise.resolve(video);
+        }
+        if (layerLoadPromises.has(video)) return layerLoadPromises.get(video);
+
+        video.dataset.loaded = 'true';
+        video.dataset.loading = 'true';
+        const promise = Number(video.dataset.level) === REVEAL_STEPS[0]
+          ? loadStreamedPriorityLayer(video)
+          : loadFetchedLayer(video);
+        layerLoadPromises.set(video, promise);
+        return promise;
+      };
+
+      const loadHdLayer = (video) => {
+        if (!video) return Promise.resolve(null);
+        if (hdLoadPromises.has(video)) return hdLoadPromises.get(video);
+
+        video.dataset.loading = 'true';
+        const promise = (async () => {
+          try {
+            const highPriorityHdLevels = new Set([2, 4, 128]);
+            const response = await fetch(video.dataset.src, {
+              cache: 'force-cache',
+              priority: highPriorityHdLevels.has(Number(video.dataset.level)) ? 'high' : 'low'
+            });
+            if (!response.ok) throw new Error(`HD hero layer ${video.dataset.level}: ${response.status}`);
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            video.dataset.objectUrl = objectUrl;
+            video.preload = 'auto';
+            video.src = objectUrl;
+            await new Promise((resolve, reject) => {
+              const ready = () => resolve();
+              const fail = () => reject(new Error(`HD hero layer ${video.dataset.level} decode failed`));
+              video.addEventListener('loadeddata', ready, { once: true });
+              video.addEventListener('error', fail, { once: true });
+              try { video.load(); } catch (error) { reject(error); }
+              if (video.readyState >= 2) resolve();
+            });
+            video.dataset.ready = 'true';
+            video.dataset.downloaded = 'true';
+            alignToClock(video);
+            refreshLayerPlayback();
+          } catch (error) {
+            video.dataset.error = 'true';
+          } finally {
+            video.dataset.loading = 'false';
+          }
+          return video;
+        })();
+        hdLoadPromises.set(video, promise);
+        return promise;
+      };
+
+      const startHdPreload = () => {
+        if (hdPreloadStarted) return;
+        hdPreloadStarted = true;
+        [2, 4, 128, 8, 16, 32, 64]
+          .map(hdLayerForStep)
+          .filter(Boolean)
+          .forEach((video) => loadHdLayer(video));
+      };
+
+      const runHeroLoader = async () => {
+        if (heroLoaderActive) return;
+        heroLoaderActive = true;
+        try {
+          const requestedLayers = REVEAL_STEPS
+            .filter((step) => step <= requestedThroughStep)
+            .map(layerForStep)
+            .filter((video) => video && video.dataset.loaded !== 'true' && video.dataset.error !== 'true');
+          await Promise.all(requestedLayers.map(loadSingleLayer));
+          const coarsePassReady = requestedThroughStep >= MAX_GRID
+            && REVEAL_STEPS.every((step) => {
+              const video = layerForStep(step);
+              return video?.dataset.ready === 'true' || video?.dataset.error === 'true';
+            });
+          if (coarsePassReady) startHdPreload();
+        } finally {
+          heroLoaderActive = false;
+          const hasPending = REVEAL_STEPS.some((step) => {
+            if (step > requestedThroughStep) return false;
+            const video = layerForStep(step);
+            const pending = video?.dataset.loaded !== 'true';
+            return video && pending && video.dataset.error !== 'true';
+          });
+          if (hasPending) requestAnimationFrame(runHeroLoader);
+        }
+      };
+
+      loadLayersThrough = (maxStep) => {
+        const cappedStep = clamp(Math.ceil(maxStep / 2) * 2, REVEAL_STEPS[0], MAX_GRID);
+        requestedThroughStep = Math.max(requestedThroughStep, cappedStep);
+        runHeroLoader();
+      };
+
+      const syncVideos = () => {
+        [...loadedLayerVideos(), ...hdLayerVideos].forEach((video) => {
+          if (!activeLayerLevels.has(Number(video.dataset.level)) || video.readyState < 2) return;
+          alignToClock(video);
+        });
+        refreshLayerPlayback();
+      };
+
+      loadLayersThrough(MAX_GRID);
+      if ('IntersectionObserver' in window) {
+        const playbackObserver = new IntersectionObserver((entries) => {
+          heroInView = entries.some((entry) => entry.isIntersecting);
+          refreshLayerPlayback();
+        }, { rootMargin: '240px 0px', threshold: 0 });
+        playbackObserver.observe(pin);
+      }
+      window.setInterval(syncVideos, 500);
+      document.addEventListener('visibilitychange', () => {
+        requestAnimationFrame(refreshLayerPlayback);
+      });
+      window.addEventListener('pagehide', () => {
+        [...layerVideos, ...hdLayerVideos].forEach((video) => {
+          if (video.dataset.objectUrl) URL.revokeObjectURL(video.dataset.objectUrl);
+        });
+      }, { once: true });
+    };
+
+    buildMeter();
+    buildHeroLayers();
+
+    const restState = () => ({
+      x: 0,
+      y: 0,
+      scale: 1,
+      gridScale: START_GRID_SCALE,
+      reveal: 0,
+      z: 4
+    });
+
+    const setSpacer = (show) => {
+      spacer.style.display = show ? 'block' : 'none';
+      if (naturalRect) spacer.style.minHeight = naturalRect.height + 'px';
+    };
+
+    const resetVisual = () => {
+      visual.classList.remove('is-pinned', 'is-settled');
+      visual.style.position = '';
+      visual.style.top = '';
+      visual.style.left = '';
+      visual.style.width = '';
+      visual.style.height = '';
+      visual.style.borderRadius = '';
+      visual.style.aspectRatio = '';
+      visual.style.zIndex = '';
+      visual.style.transform = 'translate3d(0, 0, 0) scale(1)';
+      visual.style.setProperty('--hero-scale', '1');
+      setSpacer(false);
+      pinBaseRect = null;
+      mode = 'rest';
+    };
+
+    const syncNaturalVisualSize = () => {
+      if (!copyColumn || !window.matchMedia('(min-width: 1360px)').matches) {
+        visual.style.removeProperty('--hero-natural-width');
+        visual.style.removeProperty('--hero-natural-height');
+        return;
+      }
+      const copyHeight = copyColumn.getBoundingClientRect().height;
+      if (copyHeight < 20) return;
+      visual.style.setProperty('--hero-natural-width', `${round(copyHeight * (832 / 480))}px`);
+      visual.style.setProperty('--hero-natural-height', `${round(copyHeight)}px`);
+    };
+
+    const measureNaturalRect = () => {
+      const previousMode = mode;
+      if (previousMode !== 'rest') resetVisual();
+      syncNaturalVisualSize();
+      const rect = visual.getBoundingClientRect();
+      if (rect.width < 20 || rect.height < 20) return false;
+      naturalRect = {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        borderRadius: parseFloat(getComputedStyle(visual).borderTopLeftRadius) || 42
+      };
+      if (previousMode !== 'rest') mode = 'rest';
+      return true;
+    };
+
+    const updateLabel = (gridScale) => {
+      const visible = MAX_GRID / Math.max(gridScale, 0.001);
+      let stepIndex = 0;
+      REVEAL_STEPS.forEach((step, index) => {
+        if (Math.abs(step - visible) < Math.abs(REVEAL_STEPS[stepIndex] - visible)) stepIndex = index;
+      });
+      const step = REVEAL_STEPS[stepIndex];
+      if (lastStep === step) return;
+      lastStep = step;
+      label.textContent = currentLang === 'zh'
+        ? `${step}×${step} · 同一个世界状态`
+        : `${step}×${step} · one world state`;
+      dots.forEach((dot, index) => dot.classList.toggle('active', index <= stepIndex));
+      loadLayersThrough(REVEAL_STEPS[Math.min(stepIndex + 1, REVEAL_STEPS.length - 1)]);
+    };
+
+    updateLayerVisibility = (gridScale) => {
+      const visible = clamp(MAX_GRID / Math.max(gridScale, 0.001), REVEAL_STEPS[0], MAX_GRID);
+      const stagePosition = clamp(Math.log2(visible / REVEAL_STEPS[0]), 0, REVEAL_STEPS.length - 1);
+      const lowerIndex = Math.floor(stagePosition);
+      const upperIndex = Math.min(REVEAL_STEPS.length - 1, lowerIndex + 1);
+      const mix = stagePosition - lowerIndex;
+
+      const ready = (index) => {
+        const video = layerVideos.find((item) => Number(item.dataset.level) === REVEAL_STEPS[index]);
+        if (video?.readyState >= 2 && video.dataset.error !== 'true' && video.dataset.ready !== 'true') {
+          video.dataset.ready = 'true';
+          video.parentElement?.classList.add('is-ready');
+        }
+        return video?.dataset.ready === 'true' || video?.parentElement?.classList.contains('has-poster');
+      };
+      const opacities = REVEAL_STEPS.map(() => 0);
+      if (lowerIndex === upperIndex && ready(lowerIndex)) {
+        opacities[lowerIndex] = 1;
+      } else if (ready(lowerIndex) && ready(upperIndex)) {
+        opacities[lowerIndex] = 1 - mix;
+        opacities[upperIndex] = mix;
+      } else if (ready(lowerIndex)) {
+        opacities[lowerIndex] = 1;
+      } else if (ready(upperIndex)) {
+        opacities[upperIndex] = 1;
+      } else {
+        const fallbackIndex = REVEAL_STEPS
+          .map((step, index) => ({ index, distance: Math.abs(index - stagePosition) }))
+          .filter(({ index }) => ready(index))
+          .sort((a, b) => a.distance - b.distance)[0]?.index;
+        if (fallbackIndex !== undefined) opacities[fallbackIndex] = 1;
+      }
+
+      layerVideos.forEach((video) => {
+        const index = REVEAL_STEPS.indexOf(Number(video.dataset.level));
+        video.parentElement?.style.setProperty('--layer-opacity', opacities[index].toFixed(3));
+      });
+      activeLayerLevels = new Set(REVEAL_STEPS.filter((step, index) => opacities[index] > 0.001));
+      refreshLayerPlayback();
+    };
+
+    const getTarget = (baseRect) => {
+      const viewportWidth = window.innerWidth || 1;
+      const viewportHeight = window.innerHeight || 1;
+      const topbar = document.querySelector('.topbar')?.offsetHeight || 64;
+      const sidePad = viewportWidth <= 760 ? 22 : 28;
+      const targetWidth = Math.min(1480, viewportWidth - sidePad);
+      const targetHeight = Math.min(viewportHeight - topbar - 18, Math.max(620, targetWidth * 0.62));
+      const fitScale = Math.min(targetWidth / baseRect.width, targetHeight / baseRect.height);
+      return {
+        centerX: viewportWidth / 2,
+        centerY: topbar + (viewportHeight - topbar) / 2,
+        scale: clamp(fitScale, 1, viewportWidth <= 760 ? 1.08 : 1.78)
+      };
+    };
+
+    const getScrollProgress = () => {
+      const pinRect = pin.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 1;
+      const scrollable = Math.max(1, pinRect.height - viewportHeight);
+      const raw = clamp(-pinRect.top / scrollable, 0, 1);
+      return reducedMotion ? 1 : raw;
+    };
+
+    // Frozen origin for the pin animation. Do NOT track the scrolling spacer:
+    // x/y share one progress value so the visual travels in a straight line to center.
+    const stateFromProgress = (raw, baseRect) => {
+      const target = getTarget(baseRect);
+      // Card zooms toward center; legend is counter-scaled via --hero-scale.
+      const centerProgress = clamp(raw, 0, 1);
+      const revealProgress = clamp(raw, 0, 1);
+      const baseCenterX = baseRect.left + baseRect.width / 2;
+      const baseCenterY = baseRect.top + baseRect.height / 2;
+      return {
+        x: (target.centerX - baseCenterX) * centerProgress,
+        y: (target.centerY - baseCenterY) * centerProgress,
+        scale: lerp(1, target.scale, centerProgress),
+        gridScale: Math.pow(START_GRID_SCALE, 1 - revealProgress),
+        reveal: revealProgress,
+        z: centerProgress > 0.04 ? 50 : 4
+      };
+    };
+
+    const capturePinBaseFromVisual = () => {
+      const live = visual.getBoundingClientRect();
+      return {
+        top: live.top,
+        left: live.left,
+        width: live.width,
+        height: live.height,
+        borderRadius: (naturalRect && naturalRect.borderRadius) || 42
+      };
+    };
+
+    const computeTargetState = () => {
+      if (!naturalRect && !measureNaturalRect()) return;
+      const raw = getScrollProgress();
+      if (raw <= 0.001 || reducedMotion) {
+        targetState = restState();
+        if (raw <= 0.001) currentState = restState();
+        return;
+      }
+
+      const baseRect = pinBaseRect || naturalRect;
+      const finalTarget = getTarget(baseRect);
+      const visualStyle = getComputedStyle(visual);
+      const horizontalBorder = parseFloat(visualStyle.borderLeftWidth) + parseFloat(visualStyle.borderRightWidth);
+      summary?.style.setProperty('--hero-summary-width', `${round((baseRect.width - horizontalBorder) * finalTarget.scale)}px`);
+      targetState = stateFromProgress(raw, baseRect);
+      if (!currentState) currentState = { ...targetState };
+    };
+
+    const applyPinnedFrame = (raw, snapState) => {
+      // Capture origin only when entering from rest. Keep it frozen afterward
+      // so scroll-up/down both interpolate along the same straight path.
+      if (mode === 'rest' || !pinBaseRect) {
+        pinBaseRect = naturalRect || capturePinBaseFromVisual();
+      }
+      setSpacer(true);
+      const base = pinBaseRect;
+      visual.classList.remove('is-settled');
+      visual.classList.add('is-pinned');
+      visual.style.position = 'fixed';
+      visual.style.aspectRatio = 'auto';
+      visual.style.top = base.top + 'px';
+      visual.style.left = base.left + 'px';
+      visual.style.width = base.width + 'px';
+      visual.style.height = base.height + 'px';
+      visual.style.borderRadius = base.borderRadius + 'px';
+      if (snapState) {
+        const next = stateFromProgress(raw, base);
+        currentState = { ...next };
+        targetState = { ...next };
+      }
+      mode = 'pinned';
+    };
+
+    const applyMode = () => {
+      if (!targetState || !naturalRect) return;
+      const raw = getScrollProgress();
+      if (raw <= 0.001) {
+        if (mode !== 'rest') resetVisual();
+        return;
+      }
+
+      const pinRect = pin.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 1;
+
+      // Never convert transform → layout at max size (that caused the jump).
+      // Keep position:fixed + scale, and after the pin end simply lift the fixed
+      // card with continued scroll so it leaves the viewport continuously.
+      if (mode !== 'pinned') {
+        applyPinnedFrame(raw, true);
+      }
+      if (mode === 'pinned' && pinBaseRect) {
+        const transformedBottom = pinBaseRect.top + targetState.y
+          + (pinBaseRect.height * (1 + targetState.scale)) / 2;
+        const borderBottom = parseFloat(getComputedStyle(visual).borderBottomWidth) * targetState.scale;
+        const overflow = Math.max(0, transformedBottom - borderBottom + 12 - pinRect.bottom);
+        visual.style.top = (pinBaseRect.top - overflow) + 'px';
+        visual.style.left = pinBaseRect.left + 'px';
+      }
+    };
+
+    const render = (time) => {
+      if (needsMeasure) {
+        computeTargetState();
+        needsMeasure = false;
+      }
+      if (!targetState) return false;
+      if (!currentState) currentState = { ...targetState };
+
+      lastTime = time;
+      // Direct binding: no interpolation chase toward target (that reads as magnetic sticky).
+      currentState = {
+        x: targetState.x,
+        y: targetState.y,
+        scale: targetState.scale,
+        gridScale: targetState.gridScale,
+        reveal: targetState.reveal,
+        z: targetState.z
+      };
+
+      applyMode();
+      // Re-read after mode switches (settle/pin) may update currentState.
+      if (!currentState) currentState = { ...targetState };
+      visual.classList.add('visible');
+      visual.style.zIndex = String(currentState.z);
+      visual.style.transform = `translate3d(${round(currentState.x)}px, ${round(currentState.y)}px, 0) scale(${round(currentState.scale, 4)})`;
+      visual.style.setProperty('--hero-scale', round(Math.max(currentState.scale, 0.001), 4));
+      card.style.setProperty('--grid-scale', round(currentState.gridScale, 4));
+      updateLabel(currentState.gridScale);
+      updateLayerVisibility(currentState.gridScale);
+      return false;
+    };
+
+    const tick = (time) => {
+      raf = 0;
+      if (render(time)) startAnimation();
+    };
+
+    const startAnimation = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    const scheduleMeasure = () => {
+      needsMeasure = true;
+      startAnimation();
+    };
+
+    const boot = () => {
+      window.scrollTo(0, 0);
+      lastScrollY = 0;
+      scrollDir = 0;
+      resetVisual();
+      naturalRect = null;
+      pinBaseRect = null;
+      targetState = restState();
+      currentState = restState();
+      lastTime = 0;
+      lastStep = null;
+      visual.classList.add('visible');
+      measureNaturalRect();
+      computeTargetState();
+      render(0);
+    };
+
+    window.__updateHeroGridReveal = () => {
+      lastStep = null;
+      scheduleMeasure();
+    };
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => requestAnimationFrame(boot)).catch(boot);
+    } else {
+      requestAnimationFrame(boot);
+    }
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || 0;
+      if (y > lastScrollY + 1) scrollDir = 1;
+      else if (y < lastScrollY - 1) scrollDir = -1;
+      lastScrollY = y;
+      scheduleMeasure();
+    }, { passive: true });
+    window.addEventListener('resize', () => {
+      resetVisual();
+      naturalRect = null;
+      pinBaseRect = null;
+      currentState = null;
+      scheduleMeasure();
+    });
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) window.scrollTo(0, 0);
+      boot();
+    });
+  }
+
+  setLang(initialLang());
+  setupLangMenu();
+  setupFade();
+  setupHighlightVideos();
+  setupActionTracking();
+  setupSceneCarousel();
+  setupHeroGridReveal();
+</script>
+</body>
+</html>
