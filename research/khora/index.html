@@ -305,6 +305,9 @@
       margin: 0 auto;
       padding: 76px 0;
     }
+    .section[id] {
+      scroll-margin-top: 108px;
+    }
     .section.compact { padding: 46px 0; }
     .eyebrow {
       color: var(--accent-dark);
@@ -1878,7 +1881,7 @@
   </section>
 
   <section class="section" id="live-demo">
-    <span id="demo" aria-hidden="true" style="position:relative;top:-92px"></span>
+    <span id="demo" aria-hidden="true" style="position:relative;top:-92px;scroll-margin-top:108px"></span>
     <div class="fade">
       <div class="eyebrow">04 · Live Demo</div>
       <h2 class="section-title no-break-title demo-title single-line-copy"><span data-en="Enter Khora directly in your browser." data-zh="直接在浏览器中进入 Khora。"></span></h2>
@@ -1925,14 +1928,13 @@
 </footer>
 
 <script>
-  // Always open at the top on load/refresh; ignore restored scroll and deep-link hash.
+  // Keep hash-based navigation working; only reset to top when there is no fragment.
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  (function forceScrollTopOnLoad() {
+  const initialHash = window.location.hash;
+  (function applyInitialScroll() {
     try {
-      const url = new URL(window.location.href);
-      if (url.hash) history.replaceState({}, '', url.pathname + url.search);
+      if (!initialHash) window.scrollTo(0, 0);
     } catch (error) {}
-    window.scrollTo(0, 0);
   })();
 
   let currentLang = 'en';
@@ -3092,7 +3094,7 @@
     };
 
     const boot = () => {
-      window.scrollTo(0, 0);
+      if (!initialHash) window.scrollTo(0, 0);
       lastScrollY = 0;
       scrollDir = 0;
       resetVisual();
@@ -3133,7 +3135,7 @@
       scheduleMeasure();
     });
     window.addEventListener('pageshow', (event) => {
-      if (event.persisted) window.scrollTo(0, 0);
+      if (event.persisted && !initialHash) window.scrollTo(0, 0);
       boot();
     });
   }
