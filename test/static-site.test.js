@@ -39,6 +39,22 @@ test('deployable pages include complete social metadata', () => {
     }
 });
 
+test('Khora social preview uses a deployable large raster image', () => {
+    const html = read('research/khora/index.html');
+    const title = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i)?.[1] || '';
+    const socialImage = 'research/khora/assets/images/khora-social-preview.jpg';
+    const socialImageUrl = `https://rhos.ai/${socialImage}`;
+
+    assert.ok(title.length >= 30 && title.length <= 60, `Khora social title has ${title.length} characters`);
+    assert.match(html, new RegExp(`<meta\\s+property="og:image"\\s+content="${socialImageUrl}"`, 'i'));
+    assert.match(html, new RegExp(`<meta\\s+name="twitter:image"\\s+content="${socialImageUrl}"`, 'i'));
+    assert.match(html, /<meta\s+property="og:image:type"\s+content="image\/jpeg"/i);
+    assert.match(html, /<meta\s+property="og:image:width"\s+content="1200"/i);
+    assert.match(html, /<meta\s+property="og:image:height"\s+content="630"/i);
+    assert.equal(existsSync(join(root, socialImage)), true, 'Khora social preview image is missing');
+    assert.ok(readFileSync(join(root, socialImage)).byteLength < 1_000_000, 'Khora social preview must stay under 1 MB');
+});
+
 test('core page scripts, stylesheets, and images resolve locally', () => {
     const pages = deployablePages.filter((page) => page !== 'research/ipr-1/index.html');
     for (const page of pages) {
