@@ -1012,7 +1012,8 @@
       letter-spacing: -0.02em;
       line-height: 1.2;
     }
-    .scale-compare-item img {
+    .scale-compare-item img,
+    .scale-compare-item video {
       display: block;
       width: 100%;
       aspect-ratio: 2 / 3;
@@ -1020,6 +1021,7 @@
       object-position: center;
       border-radius: 12px;
       background: #111;
+      pointer-events: none;
     }
     .scale-compare-item figcaption {
       display: grid;
@@ -1588,7 +1590,8 @@
       .method-figure img { border-radius: 14px; }
       .scale-compare { gap: 8px; padding: 10px; }
       .scale-compare-item { gap: 8px; }
-      .scale-compare-item img { border-radius: 10px; }
+      .scale-compare-item img,
+      .scale-compare-item video { border-radius: 10px; }
       .scale-compare-gpu { font-size: 12px; }
       .scale-compare-item figcaption { font-size: 11px; }
       .proof-stack { gap: 58px; }
@@ -1777,12 +1780,12 @@
       <div class="scale-compare" aria-label="GPU scaling comparison across single view, previous works, and Khora">
         <figure class="scale-compare-item">
           <div class="scale-compare-gpu"><span data-en="1 GPU" data-zh="1 GPU"></span></div>
-          <img src="assets/images/image1.png" alt="Single GPU for a single view" loading="lazy" decoding="async" />
+          <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/scaling-single-gpu.mp4" aria-label="Animated single GPU illustration"></video>
           <figcaption><span data-en="single view" data-zh="单视角"></span></figcaption>
         </figure>
         <figure class="scale-compare-item">
           <div class="scale-compare-gpu"><span data-en="1,048,576 GPUs" data-zh="1,048,576 GPUs"></span></div>
-          <img src="assets/images/image2.png" alt="Over a million GPUs required for 1024 views in previous works" loading="lazy" decoding="async" />
+          <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/scaling-pairwise-1024-views.mp4" aria-label="Animated illustration of over a million GPUs required for 1024 views in previous works"></video>
           <figcaption>
             <span data-en="1,024 views" data-zh="1,024 视角"></span>
             <small data-en="(previous works)" data-zh="（以往方法）"></small>
@@ -1790,7 +1793,7 @@
         </figure>
         <figure class="scale-compare-item">
           <div class="scale-compare-gpu"><span data-en="1,024 GPUs" data-zh="1,024 GPUs"></span></div>
-          <img src="assets/images/image3.png" alt="1024 GPUs for 1024 views with Khora" loading="lazy" decoding="async" />
+          <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/scaling-khora-1024-views.mp4" aria-label="Animated illustration of 1024 GPUs for 1024 views with Khora"></video>
           <figcaption>
             <span data-en="1,024 views" data-zh="1,024 视角"></span>
             <small data-en="(Khora)" data-zh="（Khora）"></small>
@@ -2074,7 +2077,7 @@
   }
 
   function setupHighlightVideos() {
-    const videos = Array.from(document.querySelectorAll('#highlights .video-stage video, #live-demo .demo-preview video, .demo-panel .demo-background'))
+    const videos = Array.from(document.querySelectorAll('.scale-compare video, #highlights .video-stage video, #live-demo .demo-preview video, .demo-panel .demo-background'))
       .filter((video) => !video.closest('#sceneCarousel'));
     if (!videos.length) return;
 
