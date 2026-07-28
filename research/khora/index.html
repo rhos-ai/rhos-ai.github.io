@@ -2082,6 +2082,13 @@
     if (!videos.length) return;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const scalingVideos = videos.filter((video) => video.closest('.scale-compare'));
+    const scalingVideoSet = new Set(scalingVideos);
+    const scalingVisibility = new Map(scalingVideos.map((video) => [video, false]));
+    let scalingActive = false;
+    let scalingStarting = false;
+    let scalingRunId = 0;
+    let scalingSyncFrame = 0;
 
     const prepareVideo = (video) => {
       if (video.dataset.loaded === 'true') return;
@@ -2103,6 +2110,62 @@
       if (promise && typeof promise.catch === 'function') promise.catch(() => {});
     };
 
+    const waitUntilPlayable = (video) => {
+      prepareVideo(video);
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return Promise.resolve();
+      return new Promise((resolve) => {
+        const finish = () => resolve();
+        video.addEventListener('loadeddata', finish, { once: true });
+        video.addEventListener('error', finish, { once: true });
+      });
+    };
+
+    const stopScalingGroup = () => {
+      scalingRunId += 1;
+      scalingActive = false;
+      scalingStarting = false;
+      if (scalingSyncFrame) cancelAnimationFrame(scalingSyncFrame);
+      scalingSyncFrame = 0;
+      scalingVideos.forEach((video) => video.pause());
+    };
+
+    const syncScalingGroup = () => {
+      if (!scalingActive) return;
+      const master = scalingVideos[0];
+      const masterTime = master.currentTime;
+      const duration = Number.isFinite(master.duration) && master.duration > 0 ? master.duration : 2;
+      scalingVideos.slice(1).forEach((video) => {
+        const drift = Math.abs(video.currentTime - masterTime);
+        const loopDrift = Math.min(drift, Math.max(0, duration - drift));
+        if (loopDrift > 0.05) video.currentTime = masterTime;
+      });
+      scalingSyncFrame = requestAnimationFrame(syncScalingGroup);
+    };
+
+    const startScalingGroup = async () => {
+      if (reducedMotion || scalingActive || scalingStarting || !scalingVideos.length) return;
+      scalingStarting = true;
+      const runId = ++scalingRunId;
+      await Promise.all(scalingVideos.map(waitUntilPlayable));
+      if (runId !== scalingRunId || !scalingVideos.every((video) => scalingVisibility.get(video))) return;
+      if (scalingVideos.some((video) => video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)) {
+        scalingStarting = false;
+        return;
+      }
+
+      scalingVideos.forEach((video) => {
+        video.muted = true;
+        video.defaultPlaybackRate = 1;
+        video.playbackRate = 1;
+        video.currentTime = 0;
+      });
+      await Promise.allSettled(scalingVideos.map((video) => video.play()));
+      if (runId !== scalingRunId) return;
+      scalingStarting = false;
+      scalingActive = true;
+      syncScalingGroup();
+    };
+
     if (!('IntersectionObserver' in window)) {
       videos.forEach((video) => {
         prepareVideo(video);
@@ -2122,6 +2185,12 @@
     const playbackObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const video = entry.target;
+        if (scalingVideoSet.has(video)) {
+          scalingVisibility.set(video, entry.isIntersecting);
+          if (scalingVideos.every((item) => scalingVisibility.get(item))) startScalingGroup();
+          else stopScalingGroup();
+          return;
+        }
         if (entry.isIntersecting && !reducedMotion) tryPlay(video);
         else video.pause();
       });
