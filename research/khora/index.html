@@ -1042,11 +1042,13 @@
     .proof-stack { margin-top: 50px; display: grid; gap: 80px; }
     .proof {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 28px;
       align-items: start;
+      min-width: 0;
+      max-width: 100%;
     }
-    .proof-copy { max-width: none; }
+    .proof-copy { max-width: 100%; min-width: 0; }
     .proof-index { color: var(--accent-dark); font-size: 12px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
     .proof h3 {
       margin: 14px 0 14px;
@@ -1092,6 +1094,8 @@
     }
     .video-card {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       border: 1px solid rgba(25, 22, 18, 0.12);
       border-radius: 24px;
       background: #111;
@@ -1114,11 +1118,14 @@
     .video-stage {
       position: relative;
       width: 100%;
+      min-width: 0;
+      overflow: hidden;
       background: #0f0f0f;
     }
     .video-stage video {
       display: block;
       width: 100%;
+      max-width: 100%;
       height: auto;
       background: #0f0f0f;
       pointer-events: none;
@@ -1735,7 +1742,7 @@
     </div>
 
     <figure class="method-figure fade" aria-label="Khora method diagram">
-      <img src="assets/images/method.svg" alt="Khora method diagram showing the shared world state, action update, and multi-view rendering pipeline" loading="lazy" decoding="async" />
+      <img src="assets/images/method.png" alt="Khora method diagram showing the shared world state, action update, and multi-view rendering pipeline" loading="lazy" decoding="async" />
       <figcaption><span data-en="Overview of Khora. Player actions update a shared STBoard, from which synchronized, view-specific observations are rendered for all players." data-zh="Khora 架构概览。玩家动作更新共享 STBoard，模型再从中为所有玩家渲染同步且视角特定的观察。"></span></figcaption>
     </figure>
 
@@ -1790,7 +1797,7 @@
         <div class="proof-copy">
           <div class="proof-index">Highlight 01 · Action Consistency</div>
           <h3 class="no-break-heading"><span data-en="One action leads to multiple consistent outcomes." data-zh="一个动作，多路后果一致。"></span></h3>
-          <p class="single-line-copy"><span data-en="Ground truth and generation start from the same frame, revealing whether motion and scene responses stay aligned."
+          <p><span data-en="Ground truth and generation start from the same frame, revealing whether motion and scene responses stay aligned."
                    data-zh="同一个起点分别展示真实视频与模型生成结果，重点看移动和场景响应是否保持对齐。"></span></p>
         </div>
         <div class="video-card">
@@ -1817,7 +1824,7 @@
         <div class="proof-copy">
           <div class="proof-index">Highlight 02 · Z-axis Structure</div>
           <h3><span data-en="Vertical motion remains consistent across views." data-zh="高低变化，仍在同一空间里。"></span></h3>
-          <p class="single-line-copy"><span data-en="Elevation changes test whether camera height, occlusion, and relative geometry remain consistent across views."
+          <p><span data-en="Elevation changes test whether camera height, occlusion, and relative geometry remain consistent across views."
                    data-zh="Z 轴案例用来检查楼梯、高低层、相机位置和遮挡关系是否在多视角生成中保持一致。有高度，才是 3D 世界。"></span></p>
         </div>
         <div class="video-card">
@@ -1836,7 +1843,7 @@
         <div class="proof-copy">
           <div class="proof-index">Highlight 03 · Scene Transfer</div>
           <h3><span data-en="The behavior is not tied to one map." data-zh="不是只记住一张地图。"></span></h3>
-          <p class="single-line-copy"><span data-en="Three maps test whether interactive dynamics transfer across different layouts and visual styles."
+          <p><span data-en="Three maps test whether interactive dynamics transfer across different layouts and visual styles."
                    data-zh="三个场景横向展示。重点不是外观完全一致，而是交互规律是否能迁移到不同地图布局和视觉风格。"></span></p>
         </div>
         <div class="video-card scene-transfer-card">
@@ -1862,11 +1869,11 @@
         <div class="proof-copy">
           <div class="proof-index">Highlight 04 · Player Scaling</div>
           <h3><span data-en="A unified world state for an expanding player population." data-zh="统一世界状态，支持持续扩展的玩家群体。"></span></h3>
-          <p class="single-line-copy"><span data-en="Sixteen views test whether motion, occlusion, and cross-view consistency remain stable as player count grows."
+          <p><span data-en="Sixteen views test whether motion, occlusion, and cross-view consistency remain stable as player count grows."
                    data-zh="4×4 布局展示多名玩家同时存在的视角，是对实体规模、遮挡关系和运动一致性的压力测试。"></span></p>
-          <p class="single-line-copy"><span data-en="The top-right mini-map in each view makes cross-view action consistency directly visible: the same player movements remain aligned across observations."
+          <p><span data-en="The top-right mini-map in each view makes cross-view action consistency directly visible:<br>the same player movements remain aligned across observations."
                    data-zh="每个画面右上角的俯视图直观显示，同一玩家动作在不同视角间保持对齐。"></span></p>
-          <p class="single-line-copy"><span data-en="Additional views are supported with linear scaling."
+          <p><span data-en="Additional views are supported with linear scaling."
                    data-zh="更多视角可通过线性扩展获得支持。"></span></p>
         </div>
         <div class="video-card">
