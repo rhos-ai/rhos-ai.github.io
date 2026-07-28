@@ -1297,9 +1297,25 @@
       line-height: 1.45;
     }
 
+    .demo-preview {
+      margin-top: 28px;
+    }
+    .demo-preview .video-card {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    .demo-preview .video-stage {
+      aspect-ratio: 1336 / 720;
+    }
+    .demo-preview .video-stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .demo-panel {
       position: relative;
-      margin-top: 16px;
+      margin-top: 18px;
       display: grid;
       grid-template-columns: 1fr;
       grid-template-rows: auto auto;
@@ -1896,6 +1912,14 @@
                                   data-zh="实时 Demo 现已开放。"></span></p>
     </div>
 
+    <div class="demo-preview fade">
+      <div class="video-card">
+        <div class="video-stage">
+          <video muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/single_demo.mp4" aria-label="Khora single-player demo preview"></video>
+        </div>
+      </div>
+    </div>
+
     <a class="demo-panel demo-link fade" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer" aria-label="Launch the Khora live demo">
       <div class="demo-media">
         <video class="demo-background" muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/real_demo.mp4" aria-hidden="true"></video>
@@ -2050,7 +2074,7 @@
   }
 
   function setupHighlightVideos() {
-    const videos = Array.from(document.querySelectorAll('#highlights .video-stage video, .demo-panel .demo-background'))
+    const videos = Array.from(document.querySelectorAll('#highlights .video-stage video, #live-demo .demo-preview video, .demo-panel .demo-background'))
       .filter((video) => !video.closest('#sceneCarousel'));
     if (!videos.length) return;
 
