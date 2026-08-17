@@ -1570,7 +1570,14 @@
       .topbar-inner, .section, .hero-layout, .closing, .footer-inner { width: min(100% - 24px, var(--max)); }
       .topbar-inner { min-height: 64px; gap: 10px; }
       .brand { gap: 8px; }
-      .brand-lockup { max-width: calc(100vw - 190px); overflow: hidden; }
+      .brand-lockup { max-width: calc(100vw - 78px); overflow: hidden; }
+      .lang-trigger {
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+      }
+      .lang-trigger-label,
+      .lang-chevron { display: none; }
       .access-pill { display: none; }
       .hero-layout { padding-bottom: 54px; gap: 34px; }
       .hero-pin { height: calc(245svh); }
@@ -1624,14 +1631,7 @@
       .footer-top { justify-self: start; }
     }
     @media (max-width: 360px) {
-      .brand-lockup { max-width: calc(100vw - 120px); }
-      .lang-trigger {
-        width: 42px;
-        padding: 0;
-        justify-content: center;
-      }
-      .lang-trigger-label,
-      .lang-chevron { display: none; }
+      .brand-lockup { max-width: calc(100vw - 78px); }
     }
   </style>
 </head>
