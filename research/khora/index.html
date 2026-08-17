@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <base href="/research/khora/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation." />
-  <meta name="author" content="RhOS">
+  <meta name="description" content="Khora is a scalable multi-agent world model jointly developed by Ophilus.AI and RhOS, with shared state and synchronized multi-view generation." />
+  <meta name="author" content="Ophilus.AI and RhOS">
   <meta name="robots" content="index, follow">
   <meta name="application-name" content="RhOS">
   <link rel="canonical" href="https://rhos.ai/research/khora/">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://rhos.ai/research/khora/">
   <meta property="og:title" content="Khora: A Scalable Multi-Agent World Model">
-  <meta property="og:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta property="og:description" content="Khora is a scalable multi-agent world model jointly developed by Ophilus.AI and RhOS, with shared state and synchronized multi-view generation.">
   <meta property="og:image" content="https://rhos.ai/research/khora/assets/images/khora-social-preview.jpg">
   <meta property="og:image:secure_url" content="https://rhos.ai/research/khora/assets/images/khora-social-preview.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -25,14 +25,14 @@
   <meta name="twitter:domain" content="rhos.ai">
   <meta name="twitter:url" content="https://rhos.ai/research/khora/">
   <meta name="twitter:title" content="Khora: A Scalable Multi-Agent World Model">
-  <meta name="twitter:description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta name="twitter:description" content="Khora is a scalable multi-agent world model jointly developed by Ophilus.AI and RhOS, with shared state and synchronized multi-view generation.">
   <meta name="twitter:image" content="https://rhos.ai/research/khora/assets/images/khora-social-preview.jpg">
   <meta name="twitter:image:alt" content="Khora scalable multi-agent world model with synchronized player viewpoints">
   <meta itemprop="name" content="Khora: A Scalable Multi-Agent World Model">
-  <meta itemprop="description" content="Khora research preview: a real-time multi-agent world model with shared state and synchronized multi-view generation.">
+  <meta itemprop="description" content="Khora is a scalable multi-agent world model jointly developed by Ophilus.AI and RhOS, with shared state and synchronized multi-view generation.">
   <meta itemprop="image" content="https://rhos.ai/research/khora/assets/images/khora-social-preview.jpg">
-  <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp" type="image/webp" fetchpriority="high" />
-  <link rel="preload" as="fetch" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4" type="video/mp4" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp?v=20260817-khora-only-v1" type="image/webp" fetchpriority="high" />
+  <link rel="preload" as="fetch" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4?v=20260817-khora-only-v1" type="video/mp4" fetchpriority="high" />
   <meta name="theme-color" content="#f7f3ed" />
   <title>Khora: A Scalable Multi-Agent World Model</title>
   <style>
@@ -424,7 +424,7 @@
       font-weight: 520;
     }
     html[lang="en"] h1 {
-      font-size: clamp(36px, 4.4vw, 60px);
+      font-size: clamp(36px, 4.1vw, 56px);
       line-height: 1.02;
       letter-spacing: -0.035em;
     }
@@ -441,7 +441,7 @@
     h1 em { color: var(--accent-dark); font-style: normal; }
     .hero-copy {
       margin: 28px 0 0;
-      max-width: 640px;
+      max-width: 560px;
       color: var(--ink-soft);
       font-size: clamp(17px, 1.7vw, 20px);
       line-height: 1.68;
@@ -451,7 +451,18 @@
       font-size: clamp(16px, 1.55vw, 18.5px);
       line-height: 1.72;
     }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+    .hero-copy a {
+      color: var(--ink);
+      font-weight: 680;
+      text-decoration-color: rgba(25, 22, 18, 0.34);
+      text-underline-offset: 3px;
+      transition: color .16s ease, text-decoration-color .16s ease;
+    }
+    .hero-copy a:hover {
+      color: var(--accent-dark);
+      text-decoration-color: currentColor;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -468,7 +479,7 @@
     .btn-dark { color: #fff; background: var(--ink); }
     .btn-light { color: var(--ink); background: rgba(255,255,255,.44); border-color: var(--line); }
     .btn-disabled { opacity: .58; cursor: not-allowed; }
-    html[lang="en"] .btn { font-size: 13px; padding: 12px 16px; }
+    html[lang="en"] .btn { font-size: 13px; padding: 12px 14px; }
     .btn-tip {
       position: relative;
       display: inline-flex;
@@ -539,7 +550,7 @@
       min-height: 0 !important;
     }
     @media (min-width: 1360px) {
-      html[lang="en"] h1 { font-size: 57px; }
+      html[lang="en"] h1 { font-size: 52px; }
       html[lang="zh-CN"] h1 { font-size: 72px; }
       .hero-visual-col {
         display: flex;
@@ -1667,7 +1678,7 @@
           <button type="button" class="lang-option" role="option" data-lang="zh" aria-selected="false">中文</button>
         </div>
       </div>
-      <a class="access-pill" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer"><span class="dot"></span><span data-en="Launch Demo" data-zh="进入 Demo"></span></a>
+      <a class="access-pill" href="https://ophilus.ai/khora" target="_blank" rel="noopener noreferrer"><span class="dot"></span><span data-en="Try Demo" data-zh="体验 Demo"></span></a>
     </div>
   </div>
 </header>
@@ -1679,8 +1690,8 @@
         <div class="hero-copy-column fade">
           <h1><span data-en="<span class=&quot;hero-title-line&quot;>The first scalable multi-</span><br><span class=&quot;hero-title-line&quot;>agent world model with</span><br><span class=&quot;hero-title-line&quot;>linear-time complexity.</span>" data-zh="全球首个线性无限扩展的多智能体世界模型。"></span></h1>
           <p class="hero-copy">
-            <span data-en="Khora moves world modeling from single-view video prediction to real-time shared interaction: many players act independently, while every view is rendered from one evolving world state."
-                  data-zh="Khora 把世界模型从单视角视频预测，推进到共享世界状态：多名玩家独立行动，但每一路画面都来自同一个持续演化的世界状态。"></span>
+            <span data-en="Khora is a scalable multi-agent world model jointly developed by <a href=&quot;https://ophilus.ai/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>Ophilus.AI</a> and <a href=&quot;https://rhos.ai/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>RhOS</a>. It moves world modeling from single-view video prediction to real-time shared interaction: many players act independently while every view is rendered from one evolving world state."
+                  data-zh="Khora 是由 <a href=&quot;https://ophilus.ai/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>Ophilus.AI</a> 与 <a href=&quot;https://rhos.ai/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>RhOS</a> 联合开发的可扩展多智能体世界模型。它把世界模型从单视角视频预测推进到实时共享交互：多名玩家独立行动，而每一路画面都由同一个持续演化的世界状态生成。"></span>
           </p>
           <div class="hero-actions">
             <a class="btn btn-dark" href="#highlights"><span data-en="View Demo Videos" data-zh="查看演示视频"></span></a>
@@ -1689,6 +1700,7 @@
               <a class="btn btn-light btn-disabled" href="javascript:void(0)" aria-disabled="true" aria-describedby="techReportSoon"><span data-en="Tech Report" data-zh="技术报告"></span></a>
               <span class="btn-tip-bubble" id="techReportSoon" role="tooltip"><span data-en="Coming soon" data-zh="即将发布"></span></span>
             </span>
+            <a class="btn btn-light" href="https://ophilus.ai/blog/khora" target="_blank" rel="noopener noreferrer"><span data-en="Ophilus Blog" data-zh="Ophilus 博客"></span><span aria-hidden="true">↗</span></a>
           </div>
         </div>
 
@@ -1696,7 +1708,7 @@
           <div class="hero-visual-spacer" id="heroVisualSpacer" aria-hidden="true"></div>
           <div class="hero-visual hero-video-visual fade" id="heroVisual" aria-label="Illustration of scalable synchronized player viewpoints">
       <div class="world-card">
-        <div class="world-grid world-video-reveal" id="heroWorldGrid" data-layer-dir="assets/videos/khora_0_8_layers" aria-hidden="true"></div>
+        <div class="world-grid world-video-reveal" id="heroWorldGrid" data-layer-dir="assets/videos/khora_0_8_layers" data-layer-version="20260817-khora-only-v1" aria-hidden="true"></div>
       </div>
       <div class="world-reveal-meter" aria-hidden="true"></div>
       <div class="world-label" id="worldScaleLabel">2×2 · one world state</div>
@@ -1923,7 +1935,7 @@
       </div>
     </div>
 
-    <a class="demo-panel demo-link fade" href="https://ophilus.ai/demo" target="_blank" rel="noopener noreferrer" aria-label="Launch the Khora live demo">
+    <a class="demo-panel demo-link fade" href="https://ophilus.ai/khora" target="_blank" rel="noopener noreferrer" aria-label="Try the Khora live demo">
       <div class="demo-media">
         <video class="demo-background" muted loop playsinline preload="none" disablepictureinpicture data-src="assets/videos/real_demo.mp4" aria-hidden="true"></video>
       </div>
@@ -1934,7 +1946,7 @@
           <p><span data-en="Open the public demo to move, interact, and experience Khora as a controllable world rather than an offline video."
                    data-zh="打开公开 Demo，直接移动、交互，并体验作为可控世界而非离线视频的 Khora。"></span></p>
         </div>
-        <span class="demo-launch"><span data-en="Launch live demo" data-zh="进入实时 Demo"></span></span>
+        <span class="demo-launch"><span data-en="Try live demo" data-zh="体验实时 Demo"></span></span>
       </div>
     </a>
   </section>
@@ -2519,6 +2531,8 @@
       }
 
       const layerDir = grid.dataset.layerDir || 'assets/videos/khora_0_8_layers';
+      const layerVersion = grid.dataset.layerVersion || '';
+      const layerAsset = (path) => layerVersion ? `${path}?v=${encodeURIComponent(layerVersion)}` : path;
       const codecProbe = document.createElement('video');
       const supportsAv1 = codecProbe.canPlayType('video/mp4; codecs="av01.0.08M.08"') !== '';
       const supportsHevc = codecProbe.canPlayType('video/mp4; codecs="hvc1.1.6.L120.B0"') !== '';
@@ -2549,10 +2563,10 @@
         video.dataset.role = 'base';
         video.dataset.level = String(step);
         video.dataset.codec = 'h264-boot';
-        video.dataset.src = `${layerDir}/rhos_large_text_layer_${padLevel(step)}.boot.mp4`;
+        video.dataset.src = layerAsset(`${layerDir}/rhos_large_text_layer_${padLevel(step)}.boot.mp4`);
         if (step === REVEAL_STEPS[0]) {
           layer.classList.add('has-poster');
-          video.poster = `${layerDir}/poster_${padLevel(step)}.boot.webp`;
+          video.poster = layerAsset(`${layerDir}/poster_${padLevel(step)}.boot.webp`);
           video.setAttribute('fetchpriority', 'high');
         }
         layer.appendChild(video);
@@ -2569,7 +2583,7 @@
         const hdCodec = centerCodecLevels.has(step) ? preferredCodec : 'h264';
         const hdCodecSuffix = hdCodec === 'h264' ? '' : `.${hdCodec}`;
         hdVideo.dataset.codec = hdCodec;
-        hdVideo.dataset.src = `${layerDir}/rhos_large_text_layer_${padLevel(step)}${hdCodecSuffix}.mp4`;
+        hdVideo.dataset.src = layerAsset(`${layerDir}/rhos_large_text_layer_${padLevel(step)}${hdCodecSuffix}.mp4`);
         layer.appendChild(hdVideo);
         fragment.appendChild(layer);
       });
