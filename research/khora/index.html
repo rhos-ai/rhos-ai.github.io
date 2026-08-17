@@ -31,8 +31,8 @@
   <meta itemprop="name" content="Khora: A Scalable Multi-Agent World Model">
   <meta itemprop="description" content="Khora is a scalable multi-agent world model jointly developed by Ophilus.AI and RhOS, with shared state and synchronized multi-view generation.">
   <meta itemprop="image" content="https://rhos.ai/research/khora/assets/images/khora-social-preview.jpg">
-  <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp?v=20260817-khora-only-v1" type="image/webp" fetchpriority="high" />
-  <link rel="preload" as="fetch" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4?v=20260817-khora-only-v1" type="video/mp4" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/videos/khora_0_8_layers/poster_002.boot.webp?v=20260817-khora-only-v2" type="image/webp" fetchpriority="high" />
+  <link rel="preload" as="fetch" href="assets/videos/khora_0_8_layers/rhos_large_text_layer_002.boot.mp4?v=20260817-khora-only-v2" type="video/mp4" fetchpriority="high" />
   <meta name="theme-color" content="#f7f3ed" />
   <title>Khora: A Scalable Multi-Agent World Model</title>
   <style>
@@ -660,6 +660,10 @@
       object-fit: fill;
       pointer-events: none;
       transform: translateZ(0);
+    }
+    .hero-world-layer[data-level="2"] video {
+      transform: translateZ(0) scale(1.035);
+      transform-origin: 50% 50%;
     }
     .hero-layer-base {
       z-index: 1;
@@ -1708,7 +1712,7 @@
           <div class="hero-visual-spacer" id="heroVisualSpacer" aria-hidden="true"></div>
           <div class="hero-visual hero-video-visual fade" id="heroVisual" aria-label="Illustration of scalable synchronized player viewpoints">
       <div class="world-card">
-        <div class="world-grid world-video-reveal" id="heroWorldGrid" data-layer-dir="assets/videos/khora_0_8_layers" data-layer-version="20260817-khora-only-v1" aria-hidden="true"></div>
+        <div class="world-grid world-video-reveal" id="heroWorldGrid" data-layer-dir="assets/videos/khora_0_8_layers" data-layer-version="20260817-khora-only-v2" aria-hidden="true"></div>
       </div>
       <div class="world-reveal-meter" aria-hidden="true"></div>
       <div class="world-label" id="worldScaleLabel">2×2 · one world state</div>
