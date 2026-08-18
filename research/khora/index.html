@@ -478,50 +478,7 @@
     }
     .btn-dark { color: #fff; background: var(--ink); }
     .btn-light { color: var(--ink); background: rgba(255,255,255,.44); border-color: var(--line); }
-    .btn-disabled { opacity: .58; cursor: not-allowed; }
     html[lang="en"] .btn { font-size: 13px; padding: 12px 14px; }
-    .btn-tip {
-      position: relative;
-      display: inline-flex;
-    }
-    .btn-tip-bubble {
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% + 10px);
-      transform: translateX(-50%) translateY(4px);
-      z-index: 5;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(255, 250, 243, 0.96);
-      color: var(--ink-soft);
-      box-shadow: 0 12px 28px rgba(79, 55, 31, 0.12);
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .18s ease, transform .18s ease;
-    }
-    .btn-tip-bubble::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      width: 10px;
-      height: 10px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 250, 243, 0.96);
-      transform: translateX(-50%) translateY(-55%) rotate(45deg);
-    }
-    .btn-tip:hover .btn-tip-bubble,
-    .btn-tip:focus-within .btn-tip-bubble,
-    .btn-tip.is-open .btn-tip-bubble {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
 
     .hero-visual {
       position: relative;
@@ -1663,6 +1620,7 @@
         <a href="#architecture"><span data-en="Architecture" data-zh="技术架构"></span></a>
         <a href="#highlights"><span data-en="Highlights" data-zh="核心亮点"></span></a>
         <a href="#live-demo"><span data-en="Live demo" data-zh="实时 Demo"></span></a>
+        <a href="https://arxiv.org/abs/2608.08600" target="_blank" rel="noopener noreferrer"><span data-en="Tech Report" data-zh="技术报告"></span></a>
       </nav>
       <div class="lang-menu" id="langMenu">
         <button type="button" class="lang-trigger" id="langTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="langPanel">
@@ -1700,10 +1658,7 @@
           <div class="hero-actions">
             <a class="btn btn-dark" href="#highlights"><span data-en="View Demo Videos" data-zh="查看演示视频"></span></a>
             <a class="btn btn-light" href="#architecture"><span data-en="Architecture" data-zh="了解技术路线"></span></a>
-            <span class="btn-tip" id="techReportTip">
-              <a class="btn btn-light btn-disabled" href="javascript:void(0)" aria-disabled="true" aria-describedby="techReportSoon"><span data-en="Tech Report" data-zh="技术报告"></span></a>
-              <span class="btn-tip-bubble" id="techReportSoon" role="tooltip"><span data-en="Coming soon" data-zh="即将发布"></span></span>
-            </span>
+            <a class="btn btn-light" href="https://arxiv.org/abs/2608.08600" target="_blank" rel="noopener noreferrer"><span data-en="Tech Report" data-zh="技术报告"></span></a>
             <a class="btn btn-light" href="https://ophilus.ai/blog/khora" target="_blank" rel="noopener noreferrer"><span data-en="Ophilus Blog" data-zh="Ophilus 博客"></span><span aria-hidden="true">↗</span></a>
           </div>
         </div>
@@ -3262,29 +3217,9 @@
   }
 
   setLang(initialLang());
-  function setupTechReportTip() {
-    const tip = document.getElementById('techReportTip');
-    if (!tip) return;
-    const button = tip.querySelector('.btn');
-    if (!button) return;
-
-    const close = () => tip.classList.remove('is-open');
-    button.addEventListener('click', (event) => {
-      event.preventDefault();
-      tip.classList.toggle('is-open');
-    });
-    document.addEventListener('click', (event) => {
-      if (!tip.contains(event.target)) close();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') close();
-    });
-  }
-
   setupLangMenu();
   setupFade();
   setupHighlightVideos();
-  setupTechReportTip();
   setupActionTracking();
   setupSceneCarousel();
   setupHeroGridReveal();
